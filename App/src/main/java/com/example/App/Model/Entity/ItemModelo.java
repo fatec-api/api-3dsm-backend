@@ -42,8 +42,8 @@ public class ItemModelo {
     
     @ManyToOne
     @JoinColumn(name= "id_profissional")
-    private ProfissionalModelo profissionalModelo;
+    private UsuarioModelo profissionalModelo;
 
-    
+
 
 }

@@ -13,14 +13,14 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "profissionais")
-public class ProfissionalModelo {
+@Table(name = "usuarios")
+public class UsuarioModelo {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable=false)
-    private String nomeProfissional;
+    private String nomeUsuario;
 
     @Column(nullable=false)
     private String email;

@@ -1,4 +1,4 @@
-package com.example.App.model.entity;
+package com.example.App.Model.Entity;
 
 import java.math.BigDecimal;
 import java.security.Timestamp;
@@ -16,15 +16,15 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "profissionais")
-public class ProfissionalModelo {
+@Table(name = "usuarios")
+public class UsuarioModelo {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)
     @Column(updatable = false, nullable = false)
     private UUID id;
 
     @Column(nullable=false)
-    private String nomeProfissional;
+    private String nomeUsuario;
 
     @Column(nullable=false, unique=true)
     private String email;

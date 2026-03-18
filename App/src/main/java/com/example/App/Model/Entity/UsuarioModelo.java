@@ -25,12 +25,8 @@ public class UsuarioModelo {
 
     @Column(nullable=false)
     private String nomeUsuario;
-<<<<<<< HEAD
 
-    @Column(nullable=false)
-    private String email;
-=======
->>>>>>> 4fceb2a2fa6c2c737efd3067e69cbdcd8269b160
+    
 
     @Column(nullable=false, unique=true)
     private String email;

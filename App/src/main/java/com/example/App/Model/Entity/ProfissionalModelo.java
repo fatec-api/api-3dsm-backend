@@ -1,10 +1,13 @@
-package com.example.App.Model.Entity;
+package com.example.App.model.entity;
 
 import java.math.BigDecimal;
 import java.security.Timestamp;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,32 +19,41 @@ import lombok.Data;
 @Table(name = "profissionais")
 public class ProfissionalModelo {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID id;
 
     @Column(nullable=false)
     private String nomeProfissional;
 
-    @Column(nullable=false)
+    @Column(nullable=false, unique=true)
     private String email;
 
-    @Column(nullable=false, unique=true)
+    @Column(nullable=false)
     private String senha;
 
     @Column(nullable=false)
     private BigDecimal valorHora;
 
-    private enum nivelExperiencia {
-            Júnior,
-            Pleno,
-            Sênior
-        }
-
-    private enum cargo {
+    private enum NivelExperiencia {
+        Júnior,
+        Pleno,
+        Sênior
+    }
+    
+    private enum Cargo {
         Profissional,
         Gestor,
         Administrativo
     }
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=true)
+    private NivelExperiencia nivelExperiencia;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
+    private Cargo cargo;
 
     @Column(nullable=false)
     private boolean ativo = true;

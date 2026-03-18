@@ -1,4 +1,4 @@
-package com.example.App.Controller;
+package com.example.App.controller;
 
 public class Item {
 }

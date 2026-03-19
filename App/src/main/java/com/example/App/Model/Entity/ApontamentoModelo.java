@@ -25,7 +25,7 @@ public class ApontamentoModelo {
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
-    private UsuarioModelo profissional;
+    private UsuarioModelo usuario;
 
     @Column(nullable = false)
     private LocalDateTime dataApontamento;

@@ -1,4 +1,4 @@
-package com.example.App.Model.Entity;
+package com.example.app.model.entity;
 
 import java.math.BigDecimal;
 import java.security.Timestamp;

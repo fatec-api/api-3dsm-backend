@@ -33,6 +33,11 @@ public class ClienteModelo {
     @Column(nullable = false)
     private LocalDate dataCadastro;
 
+    @PrePersist
+    public void prePersist() {
+    this.dataCadastro = LocalDate.now();
+    }
+
     @Column(nullable = false)
     private boolean ativo = true;
 }

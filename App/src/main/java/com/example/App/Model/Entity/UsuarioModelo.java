@@ -26,6 +26,7 @@ public class UsuarioModelo {
     @Column(nullable=false)
     private String nomeUsuario;
 
+
     @Column(nullable=false, unique=true)
     private String email;
 

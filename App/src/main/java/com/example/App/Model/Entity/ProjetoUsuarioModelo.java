@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "projeto_profissionais")
+@Table(name = "projetoUsuario")
 public class ProjetoUsuarioModelo {
 
     @Id

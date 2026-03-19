@@ -2,7 +2,7 @@ package com.example.App.Model.Entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,8 +23,9 @@ public class ProjetoModelo {
     @Column(nullable = false)
     private String nomeProjeto;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String tipoProjeto;
+    private TipoProjeto tipoProjeto;
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal valorOrcamento;
@@ -35,21 +36,37 @@ public class ProjetoModelo {
     @Column(nullable = false)
     private LocalDate dataFim;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private StatusProjeto status;
 
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private ClienteModelo cliente;
 
+    @ManyToOne
+    @JoinColumn(name = "id_gestor")
+    private UsuarioModelo gestor;
+
     @Column(nullable = false)
     private boolean ativo = true;
 
     @Column(nullable = false)
-    private LocalDateTime criadoEm;
+    private Timestamp criadoEm;
 
     @PrePersist
     public void prePersist() {
-        this.criadoEm = LocalDateTime.now();
+        this.criadoEm = new Timestamp(System.currentTimeMillis());
+    }
+
+    public enum StatusProjeto {
+        Andamento,
+        Desenvolvimento,
+        Concluida
+    }
+
+    public enum TipoProjeto {
+        Alocacao,
+        Hora_Fechada
     }
 }

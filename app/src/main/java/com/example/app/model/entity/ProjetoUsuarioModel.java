@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "projetoUsuario")
-public class ProjetoUsuarioModelo {
+public class ProjetoUsuarioModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +20,11 @@ public class ProjetoUsuarioModelo {
 
     @ManyToOne
     @JoinColumn(name = "id_projeto", nullable = false)
-    private ProjetoModelo projeto;
+    private ProjetoModel projeto;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
-    private UsuarioModelo usuario;
+    private UsuarioModel usuario;
 
     @Column(nullable = false)
     private LocalDate dataVinculo;

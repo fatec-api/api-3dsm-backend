@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "projetos")
-public class ProjetoModelo {
+public class ProjetoModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,11 +52,11 @@ public class ProjetoModelo {
 
     @ManyToOne
     @JoinColumn(name = "id_cliente", nullable=true)
-    private ClienteModelo cliente;
+    private ClienteModel cliente;
 
     @ManyToOne
     @JoinColumn(name = "id_gestor")
-    private UsuarioModelo gestor;
+    private UsuarioModel gestor;
 
     @Column(nullable = false)
     private boolean ativo = true;

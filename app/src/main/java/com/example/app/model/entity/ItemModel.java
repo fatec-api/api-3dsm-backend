@@ -19,7 +19,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "item")
-public class ItemModelo {
+public class ItemModel {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
@@ -49,11 +49,11 @@ public class ItemModelo {
     
     @ManyToOne
     @JoinColumn(name= "id_usuario", nullable=true)
-    private UsuarioModelo usuarioModelo;
+    private UsuarioModel usuarioModel;
 
     @ManyToOne
     @JoinColumn(name="id_projeto", nullable=false)
-    private ProjetoModelo projetoModelo;
+    private ProjetoModel projetoModel;
 
 
 }

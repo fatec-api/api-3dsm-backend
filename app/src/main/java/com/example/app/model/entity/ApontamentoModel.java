@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "apontamentos_horas")
-public class ApontamentoModelo {
+public class ApontamentoModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +21,11 @@ public class ApontamentoModelo {
 
     @ManyToOne
     @JoinColumn(name = "id_item", nullable = false)
-    private ItemModelo item;
+    private ItemModel item;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
-    private UsuarioModelo usuario;
+    private UsuarioModel usuario;
 
     @Column(nullable = false)
     private LocalDateTime dataApontamento;

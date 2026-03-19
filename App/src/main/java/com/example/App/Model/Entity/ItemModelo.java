@@ -33,8 +33,9 @@ public class ItemModelo {
     @Column(nullable=false)
     private LocalDate dataAtribuicao;
 
-    @Column(nullable=false)
+    @Column(nullable=true)
     private Time previsaoHoras;
+
 
     private enum NivelAtividade {
         Analise,
@@ -47,9 +48,12 @@ public class ItemModelo {
     private NivelAtividade nivelAtividade;
     
     @ManyToOne
-    @JoinColumn(name= "id_usuario")
+    @JoinColumn(name= "id_usuario", nullable=true)
     private UsuarioModelo usuarioModelo;
 
+    @ManyToOne
+    @JoinColumn(name="id_projeto", nullable=false)
+    private ProjetoModelo projetoModelo;
 
 
 }

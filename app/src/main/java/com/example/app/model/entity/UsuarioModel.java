@@ -1,7 +1,7 @@
 package com.example.app.model.entity;
 
 import java.math.BigDecimal;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -36,13 +36,13 @@ public class UsuarioModel {
     @Column(nullable=false)
     private BigDecimal valorHora;
 
-    private enum NivelExperiencia {
+    public enum NivelExperiencia {
         Júnior,
         Pleno,
         Sênior
     }
     
-    private enum Cargo {
+    public enum Cargo {
         Profissional,
         Gestor,
         Administrativo

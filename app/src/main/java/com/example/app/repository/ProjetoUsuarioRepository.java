@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProjetoUsuarioRepository extends JpaRepository<ProjetoUsuarioModel, Long> {
 
-    boolean associacaoExiste(ProjetoModel projeto, UsuarioModel usuario);
+    boolean existsByProjetoAndUsuario(ProjetoModel projeto, UsuarioModel usuario);
 }

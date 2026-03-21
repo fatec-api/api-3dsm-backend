@@ -1,7 +1,7 @@
 package com.example.app.model.entity;
 
 import java.math.BigDecimal;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 import jakarta.persistence.Column;

@@ -31,7 +31,7 @@ public class ProjetoUsuarioService {
         UsuarioModel usuario = usuarioRepository.findById(dto.getUsuarioId()).orElseThrow(() -> new RuntimeException("Usuario não encontrado."));
 
         // evitar duplicidade
-        if (projetoUsuarioRepository.associacaoExiste(projeto, usuario)) {
+        if (projetoUsuarioRepository.existsByProjetoAndUsuario(projeto, usuario)) {
             throw new RuntimeException("Usuário já associado a este projeto.");
         }
 

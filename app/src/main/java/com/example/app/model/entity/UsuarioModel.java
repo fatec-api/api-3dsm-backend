@@ -1,7 +1,7 @@
 package com.example.app.model.entity;
 
 import java.math.BigDecimal;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -18,22 +18,22 @@ import lombok.Data;
 @Entity
 @Table(name = "usuarios")
 public class UsuarioModel {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String nomeUsuario;
 
-
-    @Column(nullable=false, unique=true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String senha;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private BigDecimal valorHora;
 
     private enum NivelExperiencia {
@@ -41,7 +41,7 @@ public class UsuarioModel {
         Pleno,
         Sênior
     }
-    
+
     private enum Cargo {
         Profissional,
         Gestor,
@@ -49,16 +49,16 @@ public class UsuarioModel {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable=true)
+    @Column(nullable = true)
     private NivelExperiencia nivelExperiencia;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Cargo cargo;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private boolean ativo = true;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Timestamp criado_em;
 }

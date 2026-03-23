@@ -2,6 +2,7 @@ package com.example.app.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.example.app.model.entity.ProjetoModel.StatusProjeto;
 import com.example.app.model.entity.ProjetoModel.TipoProjeto;
@@ -34,9 +35,9 @@ public class ProjetoRequestDTO {
     private StatusProjeto status;
 
     @NotNull(message = "O gestor responsável é obrigatório")
-    private Long gestorId;
+    private UUID gestorId;
 
     private Long clienteId;
 
-    private Long profissionalAlocadoId;
+    private UUID profissionalAlocadoId;
 }

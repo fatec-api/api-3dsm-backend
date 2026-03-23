@@ -37,7 +37,7 @@ public class ItemModel {
     private Time previsaoHoras;
 
 
-    private enum NivelAtividade {
+    public enum NivelAtividade {
         Analise,
         Desenvolvimento,
         teste

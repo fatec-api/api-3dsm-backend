@@ -1,5 +1,7 @@
 package com.example.app.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +48,10 @@ public class ProjetoService {
         if (dto.getClienteId() != null) {
             cliente = clienteRepository.findById(dto.getClienteId())
                     .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+        }
+        
+        if (dto.getValorOrcamento().compareTo(new BigDecimal("100000")) > 0) {
+            throw new IllegalArgumentException("Valor muito alto");
         }
 
         ProjetoModel projeto = new ProjetoModel();

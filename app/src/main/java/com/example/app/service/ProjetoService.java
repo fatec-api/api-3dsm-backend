@@ -3,6 +3,7 @@ package com.example.app.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.app.dto.request.ProjetoRequestDTO;
 import com.example.app.model.entity.ClienteModel;
 import com.example.app.model.entity.ProjetoModel;
 import com.example.app.model.entity.UsuarioModel;
@@ -22,29 +23,41 @@ public class ProjetoService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public ProjetoModel criarProjeto(ProjetoModel projeto) {
+    public ProjetoModel criarProjeto(ProjetoRequestDTO dto) {
 
-        if (projeto.getDataFim().isBefore(projeto.getDataInicio())) {
-            throw new IllegalArgumentException("Data fim não pode ser anterior à data de início");
+        if (dto.getDataFim().isBefore(dto.getDataInicio())) {
+            throw new IllegalArgumentException("A data de término não pode ser anterior à data de início");
         }
 
-        if (projeto.getGestor() == null || projeto.getGestor().getId() == null) {
-            throw new IllegalArgumentException("Gestor é obrigatório");
-        }
-
-        UsuarioModel gestor = usuarioRepository.findById(projeto.getGestor().getId())
+        UsuarioModel gestor = usuarioRepository.findById(dto.getGestorId())
                 .orElseThrow(() -> new IllegalArgumentException("Gestor não encontrado"));
 
-        projeto.setGestor(gestor);
+        UsuarioModel profissional = null;
+        if (dto.getProfissionalAlocadoId() != null) {
+            profissional = usuarioRepository.findById(dto.getProfissionalAlocadoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Profissional alocado não encontrado"));
 
-        if (projeto.getCliente() != null && projeto.getCliente().getId() != null) {
-            ClienteModel cliente = clienteRepository.findById(projeto.getCliente().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
-
-            projeto.setCliente(cliente);
+            if (!profissional.isAtivo()) {
+                throw new IllegalArgumentException("O profissional alocado não está ativo");
+            }
         }
 
-        projeto.setAtivo(true);
+        ClienteModel cliente = null;
+        if (dto.getClienteId() != null) {
+            cliente = clienteRepository.findById(dto.getClienteId())
+                    .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+        }
+
+        ProjetoModel projeto = new ProjetoModel();
+        projeto.setNomeProjeto(dto.getNomeProjeto());
+        projeto.setTipoProjeto(dto.getTipoProjeto());
+        projeto.setValorOrcamento(dto.getValorOrcamento());
+        projeto.setDataInicio(dto.getDataInicio());
+        projeto.setDataFim(dto.getDataFim());
+        projeto.setStatus(dto.getStatus());
+        projeto.setGestor(gestor);
+        projeto.setProfissionalAlocado(profissional);
+        projeto.setCliente(cliente);
 
         return projetoRepository.save(projeto);
     }

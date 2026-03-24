@@ -22,7 +22,8 @@ public class CadastroUsuarioController {
     public ResponseEntity<UsuarioResponsedto> cadastrarUsuario(@RequestBody @Valid UsuarioRequestdto usuarioRequestdto){
         UsuarioModel usuarioModel = cadastroUsuarioService.cadastrarUsuario(usuarioRequestdto);
 
-        UsuarioResponsedto resposta = new UsuarioResponsedto(usuarioModel.getNomeUsuario(), usuarioModel.getEmail(), usuarioModel.getSenha(), usuarioModel.getValorHora(), usuarioModel.getNivelExperiencia(), usuarioModel.getCargo(), usuarioModel.isAtivo(), usuarioModel.getCriado_em());
+
+        UsuarioResponsedto resposta = new UsuarioResponsedto(usuarioModel.getNomeUsuario(), usuarioModel.getEmail(), usuarioModel.getSenha(), usuarioModel.getValorHora(), usuarioModel.getCargo(), usuarioModel.isAtivo(), usuarioModel.getCriado_em());
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 

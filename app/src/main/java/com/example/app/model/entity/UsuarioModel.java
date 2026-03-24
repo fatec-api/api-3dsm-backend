@@ -36,21 +36,12 @@ public class UsuarioModel {
     @Column(nullable=false)
     private BigDecimal valorHora;
 
-    public enum NivelExperiencia {
-        Júnior,
-        Pleno,
-        Sênior
-    }
     
     public enum Cargo {
         Profissional,
         Gestor,
         Administrativo
     }
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable=true)
-    private NivelExperiencia nivelExperiencia;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable=false)

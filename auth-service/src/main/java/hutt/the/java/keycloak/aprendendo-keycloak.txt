@@ -1,0 +1,44 @@
+# Visão geral do fluxo:
+
+1. Usuário acessa sua aplicação
+2. É redirecionado para o Keycloak
+3. Faz login na tela do Keycloak (depois essa tela pode ser sobreposta com a do nosso frontend)
+4. Keycloak redireciona de volta com um code
+5. A aplicação troca o code → token automaticamente
+
+---
+
+# Como testar via browser:
+1. docker compose up -d
+2. verifique se os containers estão rodando com docker ps
+3. acesse http://localhost:8081/ e logue com as credencias de admin (username: admin, senha: admin)
+4. no menu lateral selecione o realm 'java-the-hutt' (geralmente vem selecionado o realm 'master')
+5. crie um usuário:
+    > Menu lateral: Users > depois clique em Add user
+    > Insira username e email  (ex Maria, e no email maria@email.com)
+    > Clique em 'create'
+    > Após salvar, o Keycloak vai abrir os detalhes da maria. Vá na aba Credentials (na parte superior).
+    > Clique no botão Set password.
+    > Digite uma senha fácil para testes (ex: 123) nos dois campos.
+    > Muito importante: Desmarque a chave Temporary (se ficar verde, o token vai exigir que você mude a senha no primeiro login, o que atrapalha o teste via API).
+    > Clique em Save e confirme em Save password.
+6. atribua as permissões (roles):
+    > ainda na tela da usuária maria, vá na aba Role mapping
+    > clique em assign role
+    > na lista que aparecer selecione USER (ou admin se for testar pra admin) e clique em Assign
+7. Rode a aplicação (KeycloakApplication)
+8. Acesse http://localhost:8080/teste/user
+9. Na tela de login do keycloak logue com as credenciais de usuário: (username: user, senha: 123)
+10. Teste os endpoints:
+    http://localhost:8080/teste/public -> 🔓 Público - qualquer um acessa
+    http://localhost:8080/teste/user -> 👤 USER: 691b11e4-e5c6-4cd6-a194-82b007ed671f
+    http://localhost:8080/teste/admin -> acesso negado (403)
+    http://localhost:8080/teste/user-or-admin -> 👥 USER ou ADMIN: 691b11e4-e5c6-4cd6-a194-82b007ed671f
+    http://localhost:8080/teste/both -> acesso negado (403)
+
+11. Faça logout -> http://localhost:8080/logout (necessário se for testar outro tipo de usuário)
+
+
+
+
+

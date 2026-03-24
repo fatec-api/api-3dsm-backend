@@ -19,7 +19,7 @@ public class ItemController {
     @Autowired
     CadastroItemService cadastroItemService;
 
-    @PostMapping("cadastro/item")
+    @PostMapping("/cadastro/item")
     public ResponseEntity<ItemResponsedto> cadastrarItem(@RequestBody @Valid ItemRequestdto itemRequestdto){
         ItemModel itemModel = cadastroItemService.cadastrarItem(itemRequestdto);
 

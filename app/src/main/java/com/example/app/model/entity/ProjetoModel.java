@@ -51,7 +51,7 @@ public class ProjetoModel {
     private StatusProjeto status;
 
     @ManyToOne
-    @JoinColumn(name = "id_cliente", nullable=true)
+    @JoinColumn(name = "id_cliente", nullable = true)
     private ClienteModel cliente;
 
     @ManyToOne
@@ -63,6 +63,10 @@ public class ProjetoModel {
 
     @Column(nullable = false)
     private Timestamp criadoEm;
+
+    @ManyToOne
+    @JoinColumn(name = "id_profissional_alocado", nullable = true)
+    private UsuarioModel profissionalAlocado;
 
     @PrePersist
     public void prePersist() {

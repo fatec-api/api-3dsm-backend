@@ -1,0 +1,29 @@
+# Visão geral do fluxo:
+
+1. Usuário acessa sua aplicação
+2. É redirecionado para o Keycloak
+3. Faz login na tela do Keycloak (depois essa tela pode ser sobreposta com a do nosso frontend)
+4. Keycloak redireciona de volta com um code
+5. A aplicação troca o code → token automaticamente
+
+---
+
+# Como testar via browser:
+1. docker compose up -d
+2. verifique se os containers estão rodando com docker ps
+3. Rode a aplicação (KeycloakApplication)
+4. Acesse http://localhost:8080/teste/user
+5. Na tela de login do keycloak logue com as credenciais de usuário: (username: user, senha: 123)
+6. Teste os endpoints:
+    http://localhost:8080/teste/public -> 🔓 Público - qualquer um acessa
+    http://localhost:8080/teste/user -> 👤 USER: 691b11e4-e5c6-4cd6-a194-82b007ed671f
+    http://localhost:8080/teste/admin -> acesso negado (403)
+    http://localhost:8080/teste/user-or-admin -> 👥 USER ou ADMIN: 691b11e4-e5c6-4cd6-a194-82b007ed671f
+    http://localhost:8080/teste/both -> acesso negado (403)
+
+7. Faça logout -> http://localhost:8080/logout
+
+
+
+
+

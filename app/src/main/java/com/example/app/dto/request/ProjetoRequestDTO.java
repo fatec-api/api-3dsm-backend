@@ -10,12 +10,17 @@ import com.example.app.model.entity.ProjetoModel.TipoProjeto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
 public class ProjetoRequestDTO {
 
     @NotBlank(message = "O nome do projeto é obrigatório")
+    @Pattern(
+            regexp = "^[A-Z]{3}\\d{4}$",
+            message = "O nome do projeto deve conter 3 letras maiúsculas seguidas de 4 números (ex: GSW1234)"
+    )
     private String nomeProjeto;
 
     @NotNull(message = "O tipo do projeto é obrigatório")

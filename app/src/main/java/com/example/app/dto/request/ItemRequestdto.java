@@ -1,41 +1,37 @@
 package com.example.app.dto.request;
 
-
-import com.example.app.model.entity.ItemModel;
-import com.example.app.model.entity.ProjetoModel;
-import com.example.app.model.entity.UsuarioModel;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.hibernate.validator.internal.constraintvalidators.hv.pl.NIPValidator;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 public class ItemRequestdto {
-    @NotBlank
+
+    @NotBlank(message = "Campo de código do item vazio.")
     private String código;
 
-    @NotBlank
+    @NotBlank(message = "O campo de descrição não pode estar vazio.")
     private String descricao;
 
-    @NotBlank
+    @NotNull(message = "Data é obrigatória.")
     private LocalDate dataAtribuicao;
 
-    @NotBlank
+    @NotNull(message = "A previsão de horas é obrigatória.")
+    @DecimalMin(value = "0.01", message = "A previsão de horas deve ser maior que zero.")
     private Time previsaoHoras;
 
-    @NotBlank
-    private ItemModel.NivelAtividade nivelAtividade;
+    @NotNull
+    private String nivelAtividade;
 
-    @NotBlank
-    private UsuarioModel  usuarioModel;
+    @NotNull
+    private UUID usuarioId;
 
-    @NotBlank
-    private ProjetoModel projetoModel;
-
-
-
-
-
+    @NotNull
+    private Long projetoId;
 }

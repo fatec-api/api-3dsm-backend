@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.app.dto.request.ProjetoRequestDTO;
+import com.example.app.dto.response.ProjetoResponseDTO;
 import com.example.app.model.entity.ClienteModel;
 import com.example.app.model.entity.ProjetoModel;
 import com.example.app.model.entity.UsuarioModel;
@@ -49,7 +50,7 @@ public class ProjetoService {
             cliente = clienteRepository.findById(dto.getClienteId())
                     .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
         }
-        
+
         if (dto.getValorOrcamento().compareTo(new BigDecimal("100000")) > 0) {
             throw new IllegalArgumentException("Valor muito alto");
         }
@@ -66,5 +67,28 @@ public class ProjetoService {
         projeto.setCliente(cliente);
 
         return projetoRepository.save(projeto);
+    }
+
+    public ProjetoResponseDTO converterProjetoParaDTO(ProjetoModel projeto) {
+
+        ProjetoResponseDTO dto = new ProjetoResponseDTO();
+
+        dto.setId(projeto.getId());
+        dto.setNomeProjeto(projeto.getNomeProjeto());
+        dto.setTipoProjeto(projeto.getTipoProjeto());
+        dto.setValorOrcamento(projeto.getValorOrcamento());
+        dto.setDataInicio(projeto.getDataInicio());
+        dto.setDataFim(projeto.getDataFim());
+        dto.setStatus(projeto.getStatus());
+
+        if (projeto.getGestor() != null) {
+            dto.setNomeGestor(projeto.getGestor().getNomeUsuario());
+        }
+
+        if (projeto.getCliente() != null) {
+            dto.setNomeCliente(projeto.getCliente().getNomeEmpresa());
+        }
+
+        return dto;
     }
 }

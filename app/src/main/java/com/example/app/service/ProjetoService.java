@@ -1,6 +1,8 @@
 package com.example.app.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,5 +92,18 @@ public class ProjetoService {
         }
 
         return dto;
+    }
+
+    public List<ProjetoResponseDTO> listarProjetos() {
+
+        List<ProjetoModel> projetos = projetoRepository.findAll();
+
+        List<ProjetoResponseDTO> listaDTO = new ArrayList<>();
+
+        for (ProjetoModel projeto : projetos) {
+            listaDTO.add(converterProjetoParaDTO(projeto));
+        }
+
+        return listaDTO;
     }
 }

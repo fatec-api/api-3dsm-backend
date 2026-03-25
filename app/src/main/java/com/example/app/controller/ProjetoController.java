@@ -21,7 +21,8 @@ public class ProjetoController {
     ProjetoService projetoService;
 
     @PostMapping("/cadastrar/projeto")
-    public ResponseEntity<ProjetoResponseDTO> cadastrarProjeto(@RequestBody @Valid ProjetoRequestDTO projetoRequestDTO) {
+    public ResponseEntity<ProjetoResponseDTO> cadastrarProjeto(
+            @RequestBody @Valid ProjetoRequestDTO projetoRequestDTO) {
 
         ProjetoModel salvo = projetoService.criarProjeto(projetoRequestDTO);
 

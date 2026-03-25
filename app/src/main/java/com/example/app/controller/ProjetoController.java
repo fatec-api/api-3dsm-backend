@@ -1,8 +1,11 @@
 package com.example.app.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,5 +41,10 @@ public class ProjetoController {
         resposta.setNomeCliente(salvo.getCliente() != null ? salvo.getCliente().getNomeEmpresa() : null);
 
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/listar/projetos")
+    public ResponseEntity<List<ProjetoResponseDTO>> listarProjetos() {
+        return ResponseEntity.ok(projetoService.listarProjetos());
     }
 }

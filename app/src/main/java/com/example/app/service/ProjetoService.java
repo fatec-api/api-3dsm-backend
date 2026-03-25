@@ -106,4 +106,12 @@ public class ProjetoService {
 
         return listaDTO;
     }
+
+    public ProjetoResponseDTO listarPorId(Long id) {
+
+        ProjetoModel projeto = projetoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Projeto não encontrado!"));
+
+        return converterProjetoParaDTO(projeto);
+    }
 }

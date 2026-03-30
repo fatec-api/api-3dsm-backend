@@ -1,29 +1,33 @@
 package com.example.app.controller;
 
-import com.example.app.dto.request.ItemRequestdto;
 import com.example.app.dto.response.ItemResponsedto;
-import com.example.app.model.entity.ItemModel;
+import com.example.app.dto.request.ItemRequestdto;
 import com.example.app.service.CadastroItemService;
 import jakarta.validation.Valid;
-import jdk.jfr.Registered;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
+@RequestMapping("/api/itens")
 public class ItemController {
 
     @Autowired
-    CadastroItemService cadastroItemService;
+    private CadastroItemService cadastroItemService;
 
-    @PostMapping("/cadastro/item")
-    public ResponseEntity<ItemResponsedto> cadastrarItem(@RequestBody @Valid ItemRequestdto itemRequestdto){
-        ItemModel itemModel = cadastroItemService.cadastrarItem(itemRequestdto);
+    @PreAuthorize("hasRole('GESTOR')")
+    @PostMapping("/cadastro")
+    public ResponseEntity<Map<String, Object>> cadastrarItem(
+            @RequestBody @Valid ItemRequestdto itemRequestdto) {
 
-        ItemResponsedto resposta = new ItemResponsedto(itemModel.getCódigo(), itemModel.getDescricao(), itemModel.getDataAtribuicao().atStartOfDay(), itemModel.getPrevisaoHoras(), itemModel.getNivelAtividade(), itemModel.getUsuarioModel(), itemModel.getProjetoModel());
-        return new ResponseEntity<>(resposta, HttpStatus.OK);
+        ItemResponsedto resposta = cadastroItemService.cadastrarItem(itemRequestdto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "mensagem", "Item criado com sucesso",
+                "item", resposta
+        ));
     }
 }

@@ -1,12 +1,8 @@
 package com.example.app.dto.request;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.NotBlank;
+import com.example.app.model.entity.ItemModel;
+import jakarta.validation.constraints.*;
 import lombok.Data;
-
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -14,24 +10,26 @@ import java.util.UUID;
 public class ItemRequestdto {
 
     @NotBlank(message = "Campo de código do item vazio.")
-    private String código;
+    @Pattern(
+            regexp = "^[A-Za-z]{3}\\d{4}$",
+            message = "Código fora do padrão, deve conter 3 letras acompanhado de 4 números."
+    )
+    private String codigo;
 
     @NotBlank(message = "O campo de descrição não pode estar vazio.")
+    @Size(max = 300, message = "Descrição deve ter no máximo 300 caracteres.")
     private String descricao;
 
-    @NotNull(message = "Data é obrigatória.")
+    @NotNull(message = "Data de atribuição é obrigatória.")
     private LocalDate dataAtribuicao;
 
-    @NotNull(message = "A previsão de horas é obrigatória.")
-    @DecimalMin(value = "0.01", message = "A previsão de horas deve ser maior que zero.")
-    private Time previsaoHoras;
+    @Min(value = 1, message = "A previsão de horas deve ser de pelo menos 1 hora.")
+    private Integer previsaoHoras;
 
-    @NotNull
-    private String nivelAtividade;
+    private ItemModel.NivelAtividade nivelAtividade;
 
-    @NotNull
     private UUID usuarioId;
 
-    @NotNull
+    @NotNull(message = "O projeto é obrigatório.")
     private Long projetoId;
 }

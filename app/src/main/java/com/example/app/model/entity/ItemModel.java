@@ -2,58 +2,46 @@ package com.example.app.model.entity;
 
 import java.sql.Time;
 import java.time.LocalDate;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
-
 
 @Data
 @Entity
 @Table(name = "item")
 public class ItemModel {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false, length=10)
-    private String código;
+    @Column(nullable = false, length = 10)
+    private String codigo;
 
-    @Column(nullable=false, length=300)
+    @Column(nullable = false, length = 300)
     private String descricao;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private LocalDate dataAtribuicao;
 
-    @Column(nullable=true)
-    private Time previsaoHoras;
 
+    @Column(nullable = true)
+    private Integer previsaoHoras;
 
     public enum NivelAtividade {
-        Analise,
-        Desenvolvimento,
-        teste
+        ANALISE,
+        DESENVOLVIMENTO,
+        TESTE
     }
-    
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable=true)
+    @Column(nullable = true)
     private NivelAtividade nivelAtividade;
-    
+
     @ManyToOne
-    @JoinColumn(name= "id_usuario", nullable=true)
+    @JoinColumn(name = "id_usuario", nullable = true)
     private UsuarioModel usuarioModel;
 
     @ManyToOne
-    @JoinColumn(name="id_projeto", nullable=false)
+    @JoinColumn(name = "id_projeto", nullable = false)
     private ProjetoModel projetoModel;
-
-
 }

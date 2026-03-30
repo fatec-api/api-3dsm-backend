@@ -1,25 +1,21 @@
 package com.example.app.dto.response;
 
-
 import com.example.app.model.entity.ItemModel;
-import com.example.app.model.entity.ProjetoModel;
-import com.example.app.model.entity.UsuarioModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.sql.Time;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 public class ItemResponsedto {
 
-    private String código;
+    private Long id;
+    private String codigo;
     private String descricao;
-    private LocalDateTime dataAtribuicao;
-    private Time previsaoHoras;
+    private LocalDate dataAtribuicao;
+    private Integer previsaoHoras;
     private ItemModel.NivelAtividade nivelAtividade;
-    private UsuarioModel usuarioModel;
-    private ProjetoModel projetoModel;
-
+    private Long projetoId;
+    private String projetoNome;
+    private String usuarioNome;
 }

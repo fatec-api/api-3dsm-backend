@@ -35,6 +35,11 @@ public class ProjetoUsuarioService {
             throw new RuntimeException("Usuário já associado a este projeto.");
         }
 
+        // validar usuario ativo
+        if (!usuario.isAtivo()) {
+            throw new RuntimeException("Este usuário não está ativo e não pode ser associado ao projeto.");
+        }
+
         // criar vinculo/associacao
         ProjetoUsuarioModel associacao = new ProjetoUsuarioModel();
         associacao.setProjeto(projeto);
@@ -45,3 +50,4 @@ public class ProjetoUsuarioService {
 
     }
 }
+

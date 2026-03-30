@@ -107,11 +107,23 @@ public class ProjetoService {
         return listaDTO;
     }
 
+    public ProjetoResponseDTO converterProjetoUnicoDTO(ProjetoModel projeto) {
+
+        ProjetoResponseDTO dto = new ProjetoResponseDTO();
+
+        dto.setNomeProjeto(projeto.getNomeProjeto());
+        dto.setTipoProjeto(projeto.getTipoProjeto());
+        dto.setStatus(projeto.getStatus());
+
+        return dto;
+    }
+
     public ProjetoResponseDTO listarPorId(Long id) {
 
         ProjetoModel projeto = projetoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Projeto não encontrado!"));
+                .orElseThrow(() -> new IllegalArgumentException("Projeto não encontrado"));
 
-        return converterProjetoParaDTO(projeto);
+        return converterProjetoUnicoDTO(projeto);
     }
+
 }

@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import com.example.app.model.entity.ProjetoModel.StatusProjeto;
 import com.example.app.model.entity.ProjetoModel.TipoProjeto;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
+@JsonInclude(Include.NON_NULL)
 @Data
 public class ProjetoRequestDTO {
 

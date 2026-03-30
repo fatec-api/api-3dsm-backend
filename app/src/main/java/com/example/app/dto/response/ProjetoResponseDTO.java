@@ -5,9 +5,11 @@ import java.time.LocalDate;
 
 import com.example.app.model.entity.ProjetoModel.StatusProjeto;
 import com.example.app.model.entity.ProjetoModel.TipoProjeto;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import lombok.Data;
-
+@JsonInclude(Include.NON_NULL)
 @Data
 public class ProjetoResponseDTO {
 

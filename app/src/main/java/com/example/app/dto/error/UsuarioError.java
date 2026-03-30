@@ -6,9 +6,10 @@ import lombok.Data;
 public class UsuarioError {
     private int status;
     private String message;
-
-    public UsuarioError(int status, String message) {
+    private String code;
+    public UsuarioError(int status, String message, String code) {
         this.status = status;
         this.message = message;
+        this.code = code;
     }
 }

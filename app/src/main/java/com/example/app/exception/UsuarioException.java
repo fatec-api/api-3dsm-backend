@@ -19,12 +19,12 @@ public class UsuarioException {
                 .map(fieldError -> fieldError.getDefaultMessage())
                 .orElse("Preencha todos os campos obrigatórios.");
 
-        UsuarioError usuarioError = new UsuarioError(400, mensagem);
+        UsuarioError usuarioError = new UsuarioError(400, mensagem, "Preencha todos os campos.");
         return new ResponseEntity<>(usuarioError, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(EmailJaCadastradoException.class)
     public ResponseEntity<UsuarioError> handleEmailJaCadastrado(EmailJaCadastradoException e) {
-        UsuarioError usuarioError = new UsuarioError(409, e.getMessage());
+        UsuarioError usuarioError = new UsuarioError(409, e.getMessage(), "Email existente.");
         return new ResponseEntity<>(usuarioError, HttpStatus.CONFLICT);
     }
 }

@@ -2,7 +2,6 @@ package com.example.app.controller;
 
 import com.example.app.dto.request.UsuarioRequestdto;
 import com.example.app.dto.response.UsuarioResponsedto;
-import com.example.app.model.entity.UsuarioModel;
 import com.example.app.service.CadastroUsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,14 @@ public class CadastroUsuarioController {
     CadastroUsuarioService cadastroUsuarioService;
 
     @PostMapping("/cadastrar/usuario")
-    public ResponseEntity<UsuarioResponsedto> cadastrarUsuario(@RequestBody @Valid UsuarioRequestdto usuarioRequestdto){
-        UsuarioModel usuarioModel = cadastroUsuarioService.cadastrarUsuario(usuarioRequestdto);
+    public ResponseEntity<UsuarioResponsedto> cadastrarUsuario(
+            @RequestBody @Valid UsuarioRequestdto usuarioRequestdto) {
 
+        cadastroUsuarioService.cadastrarUsuario(usuarioRequestdto);
 
-        UsuarioResponsedto resposta = new UsuarioResponsedto(usuarioModel.getNomeUsuario(), usuarioModel.getEmail(), usuarioModel.getSenha(), usuarioModel.getValorHora(), usuarioModel.getCargo(), usuarioModel.isAtivo(), usuarioModel.getCriado_em());
-        return new ResponseEntity<>(resposta, HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new UsuarioResponsedto("Cadastro realizado com sucesso"),
+                HttpStatus.CREATED
+        );
     }
-
 }

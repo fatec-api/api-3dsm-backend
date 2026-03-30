@@ -3,33 +3,31 @@ package com.example.app.dto.request;
 import com.example.app.model.entity.UsuarioModel;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 @Data
 public class UsuarioRequestdto {
-    @NotBlank(message = "O nome não pode estar vazio.")
+
+    @NotBlank(message = "Preencha todos os campos obrigatórios (nome, e-mail, senha, confirme senha ou valor/hora).")
     private String nomeUsuario;
-    @NotBlank(message = "O email não pode estar vazio.")
-    @Email(message = "Email Inválido.")
+
+    @NotBlank(message = "Preencha todos os campos obrigatórios (nome, e-mail, senha, confirme senha ou valor/hora).")
+    @Email(message = "E-mail informado é inválido.")
     private String email;
-    @NotBlank(message = "Senha é obrigatória")
-    @Size(min = 8, message = "Senha deve ter no mínimo 8 caracteres")
+
+    @NotBlank(message = "Preencha todos os campos obrigatórios (nome, e-mail, senha, confirme senha ou valor/hora).")
     @Pattern(
-            regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{8,}$",
-            message = "Senha deve conter maiúscula, minúscula, número e caractere especial"
+            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-={}|:<>?]).{8,}$",
+            message = "Senha inválida, ela deve ter ao menos 8 caracteres, incluindo ao menos 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial."
     )
     private String senha;
 
-    @NotNull(message = "Valor hora é obrigatório.")
-    @DecimalMin(value = "0.01", message = "Valor hora mairo que zero.")
+    @NotNull(message = "Preencha todos os campos obrigatórios (nome, e-mail, senha, confirme senha ou valor/hora).")
+    @DecimalMin(value = "0.01", message = "O valor/hora deve ser maior que zero.")
     private BigDecimal valorHora;
 
-    @NotNull
+    @NotNull(message = "Cargo é obrigatório.")
     private UsuarioModel.Cargo cargo;
-    @NotNull
-    private boolean ativo;
-    @NotNull
-    private Timestamp criado_em;
+
+    private String nivelExperiencia;
 }

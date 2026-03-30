@@ -4,10 +4,11 @@ import lombok.Data;
 
 @Data
 public class UsuarioError {
-    int Status;
-    String Message;
-    public UsuarioError(int Status, String Message) {
-        this.Status = Status;
-        this.Message = Message;
+    private int status;
+    private String message;
+
+    public UsuarioError(int status, String message) {
+        this.status = status;
+        this.message = message;
     }
 }

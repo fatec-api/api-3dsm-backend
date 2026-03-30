@@ -1,42 +1,35 @@
 package com.example.app.model.entity;
 
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "usuarios")
 public class UsuarioModel {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String nomeUsuario;
 
-
-    @Column(nullable=false, unique=true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String senha;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private BigDecimal valorHora;
 
-    
     public enum Cargo {
         Profissional,
         Gestor,
@@ -44,12 +37,13 @@ public class UsuarioModel {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Cargo cargo;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private boolean ativo = true;
 
-    @Column(nullable=false)
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private Timestamp criado_em;
 }

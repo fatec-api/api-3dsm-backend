@@ -40,6 +40,9 @@ public class UsuarioModel {
     @Column(nullable = false)
     private Cargo cargo;
 
+    @Column(nullable = true)
+    private String nivelExperiencia;
+
     @Column(nullable = false)
     private boolean ativo = true;
 

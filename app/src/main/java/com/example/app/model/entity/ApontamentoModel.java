@@ -47,5 +47,4 @@ public class ApontamentoModel {
 
     @Column(nullable = false)
     private Double horasLiquidas;
-
 }

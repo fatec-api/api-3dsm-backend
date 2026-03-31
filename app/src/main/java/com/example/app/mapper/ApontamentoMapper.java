@@ -1,6 +1,7 @@
 package com.example.app.mapper;
 
 import com.example.app.dto.request.ApontamentoRequestDTO;
+import com.example.app.dto.request.ApontamentoUpdateRequestDTO;
 import com.example.app.dto.response.ApontamentoResponseDTO;
 import com.example.app.model.entity.ApontamentoModel;
 import org.mapstruct.Mapper;
@@ -24,10 +25,4 @@ public interface ApontamentoMapper {
     @Mapping(source = "usuarioId", target = "usuario.id")
     @Mapping(target = "horasLiquidas", ignore = true)
     ApontamentoModel toEntity(ApontamentoRequestDTO request);
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(source = "itemId", target = "item.id")
-    @Mapping(source = "usuarioId", target = "usuario.id")
-    @Mapping(target = "horasLiquidas", ignore = true)
-    void updateEntityFromDto(ApontamentoRequestDTO dto, @MappingTarget ApontamentoModel entity);
 }

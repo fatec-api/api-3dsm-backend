@@ -7,10 +7,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "apontamentos_horas")
 public class ApontamentoModel {
@@ -30,6 +31,14 @@ public class ApontamentoModel {
     @Column(nullable = false)
     private LocalDateTime dataApontamento;
 
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime criadoEm;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime atualizadoEm;
+
     @Column(nullable = false)
     private LocalDateTime horaInicio;
 
@@ -47,5 +56,4 @@ public class ApontamentoModel {
 
     @Column(nullable = false)
     private Double horasLiquidas;
-
 }

@@ -20,7 +20,7 @@ public class ItemController {
     private CadastroItemService cadastroItemService;
 
     @PreAuthorize("hasRole('GESTOR')")
-    @PostMapping("/cadastro")
+    @PostMapping("/cadastro/item")
     public ResponseEntity<Map<String, Object>> cadastrarItem(
             @RequestBody @Valid ItemRequestdto itemRequestdto) {
 

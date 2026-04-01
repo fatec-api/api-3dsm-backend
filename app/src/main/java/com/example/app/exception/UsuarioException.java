@@ -24,7 +24,7 @@ public class UsuarioException {
     }
     @ExceptionHandler(EmailJaCadastradoException.class)
     public ResponseEntity<UsuarioError> handleEmailJaCadastrado(EmailJaCadastradoException e) {
-        UsuarioError usuarioError = new UsuarioError(409, e.getMessage(), "EMAIL_JA_EXISTE.");
+        UsuarioError usuarioError = new UsuarioError(409, e.getMessage(), "EMAIL_JA_EXISTE");
         return new ResponseEntity<>(usuarioError, HttpStatus.CONFLICT);
     }
 }

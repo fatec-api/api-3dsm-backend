@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestControllerAdvice
@@ -15,10 +16,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RecursoNaoEncontradoException.class)
     public ResponseEntity<MensagemErro> handleRecursoNaoEncontrado(RecursoNaoEncontradoException ex, WebRequest request) {
         MensagemErro error = new MensagemErro(
-                HttpStatus.NOT_FOUND.value(),
-                "Recurso não encontrado",
                 ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
         );
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -27,10 +27,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NegocioException.class)
     public ResponseEntity<MensagemErro> handleNegocioException(NegocioException ex, WebRequest request) {
         MensagemErro error = new MensagemErro(
-                HttpStatus.UNPROCESSABLE_CONTENT.value(),
-                "Regra de negócio não atendida",
                 ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
+                HttpStatus.UNPROCESSABLE_CONTENT.value(),
+                LocalDateTime.now()
         );
 
         return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_CONTENT);
@@ -39,10 +38,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MensagemErro> handleGlobalException(Exception ex, WebRequest request) {
         MensagemErro error = new MensagemErro(
+                ex.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
-                "Ocorreu um erro inesperado no servidor.",
-                request.getDescription(false)
+                LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

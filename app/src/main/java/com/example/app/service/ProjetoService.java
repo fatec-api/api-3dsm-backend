@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.app.dto.request.ProjetoRequestDTO;
 import com.example.app.dto.response.ProjetoResponseDTO;
@@ -28,12 +29,19 @@ public class ProjetoService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Transactional 
     public ProjetoModel criarProjeto(ProjetoRequestDTO dto) {
 
+        
         if (dto.getDataFim().isBefore(dto.getDataInicio())) {
             throw new IllegalArgumentException("A data de término não pode ser anterior à data de início");
         }
 
+        if (dto.getValorOrcamento().compareTo(new BigDecimal("100000")) > 0) {
+            throw new IllegalArgumentException("O valor do orçamento excede o limite permitido de 100.000");
+        }
+
+        
         UsuarioModel gestor = usuarioRepository.findById(dto.getGestorId())
                 .orElseThrow(() -> new IllegalArgumentException("Gestor não encontrado"));
 
@@ -53,10 +61,7 @@ public class ProjetoService {
                     .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
         }
 
-        if (dto.getValorOrcamento().compareTo(new BigDecimal("100000")) > 0) {
-            throw new IllegalArgumentException("Valor muito alto");
-        }
-
+        
         ProjetoModel projeto = new ProjetoModel();
         projeto.setNomeProjeto(dto.getNomeProjeto());
         projeto.setTipoProjeto(dto.getTipoProjeto());
@@ -64,17 +69,25 @@ public class ProjetoService {
         projeto.setDataInicio(dto.getDataInicio());
         projeto.setDataFim(dto.getDataFim());
         projeto.setStatus(dto.getStatus());
+        
         projeto.setGestor(gestor);
-        projeto.setProfissionalAlocado(profissional);
         projeto.setCliente(cliente);
+
+        if (projeto.getEquipe() == null) {
+            projeto.setEquipe(new ArrayList<>());
+        }
+
+        if (profissional != null) {
+            if (!projeto.getEquipe().contains(profissional)) {
+                projeto.getEquipe().add(profissional);
+            }
+        }
 
         return projetoRepository.save(projeto);
     }
 
     public ProjetoResponseDTO converterProjetoParaDTO(ProjetoModel projeto) {
-
         ProjetoResponseDTO dto = new ProjetoResponseDTO();
-
         dto.setId(projeto.getId());
         dto.setNomeProjeto(projeto.getNomeProjeto());
         dto.setTipoProjeto(projeto.getTipoProjeto());
@@ -95,35 +108,25 @@ public class ProjetoService {
     }
 
     public List<ProjetoResponseDTO> listarProjetos() {
-
         List<ProjetoModel> projetos = projetoRepository.findAll();
-
         List<ProjetoResponseDTO> listaDTO = new ArrayList<>();
-
         for (ProjetoModel projeto : projetos) {
             listaDTO.add(converterProjetoParaDTO(projeto));
         }
-
         return listaDTO;
     }
 
     public ProjetoResponseDTO converterProjetoUnicoDTO(ProjetoModel projeto) {
-
         ProjetoResponseDTO dto = new ProjetoResponseDTO();
-
         dto.setNomeProjeto(projeto.getNomeProjeto());
         dto.setTipoProjeto(projeto.getTipoProjeto());
         dto.setStatus(projeto.getStatus());
-
         return dto;
     }
 
     public ProjetoResponseDTO listarPorId(Long id) {
-
         ProjetoModel projeto = projetoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Projeto não encontrado"));
-
         return converterProjetoUnicoDTO(projeto);
     }
-
 }

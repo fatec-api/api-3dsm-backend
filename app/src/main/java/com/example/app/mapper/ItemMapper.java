@@ -15,7 +15,7 @@ public interface ItemMapper {
     ItemModel toEntity(ItemRequestdto dto);
 
     @Mapping(source = "projetoModel.id", target = "projetoId")
-    @Mapping(source = "projetoModel.nome", target = "projetoNome")
-    @Mapping(source = "usuarioModel.nome", target = "usuarioNome")
+    @Mapping(source = "projetoModel.nomeProjeto", target = "projetoNome") 
+    @Mapping(source = "usuarioModel.nomeUsuario", target = "usuarioNome") 
     ItemResponsedto toResponse(ItemModel itemModel);
 }

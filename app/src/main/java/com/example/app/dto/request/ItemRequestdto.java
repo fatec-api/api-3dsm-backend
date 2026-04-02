@@ -20,7 +20,6 @@ public class ItemRequestdto {
     @Size(max = 300, message = "Descrição deve ter no máximo 300 caracteres.")
     private String descricao;
 
-    @NotNull(message = "Data de atribuição é obrigatória.")
     private LocalDate dataAtribuicao;
 
     @Min(value = 1, message = "A previsão de horas deve ser de pelo menos 1 hora.")

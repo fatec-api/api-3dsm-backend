@@ -14,26 +14,36 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+
 @Service
 public class CadastroItemService {
 
-    @Autowired private ItemRepository itemRepository;
-    @Autowired private ItemMapper itemMapper;
-    @Autowired private ProjetoRepository projetoRepository;
-    @Autowired private UsuarioRepository usuarioRepository;
+    @Autowired
+    private ItemRepository itemRepository;
+    @Autowired
+    private ItemMapper itemMapper;
+    @Autowired
+    private ProjetoRepository projetoRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public ItemResponsedto cadastrarItem(ItemRequestdto dto) {
         ItemModel item = itemMapper.toEntity(dto);
 
+        if (item.getDataAtribuicao() == null) {
+            item.setDataAtribuicao(LocalDate.now());
+        }
+
         ProjetoModel projeto = projetoRepository.findById(dto.getProjetoId())
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Projeto não encontrado com id: " + dto.getProjetoId()));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Projeto não encontrado com id: " + dto.getProjetoId()));
         item.setProjetoModel(projeto);
 
         if (dto.getUsuarioId() != null) {
             UsuarioModel usuario = usuarioRepository.findById(dto.getUsuarioId())
-                .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Usuário não encontrado com id: " + dto.getUsuarioId()));
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Usuário não encontrado com id: " + dto.getUsuarioId()));
             item.setUsuarioModel(usuario);
         }
 

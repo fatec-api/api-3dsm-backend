@@ -10,12 +10,13 @@ import org.mapstruct.Mapping;
 public interface ItemMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "codigo", ignore = true)       
     @Mapping(target = "usuarioModel", ignore = true)
     @Mapping(target = "projetoModel", ignore = true)
     ItemModel toEntity(ItemRequestdto dto);
 
     @Mapping(source = "projetoModel.id", target = "projetoId")
-    @Mapping(source = "projetoModel.nomeProjeto", target = "projetoNome") 
-    @Mapping(source = "usuarioModel.nomeUsuario", target = "usuarioNome") 
+    @Mapping(source = "projetoModel.nomeProjeto", target = "projetoNome")
+    @Mapping(source = "usuarioModel.nomeUsuario", target = "usuarioNome")
     ItemResponsedto toResponse(ItemModel itemModel);
 }

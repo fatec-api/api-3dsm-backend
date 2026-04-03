@@ -1,5 +1,6 @@
 package com.example.app.service;
 
+//import com.example.app.dto.request.ApontamentoRequestDTO;
 import com.example.app.exception.RecursoNaoEncontradoExcecao;
 import com.example.app.model.entity.ApontamentoModel;
 import com.example.app.model.entity.UsuarioModel;
@@ -25,23 +26,23 @@ public class ApontamentoService {
         return repository.save(ap);
     }
 
-    public ApontamentoModel atualizarApontamento(Long id, ApontamentoRequestDTO dto) {
-        ApontamentoModel ap = buscarApontamentoPorId(id);
-        if(dto.getItem() != null) {
-            ap.setItem(dto.getItem());
-        }
-        if(dto.getUsuario() != null) {
-            ap.setUsuario(dto.getUsuario());
-        }
-        if(dto.getHoraInicio() != null) {
-            ap.setHoraInicio(dto.getHoraInicio());
-        }
-        if(dto.horaFim() != null) {
-            ap.setHoraFim(dto.getHoraFim());
-        }
-        if(dto.getObservacao() != null) {
-            ap.setObservacao(dto.getObservacao());
-        }
-        ap.setHorasLiquidas(ap.getHoraFim().minus (ap.getHoraInicio());
-    }
+//    public ApontamentoModel atualizarApontamento(Long id, ApontamentoRequestDTO dto) {
+//        ApontamentoModel ap = buscarApontamentoPorId(id);
+//        if(dto.getItem() != null) {
+//            ap.setItem(dto.getItem());
+//        }
+//        if(dto.getUsuario() != null) {
+//            ap.setUsuario(dto.getUsuario());
+//        }
+//        if(dto.getHoraInicio() != null) {
+//            ap.setHoraInicio(dto.getHoraInicio());
+//        }
+//        if(dto.horaFim() != null) {
+//            ap.setHoraFim(dto.getHoraFim());
+//        }
+//        if(dto.getObservacao() != null) {
+//            ap.setObservacao(dto.getObservacao());
+//        }
+//        ap.setHorasLiquidas(ap.getHoraFim().minus (ap.getHoraInicio());
+//    }
 }

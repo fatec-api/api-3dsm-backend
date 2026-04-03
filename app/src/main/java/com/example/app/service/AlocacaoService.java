@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -48,34 +49,29 @@ public class AlocacaoService {
 
     @Transactional
     public void vincularProfissionais(AllocationRequestDTO request) {
-        log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}", 
-                 request.getItemId(), request.getProjectId());
+        log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}",
+                request.getItemId(), request.getProjectId());
 
-        
         ItemModel item = itemRepository.findById(request.getItemId())
-            .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
+                .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
 
         ProjetoModel projeto = projetoRepository.findById(request.getProjectId())
-            .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
+                .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
 
-        
-        List<UsuarioModel> profissionais = usuarioRepository.findAllById(request.getProfessionalIds());
-        
-        if (profissionais.isEmpty()) {
-            throw new RuntimeException("Erro: Nenhum profissional válido selecionado.");
-        }
+        UUID profissionalId = request.getProfessionalIds().get(0);
 
-        item.setProfissionais(profissionais);
+        UsuarioModel profissional = usuarioRepository.findById(profissionalId)
+                .orElseThrow(() -> new RuntimeException("Erro: Profissional não encontrado."));
+
+        item.setUsuarioModel(profissional);
         itemRepository.save(item);
 
-
-        for (UsuarioModel pro : profissionais) {
-            if (!projeto.getEquipe().contains(pro)) {
-                projeto.getEquipe().add(pro);
-            }
+        if (!projeto.getEquipe().contains(profissional)) {
+            projeto.getEquipe().add(profissional);
+            projetoRepository.save(projeto);
         }
-        
-        projetoRepository.save(projeto);
-        log.info("Alocação concluída com sucesso. {} profissionais vinculados.", profissionais.size());
+
+        log.info("Profissional {} vinculado ao item {} com sucesso.", profissional.getNomeUsuario(), item.getDescricao());
     }
+    
 }

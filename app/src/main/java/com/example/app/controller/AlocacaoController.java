@@ -28,11 +28,11 @@ public class AlocacaoController {
 
     @PostMapping("/vincular")
     public ResponseEntity<String> vincular(@RequestBody AllocationRequestDTO request) {
-        log.info("Recebida requisição de alocação: Projeto {}, Item {}, Profissionais: {}", 
-                 request.getProjectId(), request.getItemId(), request.getProfessionalIds());
-        
+        log.info("Recebida requisição de alocação: Projeto {}, Item {}, Profissionais: {}",
+                request.getProjectId(), request.getItemId(), request.getProfessionalIds());
+
         alocacaoService.vincularProfissionais(request);
-        
+
         log.info("Alocação processada com sucesso para o item ID: {}", request.getItemId());
         return ResponseEntity.ok("Alocação salva com sucesso!");
     }

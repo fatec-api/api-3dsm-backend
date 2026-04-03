@@ -20,20 +20,20 @@ public class AlocacaoController {
     private AlocacaoService alocacaoService;
 
 
-    @GetMapping("/projeto/{projectId}/profissionais")
-    public ResponseEntity<List<UsuarioResponseDTO>> getProfissionaisParaAlocacao(@PathVariable Long projectId) {
-        List<UsuarioResponseDTO> profissionais = alocacaoService.listarProfissionaisDisponiveis(projectId);
+    @GetMapping("/projeto/profissionais")
+    public ResponseEntity<List<UsuarioResponseDTO>> getProfissionaisParaAlocacao() {
+        List<UsuarioResponseDTO> profissionais = alocacaoService.listarProfissionaisDisponiveis();
         return ResponseEntity.ok(profissionais);
     }
 
-    @PostMapping("/vincular")
-    public ResponseEntity<String> vincular(@RequestBody AllocationRequestDTO request) {
-        log.info("Recebida requisição de alocação: Projeto {}, Item {}, Profissionais: {}", 
-                 request.getProjectId(), request.getItemId(), request.getProfessionalIds());
-        
-        alocacaoService.vincularProfissionais(request);
-        
-        log.info("Alocação processada com sucesso para o item ID: {}", request.getItemId());
-        return ResponseEntity.ok("Alocação salva com sucesso!");
-    }
+//    @PostMapping("/vincular")
+//    public ResponseEntity<String> vincular(@RequestBody AllocationRequestDTO request) {
+//        log.info("Recebida requisição de alocação: Projeto {}, Item {}, Profissionais: {}",
+//                 request.getProjectId(), request.getItemId(), request.getProfessionalIds());
+//
+//        alocacaoService.vincularProfissionais(request);
+//
+//        log.info("Alocação processada com sucesso para o item ID: {}", request.getItemId());
+//        return ResponseEntity.ok("Alocação salva com sucesso!");
+//    }
 }

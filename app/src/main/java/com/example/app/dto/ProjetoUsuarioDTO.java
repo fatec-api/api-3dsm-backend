@@ -3,6 +3,7 @@ package com.example.app.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -12,5 +13,5 @@ public class ProjetoUsuarioDTO {
     private Long projetoId;
 
     @NotNull
-    private UUID usuarioId;
+    private List<UUID> usuarioId;
 }

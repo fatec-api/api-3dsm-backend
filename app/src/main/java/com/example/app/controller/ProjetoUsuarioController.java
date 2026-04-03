@@ -18,9 +18,9 @@ public class ProjetoUsuarioController {
     private ProjetoUsuarioService service;
 
     @PostMapping("/associar-projeto")
-    public ResponseEntity<ProjetoUsuarioModel> associar(@RequestBody @Valid ProjetoUsuarioDTO dto) {
-        ProjetoUsuarioModel associacao = service.associar(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(associacao);
+    public ResponseEntity<String> associar(@RequestBody @Valid ProjetoUsuarioDTO dto) {
+        service.associar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Profissionais associados com sucesso ao projeto!");
     }
 
 }

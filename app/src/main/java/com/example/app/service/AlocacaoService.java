@@ -31,51 +31,51 @@ public class AlocacaoService {
 
 
     @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> listarProfissionaisDisponiveis(Long projectId) {
-        log.info("Buscando profissionais elegíveis para o projeto ID: {}", projectId);
-        
+    public List<UsuarioResponseDTO> listarProfissionaisDisponiveis() {
+        // log.info("Buscando profissionais elegíveis para o projeto ID: {}", projectId);
+
         return usuarioRepository.findAll().stream()
-            .map(user -> new UsuarioResponseDTO(
-                user.getId(),
-                user.getNomeUsuario(),
-                user.getEmail(),
-                user.getCargo() != null ? user.getCargo().name() : null,
-                user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
-            ))
-            .collect(Collectors.toList());
+                .map(user -> new UsuarioResponseDTO(
+                        user.getId(),
+                        user.getNomeUsuario(),
+                        user.getEmail(),
+                        user.getCargo() != null ? user.getCargo().name() : null,
+                        user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
+                ))
+                .collect(Collectors.toList());
     }
 
 
-    @Transactional
-    public void vincularProfissionais(AllocationRequestDTO request) {
-        log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}", 
-                 request.getItemId(), request.getProjectId());
-
-        
-        ItemModel item = itemRepository.findById(request.getItemId())
-            .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
-
-        ProjetoModel projeto = projetoRepository.findById(request.getProjectId())
-            .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
-
-        
-        List<UsuarioModel> profissionais = usuarioRepository.findAllById(request.getProfessionalIds());
-        
-        if (profissionais.isEmpty()) {
-            throw new RuntimeException("Erro: Nenhum profissional válido selecionado.");
-        }
-
-        item.setProfissionais(profissionais);
-        itemRepository.save(item);
-
-
-        for (UsuarioModel pro : profissionais) {
-            if (!projeto.getEquipe().contains(pro)) {
-                projeto.getEquipe().add(pro);
-            }
-        }
-        
-        projetoRepository.save(projeto);
-        log.info("Alocação concluída com sucesso. {} profissionais vinculados.", profissionais.size());
-    }
+//    @Transactional
+//    public void vincularProfissionais(AllocationRequestDTO request) {
+//        log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}",
+//                 request.getItemId(), request.getProjectId());
+//
+//
+//        ItemModel item = itemRepository.findById(request.getItemId())
+//            .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
+//
+//        ProjetoModel projeto = projetoRepository.findById(request.getProjectId())
+//            .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
+//
+//
+//        List<UsuarioModel> profissionais = usuarioRepository.findAllById(request.getProfessionalIds());
+//
+//        if (profissionais.isEmpty()) {
+//            throw new RuntimeException("Erro: Nenhum profissional válido selecionado.");
+//        }
+//
+//        item.setProfissionais(profissionais);
+//        itemRepository.save(item);
+//
+//
+//        for (UsuarioModel pro : profissionais) {
+//            if (!projeto.getEquipe().contains(pro)) {
+//                projeto.getEquipe().add(pro);
+//            }
+//        }
+//
+//        projetoRepository.save(projeto);
+//        log.info("Alocação concluída com sucesso. {} profissionais vinculados.", profissionais.size());
+//    }
 }

@@ -29,10 +29,10 @@ public class ProjetoService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    @Transactional 
+    @Transactional
     public ProjetoModel criarProjeto(ProjetoRequestDTO dto) {
 
-        
+
         if (dto.getDataFim().isBefore(dto.getDataInicio())) {
             throw new IllegalArgumentException("A data de término não pode ser anterior à data de início");
         }
@@ -41,7 +41,7 @@ public class ProjetoService {
             throw new IllegalArgumentException("O valor do orçamento excede o limite permitido de 100.000");
         }
 
-        
+
         UsuarioModel gestor = usuarioRepository.findById(dto.getGestorId())
                 .orElseThrow(() -> new IllegalArgumentException("Gestor não encontrado"));
 
@@ -61,7 +61,7 @@ public class ProjetoService {
                     .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
         }
 
-        
+
         ProjetoModel projeto = new ProjetoModel();
         projeto.setNomeProjeto(dto.getNomeProjeto());
         projeto.setTipoProjeto(dto.getTipoProjeto());
@@ -69,7 +69,7 @@ public class ProjetoService {
         projeto.setDataInicio(dto.getDataInicio());
         projeto.setDataFim(dto.getDataFim());
         projeto.setStatus(dto.getStatus());
-        
+
         projeto.setGestor(gestor);
         projeto.setCliente(cliente);
 

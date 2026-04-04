@@ -38,9 +38,9 @@ public class ItemModel {
 
 
     private enum NivelAtividade {
-        Analise,
-        Desenvolvimento,
-        teste
+        ANALISE,
+        DESENVOLVIMENTO,
+        TESTE
     }
     
     @Enumerated(EnumType.STRING)

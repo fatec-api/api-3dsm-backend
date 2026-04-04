@@ -4,9 +4,11 @@ import com.example.app.dto.request.AllocationRequestDTO;
 import com.example.app.dto.response.UsuarioResponseDTO;
 import com.example.app.model.entity.ItemModel;
 import com.example.app.model.entity.ProjetoModel;
+import com.example.app.model.entity.ProjetoUsuarioModel;
 import com.example.app.model.entity.UsuarioModel;
 import com.example.app.repository.ItemRepository;
 import com.example.app.repository.ProjetoRepository;
+import com.example.app.repository.ProjetoUsuarioRepository;
 import com.example.app.repository.UsuarioRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,22 +32,44 @@ public class AlocacaoService {
     @Autowired
     private ProjetoRepository projetoRepository;
 
+    @Autowired
+    private ProjetoUsuarioRepository projetoUsuarioRepository;
+
 
     @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> listarProfissionaisDisponiveis(Long projectId) {
-        log.info("Buscando profissionais elegíveis para o projeto ID: {}", projectId);
-        
-        return usuarioRepository.findAll().stream()
-            .map(user -> new UsuarioResponseDTO(
-                user.getId(),
-                user.getNomeUsuario(),
-                user.getEmail(),
-                user.getCargo() != null ? user.getCargo().name() : null,
-                user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
-            ))
-            .collect(Collectors.toList());
+    public List<UsuarioResponseDTO> listarProfissionaisAtivos() {
+        log.info("Buscando todos os profissionais ativos no sistema...");
+
+        return usuarioRepository.findByAtivoTrueAndCargo(UsuarioModel.Cargo.Profissional).stream()
+                .map(user -> new UsuarioResponseDTO(
+                        user.getId(),
+                        user.getNomeUsuario(),
+                        user.getEmail(),
+                        user.getCargo() != null ? user.getCargo().name() : null,
+                        user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
+                ))
+                .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<UsuarioResponseDTO> listarProfissionaisDoProjeto(Long projectId) {
+        log.info("Buscando profissionais vinculados ao projeto ID: {}", projectId);
+
+        List<ProjetoUsuarioModel> vinculos = projetoUsuarioRepository.findByProjetoIdAndDataDesvinculoIsNull(projectId);
+
+        return vinculos.stream()
+                .map(vinculo -> {
+                    UsuarioModel user = vinculo.getUsuario(); // Extrai o usuário do vínculo
+                    return new UsuarioResponseDTO(
+                            user.getId(),
+                            user.getNomeUsuario(),
+                            user.getEmail(),
+                            user.getCargo() != null ? user.getCargo().name() : null,
+                            user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public void vincularProfissionais(AllocationRequestDTO request) {

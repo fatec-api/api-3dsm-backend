@@ -13,17 +13,24 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/alocacoes")
-@CrossOrigin(origins = "http://localhost:5173") 
+@CrossOrigin(origins = "http://localhost:5173")
 public class AlocacaoController {
 
     @Autowired
     private AlocacaoService alocacaoService;
 
 
-    @GetMapping("/projeto/{projectId}/profissionais")
-    public ResponseEntity<List<UsuarioResponseDTO>> getProfissionaisParaAlocacao(@PathVariable Long projectId) {
-        List<UsuarioResponseDTO> profissionais = alocacaoService.listarProfissionaisDisponiveis(projectId);
+
+    @GetMapping("/profissionais/ativos")
+    public ResponseEntity<List<UsuarioResponseDTO>> getTodosProfissionaisAtivos() {
+        List<UsuarioResponseDTO> profissionais = alocacaoService.listarProfissionaisAtivos();
         return ResponseEntity.ok(profissionais);
+    }
+
+    @GetMapping("/projeto/{projectId}")
+    public ResponseEntity<List<UsuarioResponseDTO>> getProfissionaisDoProjeto(@PathVariable Long projectId) {
+        List<UsuarioResponseDTO> equipe = alocacaoService.listarProfissionaisDoProjeto(projectId);
+        return ResponseEntity.ok(equipe);
     }
 
     @PostMapping("/vincular")

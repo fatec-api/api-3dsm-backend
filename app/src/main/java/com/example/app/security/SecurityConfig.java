@@ -1,4 +1,4 @@
-package com.example.app.config;
+package com.example.app.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
+                        .anyRequest().permitAll()
                 );
         return http.build();
     }

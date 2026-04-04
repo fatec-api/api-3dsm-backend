@@ -1,18 +1,12 @@
 package com.example.app.model.entity;
 
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
 
 @Data
 @Entity
@@ -36,12 +30,6 @@ public class UsuarioModel {
     @Column(nullable = false)
     private BigDecimal valorHora;
 
-    public enum NivelExperiencia {
-        Júnior,
-        Pleno,
-        Sênior
-    }
-
     public enum Cargo {
         Profissional,
         Gestor,
@@ -49,16 +37,16 @@ public class UsuarioModel {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
-    private NivelExperiencia nivelExperiencia;
-
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Cargo cargo;
+
+    @Column(nullable = true)
+    private String nivelExperiencia;
 
     @Column(nullable = false)
     private boolean ativo = true;
 
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private Timestamp criado_em;
 }

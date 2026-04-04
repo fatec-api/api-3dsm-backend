@@ -1,5 +1,13 @@
 package com.example.app.service;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.app.dto.request.AllocationRequestDTO;
 import com.example.app.dto.response.UsuarioResponseDTO;
 import com.example.app.model.entity.ItemModel;
@@ -10,14 +18,8 @@ import com.example.app.repository.ItemRepository;
 import com.example.app.repository.ProjetoRepository;
 import com.example.app.repository.ProjetoUsuarioRepository;
 import com.example.app.repository.UsuarioRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -35,10 +37,9 @@ public class AlocacaoService {
     @Autowired
     private ProjetoUsuarioRepository projetoUsuarioRepository;
 
-
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarProfissionaisAtivos() {
-        log.info("Buscando todos os profissionais ativos no sistema...");
+        //log.info("Buscando todos os profissionais ativos no sistema...");
 
         return usuarioRepository.findByAtivoTrueAndCargo(UsuarioModel.Cargo.Profissional).stream()
                 .map(user -> new UsuarioResponseDTO(
@@ -46,7 +47,8 @@ public class AlocacaoService {
                         user.getNomeUsuario(),
                         user.getEmail(),
                         user.getCargo() != null ? user.getCargo().name() : null,
-                        user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
+                        user.getNivelExperiencia() != null ? user.getNivelExperiencia(): null,
+                        user.getValorHora()
                 ))
                 .collect(Collectors.toList());
     }
@@ -65,7 +67,8 @@ public class AlocacaoService {
                             user.getNomeUsuario(),
                             user.getEmail(),
                             user.getCargo() != null ? user.getCargo().name() : null,
-                            user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
+                            user.getNivelExperiencia() != null ? user.getNivelExperiencia() : null,
+                            user.getValorHora()
                     );
                 })
                 .collect(Collectors.toList());
@@ -97,5 +100,5 @@ public class AlocacaoService {
 
         log.info("Profissional {} vinculado ao item {} com sucesso.", profissional.getNomeUsuario(), item.getDescricao());
     }
-    
+
 }

@@ -7,5 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, UUID> {
+    boolean existsByEmail(String email);
     List<UsuarioModel> findByAtivoTrueAndCargo(UsuarioModel.Cargo cargo);
 }

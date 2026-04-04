@@ -90,20 +90,8 @@ public class ProjetoService {
         ProjetoResponseDTO dto = new ProjetoResponseDTO();
         dto.setId(projeto.getId());
         dto.setNomeProjeto(projeto.getNomeProjeto());
-        dto.setTipoProjeto(projeto.getTipoProjeto());
-        dto.setValorOrcamento(projeto.getValorOrcamento());
-        dto.setDataInicio(projeto.getDataInicio());
-        dto.setDataFim(projeto.getDataFim());
         dto.setStatus(projeto.getStatus());
-
-        if (projeto.getGestor() != null) {
-            dto.setNomeGestor(projeto.getGestor().getNomeUsuario());
-        }
-
-        if (projeto.getCliente() != null) {
-            dto.setNomeCliente(projeto.getCliente().getNomeEmpresa());
-        }
-
+        dto.setTipoProjeto(projeto.getTipoProjeto());
         return dto;
     }
 
@@ -118,9 +106,22 @@ public class ProjetoService {
 
     public ProjetoResponseDTO converterProjetoUnicoDTO(ProjetoModel projeto) {
         ProjetoResponseDTO dto = new ProjetoResponseDTO();
+        dto.setId(projeto.getId());
         dto.setNomeProjeto(projeto.getNomeProjeto());
         dto.setTipoProjeto(projeto.getTipoProjeto());
+        dto.setValorOrcamento(projeto.getValorOrcamento());
+        dto.setDataInicio(projeto.getDataInicio());
+        dto.setDataFim(projeto.getDataFim());
         dto.setStatus(projeto.getStatus());
+
+        if (projeto.getGestor() != null) {
+            dto.setNomeGestor(projeto.getGestor().getNomeUsuario());
+        }
+
+        if (projeto.getCliente() != null) {
+            dto.setNomeCliente(projeto.getCliente().getNomeEmpresa());
+        }
+
         return dto;
     }
 

@@ -4,9 +4,11 @@ import com.example.app.dto.request.AllocationRequestDTO;
 import com.example.app.dto.response.UsuarioResponseDTO;
 import com.example.app.model.entity.ItemModel;
 import com.example.app.model.entity.ProjetoModel;
+import com.example.app.model.entity.ProjetoUsuarioModel;
 import com.example.app.model.entity.UsuarioModel;
 import com.example.app.repository.ItemRepository;
 import com.example.app.repository.ProjetoRepository;
+import com.example.app.repository.ProjetoUsuarioRepository;
 import com.example.app.repository.UsuarioRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,53 +32,70 @@ public class AlocacaoService {
     @Autowired
     private ProjetoRepository projetoRepository;
 
+    @Autowired
+    private ProjetoUsuarioRepository projetoUsuarioRepository;
+
 
     @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> listarProfissionaisDisponiveis(Long projectId) {
-        log.info("Buscando profissionais elegíveis para o projeto ID: {}", projectId);
-        
-        return usuarioRepository.findAll().stream()
-            .map(user -> new UsuarioResponseDTO(
-                user.getId(),
-                user.getNomeUsuario(),
-                user.getEmail(),
-                user.getCargo() != null ? user.getCargo().name() : null,
-                user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
-            ))
-            .collect(Collectors.toList());
+    public List<UsuarioResponseDTO> listarProfissionaisAtivos() {
+        log.info("Buscando todos os profissionais ativos no sistema...");
+
+        return usuarioRepository.findByAtivoTrueAndCargo(UsuarioModel.Cargo.Profissional).stream()
+                .map(user -> new UsuarioResponseDTO(
+                        user.getId(),
+                        user.getNomeUsuario(),
+                        user.getEmail(),
+                        user.getCargo() != null ? user.getCargo().name() : null,
+                        user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
+                ))
+                .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<UsuarioResponseDTO> listarProfissionaisDoProjeto(Long projectId) {
+        log.info("Buscando profissionais vinculados ao projeto ID: {}", projectId);
+
+        List<ProjetoUsuarioModel> vinculos = projetoUsuarioRepository.findByProjetoIdAndDataDesvinculoIsNull(projectId);
+
+        return vinculos.stream()
+                .map(vinculo -> {
+                    UsuarioModel user = vinculo.getUsuario(); // Extrai o usuário do vínculo
+                    return new UsuarioResponseDTO(
+                            user.getId(),
+                            user.getNomeUsuario(),
+                            user.getEmail(),
+                            user.getCargo() != null ? user.getCargo().name() : null,
+                            user.getNivelExperiencia() != null ? user.getNivelExperiencia().name() : null
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public void vincularProfissionais(AllocationRequestDTO request) {
-        log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}", 
-                 request.getItemId(), request.getProjectId());
+        log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}",
+                request.getItemId(), request.getProjectId());
 
-        
         ItemModel item = itemRepository.findById(request.getItemId())
-            .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
+                .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
 
         ProjetoModel projeto = projetoRepository.findById(request.getProjectId())
-            .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
+                .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
 
-        
-        List<UsuarioModel> profissionais = usuarioRepository.findAllById(request.getProfessionalIds());
-        
-        if (profissionais.isEmpty()) {
-            throw new RuntimeException("Erro: Nenhum profissional válido selecionado.");
-        }
+        UUID profissionalId = request.getProfessionalIds().get(0);
 
-        item.setProfissionais(profissionais);
+        UsuarioModel profissional = usuarioRepository.findById(profissionalId)
+                .orElseThrow(() -> new RuntimeException("Erro: Profissional não encontrado."));
+
+        item.setUsuarioModel(profissional);
         itemRepository.save(item);
 
-
-        for (UsuarioModel pro : profissionais) {
-            if (!projeto.getEquipe().contains(pro)) {
-                projeto.getEquipe().add(pro);
-            }
+        if (!projeto.getEquipe().contains(profissional)) {
+            projeto.getEquipe().add(profissional);
+            projetoRepository.save(projeto);
         }
-        
-        projetoRepository.save(projeto);
-        log.info("Alocação concluída com sucesso. {} profissionais vinculados.", profissionais.size());
+
+        log.info("Profissional {} vinculado ao item {} com sucesso.", profissional.getNomeUsuario(), item.getDescricao());
     }
+    
 }

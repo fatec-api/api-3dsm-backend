@@ -3,7 +3,21 @@ package com.example.app.repository;
 import com.example.app.model.entity.ApontamentoModel;
 import com.example.app.model.entity.ClienteModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ApontamentoRepository extends JpaRepository<ApontamentoModel, Long> {
+    List<ApontamentoModel> findByUsuarioIdAndDataApontamento(Long usuarioId, LocalDateTime data);
+
+    @Query("""
+    SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END
+    FROM ApontamentoModel a
+    WHERE a.dataApontamento = :data
+    AND a.horaInicio < :novoFim
+    AND a.horaFim > :novoInicio
+""")
+    boolean existeConflito( LocalDateTime data, LocalDateTime novoInicio, LocalDateTime novoFim);
 
 }

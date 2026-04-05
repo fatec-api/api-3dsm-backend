@@ -1,8 +1,17 @@
 package com.example.app.model.entity;
 
-import java.sql.Time;
 import java.time.LocalDate;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
@@ -14,7 +23,7 @@ public class ItemModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = true, length = 10)
     private String codigo;
 
     @Column(nullable = false, length = 300)
@@ -22,7 +31,6 @@ public class ItemModel {
 
     @Column(nullable = false)
     private LocalDate dataAtribuicao;
-
 
     @Column(nullable = true)
     private Integer previsaoHoras;

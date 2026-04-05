@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface ItemMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "codigo", ignore = true)       
+    @Mapping(target = "titulo", ignore = true)
     @Mapping(target = "usuarioModel", ignore = true)
     @Mapping(target = "projetoModel", ignore = true)
     ItemModel toEntity(ItemRequestdto dto);

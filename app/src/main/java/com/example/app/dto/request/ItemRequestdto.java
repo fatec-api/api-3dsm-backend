@@ -1,15 +1,22 @@
 package com.example.app.dto.request;
 
-import com.example.app.model.entity.ItemModel;
-import jakarta.validation.constraints.*;
-import lombok.Data;
 import java.time.LocalDate;
 import java.util.UUID;
+
+import com.example.app.model.entity.ItemModel;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 @Data
 public class ItemRequestdto {
 
-
+    @NotBlank(message = "O campo de título não pode estar vazio.")
+    @Size(max = 300, message = "Título deve ter no máximo 300 caracteres.")
+    private String titulo;
 
     @NotBlank(message = "O campo de descrição não pode estar vazio.")
     @Size(max = 300, message = "Descrição deve ter no máximo 300 caracteres.")

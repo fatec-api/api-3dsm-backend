@@ -24,7 +24,7 @@ public class ItemModel {
     private Long id;
 
     @Column(nullable = true, length = 10)
-    private String codigo;
+    private String titulo;
 
     @Column(nullable = false, length = 300)
     private String descricao;

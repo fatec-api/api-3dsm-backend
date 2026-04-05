@@ -43,27 +43,27 @@ public class AlocacaoService {
                 // log.info("Buscando todos os profissionais ativos no sistema...");
 
                 return usuarioRepository.findByAtivoTrueAndCargo(UsuarioModel.Cargo.Profissional).stream()
-                                .map(user -> new UsuarioResponseDTO(
-                                                user.getId(),
-                                                user.getNomeUsuario(),
-                                                user.getEmail(),
-                                                user.getCargo() != null ? user.getCargo().name() : null,
-                                                user.getNivelExperiencia() != null ? user.getNivelExperiencia() : null,
-                                                user.getValorHora()))
-                                .collect(Collectors.toList());
+                        .map(user -> new UsuarioResponseDTO(
+                                user.getId(),
+                                user.getNomeUsuario(),
+                                user.getEmail(),
+                                user.getCargo() != null ? user.getCargo().name() : null,
+                                user.getNivelExperiencia() != null ? user.getNivelExperiencia() : null,
+                                user.getValorHora()))
+                        .collect(Collectors.toList());
         }
 
         @Transactional(readOnly = true)
         public List<UsuarioResponseDTO> listarUsuariosAtivos() {
                 return usuarioRepository.findByAtivoTrue().stream()
-                                .map(user -> new UsuarioResponseDTO(
-                                                user.getId(),
-                                                user.getNomeUsuario(),
-                                                user.getEmail(),
-                                                user.getCargo() != null ? user.getCargo().name() : null,
-                                                user.getNivelExperiencia() != null ? user.getNivelExperiencia() : null,
-                                                user.getValorHora()))
-                                .collect(Collectors.toList());
+                        .map(user -> new UsuarioResponseDTO(
+                                user.getId(),
+                                user.getNomeUsuario(),
+                                user.getEmail(),
+                                user.getCargo() != null ? user.getCargo().name() : null,
+                                user.getNivelExperiencia() != null ? user.getNivelExperiencia() : null,
+                                user.getValorHora()))
+                        .collect(Collectors.toList());
         }
 
         @Transactional(readOnly = true)
@@ -71,38 +71,38 @@ public class AlocacaoService {
                 log.info("Buscando profissionais vinculados ao projeto ID: {}", projectId);
 
                 List<ProjetoUsuarioModel> vinculos = projetoUsuarioRepository
-                                .findByProjetoIdAndDataDesvinculoIsNull(projectId);
+                        .findByProjetoIdAndDataDesvinculoIsNull(projectId);
 
                 return vinculos.stream()
-                                .map(vinculo -> {
-                                        UsuarioModel user = vinculo.getUsuario(); // Extrai o usuário do vínculo
-                                        return new UsuarioResponseDTO(
-                                                        user.getId(),
-                                                        user.getNomeUsuario(),
-                                                        user.getEmail(),
-                                                        user.getCargo() != null ? user.getCargo().name() : null,
-                                                        user.getNivelExperiencia() != null ? user.getNivelExperiencia()
-                                                                        : null,
-                                                        user.getValorHora());
-                                })
-                                .collect(Collectors.toList());
+                        .map(vinculo -> {
+                                UsuarioModel user = vinculo.getUsuario(); // Extrai o usuário do vínculo
+                                return new UsuarioResponseDTO(
+                                        user.getId(),
+                                        user.getNomeUsuario(),
+                                        user.getEmail(),
+                                        user.getCargo() != null ? user.getCargo().name() : null,
+                                        user.getNivelExperiencia() != null ? user.getNivelExperiencia()
+                                                : null,
+                                        user.getValorHora());
+                        })
+                        .collect(Collectors.toList());
         }
 
         @Transactional
         public void vincularProfissionais(AllocationRequestDTO request) {
                 log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}",
-                                request.getItemId(), request.getProjectId());
+                        request.getItemId(), request.getProjectId());
 
                 ItemModel item = itemRepository.findById(request.getItemId())
-                                .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
+                        .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
 
                 ProjetoModel projeto = projetoRepository.findById(request.getProjectId())
-                                .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
+                        .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
 
                 UUID profissionalId = request.getProfessionalIds().get(0);
 
                 UsuarioModel profissional = usuarioRepository.findById(profissionalId)
-                                .orElseThrow(() -> new RuntimeException("Erro: Profissional não encontrado."));
+                        .orElseThrow(() -> new RuntimeException("Erro: Profissional não encontrado."));
 
                 item.setUsuarioModel(profissional);
                 itemRepository.save(item);
@@ -114,8 +114,9 @@ public class AlocacaoService {
                         novoVinculo.setDataVinculo(LocalDate.now());
                         projetoUsuarioRepository.save(novoVinculo);
 
-                log.info("Profissional {} vinculado ao item {} com sucesso.", profissional.getNomeUsuario(),
+                        log.info("Profissional {} vinculado ao item {} com sucesso.", profissional.getNomeUsuario(),
                                 item.getDescricao());
-        }
+                }
 
+        }
 }

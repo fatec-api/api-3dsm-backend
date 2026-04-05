@@ -1,5 +1,13 @@
 package com.example.app.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.HandlerMapping;
+
 import com.example.app.dto.request.ApontamentoRequestDTO;
 import com.example.app.dto.request.ApontamentoUpdateRequestDTO;
 import com.example.app.dto.response.ApontamentoResponseDTO;
@@ -10,12 +18,6 @@ import com.example.app.model.entity.ApontamentoModel;
 import com.example.app.repository.ApontamentoRepository;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.HandlerMapping;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +34,13 @@ public class ApontamentoService {
         return repository.findById(id)
                 .map(mapper::toResponse)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Apontamento não encontrado - id: " + id));
+    }
+
+    public List<ApontamentoResponseDTO> buscarApontamentoPorUsuarioId(UUID usuarioId) {
+        List<ApontamentoModel> apontamentos = repository.findByUsuarioId(usuarioId);
+        return apontamentos.stream()
+                .map(mapper::toResponse)
+                .toList();
     }
 
     @Transactional

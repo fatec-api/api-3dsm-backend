@@ -1,12 +1,19 @@
 package com.example.app.repository;
 
-import com.example.app.model.entity.UsuarioModel;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.app.model.entity.UsuarioModel;
+
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, UUID> {
-    boolean existsByEmail(String email);
+
+    // Método da branch HEAD
     List<UsuarioModel> findByAtivoTrueAndCargo(UsuarioModel.Cargo cargo);
+
+    List<UsuarioModel> findByAtivoTrue();
+
+    // Método da branch feature/back/cadastrarusuario
+    boolean existsByEmail(String email);
 }

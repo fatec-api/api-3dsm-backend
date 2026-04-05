@@ -25,80 +25,94 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class AlocacaoService {
 
-    @Autowired
-    private ItemRepository itemRepository;
+        @Autowired
+        private ItemRepository itemRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+        @Autowired
+        private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private ProjetoRepository projetoRepository;
+        @Autowired
+        private ProjetoRepository projetoRepository;
 
-    @Autowired
-    private ProjetoUsuarioRepository projetoUsuarioRepository;
+        @Autowired
+        private ProjetoUsuarioRepository projetoUsuarioRepository;
 
-    @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> listarProfissionaisAtivos() {
-        //log.info("Buscando todos os profissionais ativos no sistema...");
+        @Transactional(readOnly = true)
+        public List<UsuarioResponseDTO> listarProfissionaisAtivos() {
+                // log.info("Buscando todos os profissionais ativos no sistema...");
 
-        return usuarioRepository.findByAtivoTrueAndCargo(UsuarioModel.Cargo.Profissional).stream()
-                .map(user -> new UsuarioResponseDTO(
-                        user.getId(),
-                        user.getNomeUsuario(),
-                        user.getEmail(),
-                        user.getCargo() != null ? user.getCargo().name() : null,
-                        user.getNivelExperiencia() != null ? user.getNivelExperiencia(): null,
-                        user.getValorHora()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> listarProfissionaisDoProjeto(Long projectId) {
-        log.info("Buscando profissionais vinculados ao projeto ID: {}", projectId);
-
-        List<ProjetoUsuarioModel> vinculos = projetoUsuarioRepository.findByProjetoIdAndDataDesvinculoIsNull(projectId);
-
-        return vinculos.stream()
-                .map(vinculo -> {
-                    UsuarioModel user = vinculo.getUsuario(); // Extrai o usuário do vínculo
-                    return new UsuarioResponseDTO(
-                            user.getId(),
-                            user.getNomeUsuario(),
-                            user.getEmail(),
-                            user.getCargo() != null ? user.getCargo().name() : null,
-                            user.getNivelExperiencia() != null ? user.getNivelExperiencia() : null,
-                            user.getValorHora()
-                    );
-                })
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public void vincularProfissionais(AllocationRequestDTO request) {
-        log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}",
-                request.getItemId(), request.getProjectId());
-
-        ItemModel item = itemRepository.findById(request.getItemId())
-                .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
-
-        ProjetoModel projeto = projetoRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
-
-        UUID profissionalId = request.getProfessionalIds().get(0);
-
-        UsuarioModel profissional = usuarioRepository.findById(profissionalId)
-                .orElseThrow(() -> new RuntimeException("Erro: Profissional não encontrado."));
-
-        item.setUsuarioModel(profissional);
-        itemRepository.save(item);
-
-        if (!projeto.getEquipe().contains(profissional)) {
-            projeto.getEquipe().add(profissional);
-            projetoRepository.save(projeto);
+                return usuarioRepository.findByAtivoTrueAndCargo(UsuarioModel.Cargo.Profissional).stream()
+                                .map(user -> new UsuarioResponseDTO(
+                                                user.getId(),
+                                                user.getNomeUsuario(),
+                                                user.getEmail(),
+                                                user.getCargo() != null ? user.getCargo().name() : null,
+                                                user.getNivelExperiencia() != null ? user.getNivelExperiencia() : null,
+                                                user.getValorHora()))
+                                .collect(Collectors.toList());
         }
 
-        log.info("Profissional {} vinculado ao item {} com sucesso.", profissional.getNomeUsuario(), item.getDescricao());
-    }
+        @Transactional(readOnly = true)
+        public List<UsuarioResponseDTO> listarUsuariosAtivos() {
+                return usuarioRepository.findByAtivoTrue().stream()
+                                .map(user -> new UsuarioResponseDTO(
+                                                user.getId(),
+                                                user.getNomeUsuario(),
+                                                user.getEmail(),
+                                                user.getCargo() != null ? user.getCargo().name() : null,
+                                                user.getNivelExperiencia() != null ? user.getNivelExperiencia() : null,
+                                                user.getValorHora()))
+                                .collect(Collectors.toList());
+        }
+
+        @Transactional(readOnly = true)
+        public List<UsuarioResponseDTO> listarProfissionaisDoProjeto(Long projectId) {
+                log.info("Buscando profissionais vinculados ao projeto ID: {}", projectId);
+
+                List<ProjetoUsuarioModel> vinculos = projetoUsuarioRepository
+                                .findByProjetoIdAndDataDesvinculoIsNull(projectId);
+
+                return vinculos.stream()
+                                .map(vinculo -> {
+                                        UsuarioModel user = vinculo.getUsuario(); // Extrai o usuário do vínculo
+                                        return new UsuarioResponseDTO(
+                                                        user.getId(),
+                                                        user.getNomeUsuario(),
+                                                        user.getEmail(),
+                                                        user.getCargo() != null ? user.getCargo().name() : null,
+                                                        user.getNivelExperiencia() != null ? user.getNivelExperiencia()
+                                                                        : null,
+                                                        user.getValorHora());
+                                })
+                                .collect(Collectors.toList());
+        }
+
+        @Transactional
+        public void vincularProfissionais(AllocationRequestDTO request) {
+                log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}",
+                                request.getItemId(), request.getProjectId());
+
+                ItemModel item = itemRepository.findById(request.getItemId())
+                                .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
+
+                ProjetoModel projeto = projetoRepository.findById(request.getProjectId())
+                                .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
+
+                UUID profissionalId = request.getProfessionalIds().get(0);
+
+                UsuarioModel profissional = usuarioRepository.findById(profissionalId)
+                                .orElseThrow(() -> new RuntimeException("Erro: Profissional não encontrado."));
+
+                item.setUsuarioModel(profissional);
+                itemRepository.save(item);
+
+                if (!projeto.getEquipe().contains(profissional)) {
+                        projeto.getEquipe().add(profissional);
+                        projetoRepository.save(projeto);
+                }
+
+                log.info("Profissional {} vinculado ao item {} com sucesso.", profissional.getNomeUsuario(),
+                                item.getDescricao());
+        }
 
 }

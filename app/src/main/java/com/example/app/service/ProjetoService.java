@@ -1,8 +1,10 @@
 package com.example.app.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,9 +14,11 @@ import com.example.app.dto.request.ProjetoRequestDTO;
 import com.example.app.dto.response.ProjetoResponseDTO;
 import com.example.app.model.entity.ClienteModel;
 import com.example.app.model.entity.ProjetoModel;
+import com.example.app.model.entity.ProjetoUsuarioModel;
 import com.example.app.model.entity.UsuarioModel;
 import com.example.app.repository.ClienteRepository;
 import com.example.app.repository.ProjetoRepository;
+import com.example.app.repository.ProjetoUsuarioRepository;
 import com.example.app.repository.UsuarioRepository;
 
 @Service
@@ -29,9 +33,11 @@ public class ProjetoService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private ProjetoUsuarioRepository projetoUsuarioRepository;
+
     @Transactional
     public ProjetoModel criarProjeto(ProjetoRequestDTO dto) {
-
 
         if (dto.getDataFim().isBefore(dto.getDataInicio())) {
             throw new IllegalArgumentException("A data de término não pode ser anterior à data de início");
@@ -41,19 +47,8 @@ public class ProjetoService {
             throw new IllegalArgumentException("O valor do orçamento excede o limite permitido de 100.000");
         }
 
-
         UsuarioModel gestor = usuarioRepository.findById(dto.getGestorId())
                 .orElseThrow(() -> new IllegalArgumentException("Gestor não encontrado"));
-
-        UsuarioModel profissional = null;
-        if (dto.getProfissionalAlocadoId() != null) {
-            profissional = usuarioRepository.findById(dto.getProfissionalAlocadoId())
-                    .orElseThrow(() -> new IllegalArgumentException("Profissional alocado não encontrado"));
-
-            if (!profissional.isAtivo()) {
-                throw new IllegalArgumentException("O profissional alocado não está ativo");
-            }
-        }
 
         ClienteModel cliente = null;
         if (dto.getClienteId() != null) {
@@ -61,7 +56,7 @@ public class ProjetoService {
                     .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
         }
 
-
+        // Cria o projeto
         ProjetoModel projeto = new ProjetoModel();
         projeto.setNomeProjeto(dto.getNomeProjeto());
         projeto.setTipoProjeto(dto.getTipoProjeto());
@@ -69,21 +64,33 @@ public class ProjetoService {
         projeto.setDataInicio(dto.getDataInicio());
         projeto.setDataFim(dto.getDataFim());
         projeto.setStatus(dto.getStatus());
-
         projeto.setGestor(gestor);
         projeto.setCliente(cliente);
 
-        if (projeto.getEquipe() == null) {
-            projeto.setEquipe(new ArrayList<>());
-        }
+        // Salva o projeto primeiro para gerar o ID
+        ProjetoModel projetoSalvo = projetoRepository.save(projeto);
 
-        if (profissional != null) {
-            if (!projeto.getEquipe().contains(profissional)) {
-                projeto.getEquipe().add(profissional);
+        // Agora vincula os profissionais na tabela correta (ProjetoUsuarioModel)
+        if (dto.getProfissionaisIds() != null && !dto.getProfissionaisIds().isEmpty()) {
+            for (UUID profId : dto.getProfissionaisIds()) {
+                UsuarioModel profissional = usuarioRepository.findById(profId)
+                        .orElseThrow(() -> new IllegalArgumentException("Profissional com ID " + profId + " não encontrado"));
+
+                if (!profissional.isAtivo()) {
+                    throw new IllegalArgumentException("O profissional " + profissional.getNomeUsuario() + " não está ativo");
+                }
+
+                // Cria a associação real
+                ProjetoUsuarioModel vinculo = new ProjetoUsuarioModel();
+                vinculo.setProjeto(projetoSalvo);
+                vinculo.setUsuario(profissional);
+                vinculo.setDataVinculo(LocalDate.now()); // Seta a data do vínculo
+
+                projetoUsuarioRepository.save(vinculo);
             }
         }
 
-        return projetoRepository.save(projeto);
+        return projetoSalvo;
     }
 
     public ProjetoResponseDTO converterProjetoParaDTO(ProjetoModel projeto) {

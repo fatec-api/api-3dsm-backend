@@ -1,5 +1,6 @@
 package com.example.app.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -106,10 +107,12 @@ public class AlocacaoService {
                 item.setUsuarioModel(profissional);
                 itemRepository.save(item);
 
-                if (!projeto.getEquipe().contains(profissional)) {
-                        projeto.getEquipe().add(profissional);
-                        projetoRepository.save(projeto);
-                }
+                if (!projetoUsuarioRepository.existsByProjetoAndUsuario(projeto, profissional)) {
+                        ProjetoUsuarioModel novoVinculo = new ProjetoUsuarioModel();
+                        novoVinculo.setProjeto(projeto);
+                        novoVinculo.setUsuario(profissional);
+                        novoVinculo.setDataVinculo(LocalDate.now());
+                        projetoUsuarioRepository.save(novoVinculo);
 
                 log.info("Profissional {} vinculado ao item {} com sucesso.", profissional.getNomeUsuario(),
                                 item.getDescricao());

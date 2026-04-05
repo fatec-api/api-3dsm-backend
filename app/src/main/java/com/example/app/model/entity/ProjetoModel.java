@@ -3,8 +3,6 @@ package com.example.app.model.entity;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,8 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -68,16 +64,6 @@ public class ProjetoModel {
 
     @Column(nullable = false)
     private Timestamp criadoEm;
-
-  
-    @ManyToMany
-    @JoinTable(
-        name = "projeto_profissionais", 
-        joinColumns = @JoinColumn(name = "id_projeto"),
-        inverseJoinColumns = @JoinColumn(name = "id_usuario")
-    )
-    private List<UsuarioModel> equipe = new ArrayList<>(); 
-    
 
     @PrePersist
     public void prePersist() {

@@ -2,6 +2,7 @@ package com.example.app.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import com.example.app.model.entity.ProjetoModel.StatusProjeto;
@@ -47,5 +48,5 @@ public class ProjetoRequestDTO {
 
     private Long clienteId;
 
-    private UUID profissionalAlocadoId;
+    private List<UUID> profissionaisIds;
 }

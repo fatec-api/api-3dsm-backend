@@ -1,0 +1,170 @@
+services:
+  # INFRAESTRUTURA
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_hutt
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: ${DB_APP_PASS}
+      MYSQL_DATABASE: keycloak
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./infra-mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend-hutt
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: keycloak_hutt
+    command: start-dev --import-realm
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASS}
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql:3306/keycloak
+      KC_DB_USERNAME: appuser
+      KC_DB_PASSWORD: ${DB_APP_PASS}
+      KC_HOSTNAME: localhost
+      KK_TO_RMQ_URL: amqp://rabbit:rabbit@rabbitmq:5672
+      KK_TO_RMQ_EXCHANGE: keycloak.events
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./infra-keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./infra-keycloak/providers:/opt/keycloak/providers
+    networks:
+      - backend-hutt
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq_hutt
+    restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbit
+      RABBITMQ_DEFAULT_PASS: rabbit
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend-hutt
+
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb_hutt
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongouser
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+      MONGO_INITDB_DATABASE: auditoria
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - backend-hutt
+
+  # MICROSSERVIÇOS
+
+  servico-gestao:
+    build: ./servico-gestao
+    container_name: servico-gestao
+    restart: on-failure
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gestao_db
+      SPRING_DATASOURCE_USERNAME: appuser
+      SPRING_DATASOURCE_PASSWORD: ${DB_APP_PASS}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: rabbit
+      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/javathehutt
+    ports:
+      - "8082:8080"
+    networks:
+      - backend-hutt
+
+  servico-apontamento:
+    build: ./servico-apontamento
+    container_name: servico-apontamento
+    restart: on-failure
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/apontamentos
+      SPRING_DATASOURCE_USERNAME: appuser
+      SPRING_DATASOURCE_PASSWORD: ${DB_APP_PASS}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: rabbit
+      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/javathehutt
+    ports:
+      - "8083:8080"
+    networks:
+      - backend-hutt
+
+  servico-auditoria:
+    build: ./servico-auditoria
+    container_name: servico-auditoria
+    restart: on-failure
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: rabbit
+      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
+      SPRING_DATA_MONGODB_URI: mongodb://mongouser:mongopass@mongodb:27017/auditoria?authSource=admin
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/javathehutt
+    ports:
+      - "8084:8080"
+    networks:
+      - backend-hutt
+
+volumes:
+  mysql_data:
+  mongo_data:
+
+networks:
+  backend-hutt:
+    driver: bridge

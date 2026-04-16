@@ -111,7 +111,7 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: rabbit
       SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/javathehutt
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
     ports:
       - "8082:8080"
     networks:
@@ -134,7 +134,7 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: rabbit
       SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/javathehutt
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
     ports:
       - "8083:8080"
     networks:
@@ -154,8 +154,8 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: rabbit
       SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
-      SPRING_DATA_MONGODB_URI: mongodb://mongouser:mongopass@mongodb:27017/auditoria?authSource=admin
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/javathehutt
+      SPRING_DATA_MONGODB_URI: mongodb://mongouser:${MONGO_PASS}@mongodb:27017/auditoria?authSource=admin
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
     ports:
       - "8084:8080"
     networks:

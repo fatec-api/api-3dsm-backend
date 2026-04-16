@@ -1,38 +1,51 @@
-# --- Java ---
-*.class
-*.log
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# --- Maven ---
+### Java / Maven ###
 target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
-pom.xml.nextSnapshot
+pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
+# Se usar o Maven Wrapper:
+!.mvn/wrapper/maven-wrapper.jar
 
-# --- IntelliJ IDEA ---
+### IntelliJ IDEA ###
 .idea/
 *.iws
 *.iml
 *.ipr
 out/
+.idea/runConfigurations/
 
-# --- VS Code ---
+### VS Code ###
 .vscode/
+*.code-workspace
+.history/
 
-# --- OS específicos ---
+### Logs e Arquivos Temporários ###
+*.log
+logs/
+temp/
+tmp/
+
+### Docker ###
+*.tar
+*.tar.gz
+docker-compose.override.yml
+
+### OS Junk ###
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-## -- Configs ---
+### Spring Boot ###
+.help.md
+
+### Secrets ###
 .env

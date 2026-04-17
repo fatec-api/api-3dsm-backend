@@ -1,4 +1,4 @@
-package com.jth.apontamento.config
+package br.com.jth.apontamento.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

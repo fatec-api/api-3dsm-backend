@@ -2,6 +2,7 @@ package com.example.app.model.entity;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -20,13 +21,11 @@ public class ApontamentoModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_item", nullable = false)
-    private ItemModel item;
+    @Column(nullable = false)
+    private Long itemId;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private UsuarioModel usuario;
+    @Column(nullable = false)
+    private UUID usuarioId;
 
     @Column(nullable = false)
     private LocalDateTime dataApontamento;

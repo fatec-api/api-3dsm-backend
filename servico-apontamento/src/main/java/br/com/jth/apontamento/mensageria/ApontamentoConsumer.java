@@ -24,8 +24,6 @@ public class ApontamentoConsumer {
             apontamentoService.salvarApontamento(dto);
         } catch (NegocioException e) {
             log.error("Mensagem rejeitada por regra de negocio: {}", e.getMessage(), e);
-            // Aqui você pode lançar AmqpRejectAndDontRequeueException
-            // se não quiser reprocessar em caso de erro de negócio
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
         }
     }

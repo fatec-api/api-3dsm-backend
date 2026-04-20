@@ -63,6 +63,7 @@ public class ApontamentoService {
         double horas = calcularHorasLiquidas(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim(),
                 novaEntidade.getPausaInicio(), novaEntidade.getPausaFim());
         novaEntidade.setHorasLiquidas(horas);
+        System.out.println("ITEM ID: " + novaEntidade.getItemId());
         return mapper.toResponse(repository.save(novaEntidade));
     }
 
@@ -108,11 +109,11 @@ public class ApontamentoService {
         long minutos = java.time.Duration.between(horaInicio, horaFim).toMinutes();
         long minutosPausa = 0;
         if (pausaInicio == null || pausaFim == null) {
-            System.out.println("⏰ HORAS LÍQUIDAS sem pausa: " + minutos / 60);
+            System.out.println("HORAS LÍQUIDAS sem pausa: " + minutos / 60);
             return minutos / 60.0;
         } else {
             minutosPausa = java.time.Duration.between(pausaInicio, pausaFim).toMinutes();
-            System.out.println("⏰ HORAS LÍQUIDAS com pausa: " + (minutos - minutosPausa) / 60.0);
+            System.out.println("HORAS LÍQUIDAS com pausa: " + (minutos - minutosPausa) / 60.0);
             return (minutos - minutosPausa) / 60.0;
         }
     }

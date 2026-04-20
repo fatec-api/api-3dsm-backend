@@ -19,10 +19,10 @@ public class ApontamentoModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "id_item", nullable = false)
     private Long itemId;
 
-    @Column(nullable = false)
+    @Column(name = "id_usuario", nullable = false)
     private UUID usuarioId;
 
     @Column(nullable = false)

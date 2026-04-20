@@ -11,7 +11,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ApontamentoMapper {
 
-
     ApontamentoResponseDTO toResponse(ApontamentoModel entity);
 
     List<ApontamentoResponseDTO> toResponseList(List<ApontamentoModel> entities);

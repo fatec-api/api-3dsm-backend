@@ -9,8 +9,8 @@ import br.com.jth.servico_gestao.mapper.UsuarioMapper;
 import br.com.jth.servico_gestao.mensageria.UsuarioEventProducer;
 import br.com.jth.servico_gestao.model.UsuarioModel;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -19,24 +19,24 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Service
+@AllArgsConstructor
 public class UsuarioService {
 
     private static final Pattern SENHA_PATTERN = Pattern.compile(
             "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-={}|:<>?]).{8,}$"
     );
 
-    @Autowired private UsuarioRepository usuarioRepository;
-    @Autowired private UsuarioMapper usuarioMapper;
-    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired private UsuarioEventProducer usuarioEventProducer;
-
+    private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final UsuarioEventProducer usuarioEventProducer;
 
     public UsuarioResponseDTO cadastrarUsuario(UsuarioRequestDTO dto) {
         if (usuarioRepository.existsByEmail(dto.getEmail())) {
             throw new EmailJaCadastradoException("E-mail informado já está em uso.");
         }
         UsuarioModel model = usuarioMapper.toEntity(dto);
-        model.setSenha(bCryptPasswordEncoder.encode(dto.getSenha()));
+        model.setSenha(passwordEncoder.encode(dto.getSenha()));
         model.setAtivo(true);
 
         UsuarioModel salvo = usuarioRepository.save(model);
@@ -63,7 +63,7 @@ public class UsuarioService {
                         "Senha inválida: ela deve conter ao menos 8 caracteres, incluindo " +
                                 "letras maiúsculas, minúsculas, números e caracteres especiais.");
             }
-            model.setSenha(bCryptPasswordEncoder.encode(dto.getSenha()));
+            model.setSenha(passwordEncoder.encode(dto.getSenha()));
         }
 
         model.setNomeUsuario(dto.getNomeUsuario());

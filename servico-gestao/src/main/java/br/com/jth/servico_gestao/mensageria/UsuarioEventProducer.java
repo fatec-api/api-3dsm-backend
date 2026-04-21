@@ -4,19 +4,23 @@ import br.com.jth.servico_gestao.config.RabbitMQConfig;
 import br.com.jth.servico_gestao.mensageria.evento.AuditoriaEventDTO;
 import br.com.jth.servico_gestao.mensageria.evento.UsuarioEventDTO;
 import br.com.jth.servico_gestao.model.UsuarioModel;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-@Component
+@Slf4j
+@Service
+@RequiredArgsConstructor
 public class UsuarioEventProducer {
 
-    @Autowired
-    private AmqpTemplate amqpTemplate;
+    private final AmqpTemplate amqpTemplate;
 
     public void publicarUsuarioCriado(UsuarioModel model) {
         amqpTemplate.convertAndSend(

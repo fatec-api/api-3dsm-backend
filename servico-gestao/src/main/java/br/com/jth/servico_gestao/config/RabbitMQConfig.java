@@ -1,6 +1,6 @@
 package br.com.jth.servico_gestao.config;
 
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -13,6 +13,7 @@ public class RabbitMQConfig {
 
     public static final String GESTAO_EXCHANGE = "gestao.exchange";
 
+    public static final String QUEUE_USUARIO          = "usuario.queue";
     public static final String USUARIO_CRIADO_KEY     = "usuario.criado";
     public static final String USUARIO_ATUALIZADO_KEY = "usuario.atualizado";
     public static final String USUARIO_DELETADO_KEY   = "usuario.deletado";
@@ -26,6 +27,37 @@ public class RabbitMQConfig {
     @Bean
     public TopicExchange gestaoExchange() {
         return new TopicExchange(GESTAO_EXCHANGE, true, false);
+    }
+
+    @Bean
+    public Queue usuarioQueue() {
+        return QueueBuilder.durable(QUEUE_USUARIO).build();
+    }
+
+    // bindings (queue + exchange)
+    @Bean
+    public Binding usuarioCriadoBinding(Queue usuarioQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder
+                .bind(usuarioQueue)
+                .to(gestaoExchange)
+                .with(USUARIO_CRIADO_KEY);
+    }
+
+
+    @Bean
+    public Binding usuarioAtualizadoBinding(Queue usuarioQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder
+                .bind(usuarioQueue)
+                .to(gestaoExchange)
+                .with(USUARIO_ATUALIZADO_KEY);
+    }
+
+    @Bean
+    public Binding usuarioDeletadoBinding(Queue usuarioQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder
+                .bind(usuarioQueue)
+                .to(gestaoExchange)
+                .with(USUARIO_DELETADO_KEY);
     }
 
     @Bean

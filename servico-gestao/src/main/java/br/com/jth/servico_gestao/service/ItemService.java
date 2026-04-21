@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -51,6 +54,18 @@ public class ItemService {
         ItemModel salvo = itemRepository.save(item);
         //itemEventProducer.publicarItemCriado(salvo); // ← adiciona essa linha
         return itemMapper.toResponse(salvo);
+    }
+
+    public List<ItemResponseDTO> listarPorProjeto(Long projetoId) {
+        return itemRepository.findByProjetoModelId(projetoId).stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<ItemResponseDTO> listarPorProfissional(UUID usuarioId) {
+        return itemRepository.findByUsuarioModelId(usuarioId).stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     private String gerarCodigo(ProjetoModel projeto) {

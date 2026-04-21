@@ -10,6 +10,7 @@ import br.com.jth.servico_gestao.model.UsuarioModel;
 import br.com.jth.servico_gestao.repository.ClienteRepository;
 import br.com.jth.servico_gestao.repository.ProjetoRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,14 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProjetoService {
 
-    @Autowired private ProjetoRepository projetoRepository;
-    @Autowired private UsuarioRepository usuarioRepository;
-    @Autowired private ClienteRepository clienteRepository;
-    @Autowired private ProjetoMapper projetoMapper;
-    @Autowired private ProjetoEventProducer projetoEventProducer;
+    private final ProjetoRepository projetoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ClienteRepository clienteRepository;
+    private final ProjetoMapper projetoMapper;
+    private final ProjetoEventProducer projetoEventProducer;
 
     public ProjetoResponseDTO criarProjeto(ProjetoRequestDTO dto) {
         if (dto.getDataFim().isBefore(dto.getDataInicio()))

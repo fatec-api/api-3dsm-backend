@@ -63,18 +63,32 @@ public class ApontamentoService {
         ApontamentoModel apontamentoExistente = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Apontamento não encontrado com id: " + id));
 
+        if (dto.itemId() != null) {
+            apontamentoExistente.setItemId(dto.itemId());
+        }
+        if (dto.usuarioId() != null) {
+            apontamentoExistente.setUsuarioId(dto.usuarioId());
+        }
+        if (dto.dataApontamento() != null) {
+            apontamentoExistente.setDataApontamento(dto.dataApontamento());
+        }
         if (dto.horaInicio() != null) {
             apontamentoExistente.setHoraInicio(dto.horaInicio());
         }
         if (dto.horaFim() != null) {
             apontamentoExistente.setHoraFim(dto.horaFim());
         }
+        if (dto.observacao() != null) {
+            apontamentoExistente.setObservacao(dto.observacao());
+        }
 
         apontamentoExistente.setHorasLiquidas(
                 calcularHorasLiquidas(
                         apontamentoExistente.getHoraInicio(),
                         apontamentoExistente.getHoraFim()));
-        return mapper.toResponse(apontamentoExistente);
+
+        ApontamentoModel atualizado = repository.save(apontamentoExistente);
+        return mapper.toResponse(atualizado);
     }
 
     @Transactional

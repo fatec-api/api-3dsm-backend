@@ -52,16 +52,7 @@ public class ApontamentoService {
             throw new NegocioException("Horário de fim não pode ser anterior ao início");
         }
 
-        if (novaEntidade.getPausaInicio() != null && novaEntidade.getPausaFim() != null) {
-            if (!validaPausaEntreFimInicio(novaEntidade.getPausaInicio(), novaEntidade.getPausaFim(),
-                    novaEntidade.getHoraInicio(), novaEntidade.getHoraFim())) {
-                throw new NegocioException(
-                        "O horário de pausa deve estar compreendido entre o horário de início e fim da atividade");
-            }
-        }
-
-        double horas = calcularHorasLiquidas(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim(),
-                novaEntidade.getPausaInicio(), novaEntidade.getPausaFim());
+        double horas = calcularHorasLiquidas(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim());
         novaEntidade.setHorasLiquidas(horas);
         System.out.println("ITEM ID: " + novaEntidade.getItemId());
         return mapper.toResponse(repository.save(novaEntidade));
@@ -78,19 +69,11 @@ public class ApontamentoService {
         if (dto.horaFim() != null) {
             apontamentoExistente.setHoraFim(dto.horaFim());
         }
-        if (dto.pausaInicio() != null) {
-            apontamentoExistente.setPausaInicio(dto.pausaInicio());
-        }
-        if (dto.pausaFim() != null) {
-            apontamentoExistente.setPausaFim(dto.pausaFim());
-        }
 
         apontamentoExistente.setHorasLiquidas(
                 calcularHorasLiquidas(
                         apontamentoExistente.getHoraInicio(),
-                        apontamentoExistente.getHoraFim(),
-                        apontamentoExistente.getPausaInicio(),
-                        apontamentoExistente.getPausaFim()));
+                        apontamentoExistente.getHoraFim()));
         return mapper.toResponse(apontamentoExistente);
     }
 
@@ -102,29 +85,17 @@ public class ApontamentoService {
         repository.deleteById(id);
     }
 
-    private Double calcularHorasLiquidas(LocalDateTime horaInicio, LocalDateTime horaFim, LocalDateTime pausaInicio,
-                                         LocalDateTime pausaFim) {
+    private Double calcularHorasLiquidas(LocalDateTime horaInicio, LocalDateTime horaFim) {
         if (horaInicio == null || horaFim == null)
             return 0.0;
         long minutos = java.time.Duration.between(horaInicio, horaFim).toMinutes();
-        long minutosPausa = 0;
-        if (pausaInicio == null || pausaFim == null) {
-            System.out.println("HORAS LÍQUIDAS sem pausa: " + minutos / 60);
-            return minutos / 60.0;
-        } else {
-            minutosPausa = java.time.Duration.between(pausaInicio, pausaFim).toMinutes();
-            System.out.println("HORAS LÍQUIDAS com pausa: " + (minutos - minutosPausa) / 60.0);
-            return (minutos - minutosPausa) / 60.0;
-        }
+        System.out.println("HORAS LÍQUIDAS: " + minutos / 60.0);
+        return minutos / 60.0;
+
     }
 
     private boolean validaFimAposInicio(LocalDateTime inicio, LocalDateTime fim) {
         return fim.isAfter(inicio);
-    }
-
-    private boolean validaPausaEntreFimInicio(LocalDateTime pausaInicio, LocalDateTime pausaFim, LocalDateTime inicio,
-                                              LocalDateTime fim) {
-        return pausaInicio.isAfter(inicio) && pausaFim.isBefore(fim);
     }
 
 }

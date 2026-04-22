@@ -26,12 +26,6 @@ public record ApontamentoRequestDTO(
         @PastOrPresent(message = "Você não pode apontar horas para o futuro")
         LocalDateTime horaFim,
 
-        @PastOrPresent(message = "Você não pode apontar horas para o futuro")
-        LocalDateTime pausaInicio,
-
-        @PastOrPresent(message = "Você não pode apontar horas para o futuro")
-        LocalDateTime pausaFim,
-
         @Size(max = 300, message = "A observação deve ter no máximo 300 caracteres")
         String observacao
 ) {

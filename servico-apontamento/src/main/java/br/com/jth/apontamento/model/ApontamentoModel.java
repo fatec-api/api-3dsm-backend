@@ -42,12 +42,6 @@ public class ApontamentoModel {
     @Column(nullable = false)
     private LocalDateTime horaFim;
 
-    @Column
-    private LocalDateTime pausaInicio;
-
-    @Column
-    private LocalDateTime pausaFim;
-
     @Column(length = 300)
     private String observacao;
 

@@ -16,7 +16,7 @@ import br.com.jth.auditoria.repository.AuditoriaRepository;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/auditoria")
+@RequestMapping("/auditorias")
 @RequiredArgsConstructor
 public class AuditoriaController {
 

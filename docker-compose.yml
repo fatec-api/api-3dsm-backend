@@ -140,26 +140,26 @@ services:
 #    networks:
 #      - backend-hutt
 #
-#  servico-auditoria:
-#    build: ./servico-auditoria
-#    container_name: servico-auditoria
-#    restart: on-failure
-#    depends_on:
-#      rabbitmq:
-#        condition: service_healthy
-#      mongodb:
-#        condition: service_healthy
-#    environment:
-#      SPRING_RABBITMQ_HOST: rabbitmq
-#      SPRING_RABBITMQ_PORT: 5672
-#      SPRING_RABBITMQ_USERNAME: rabbit
-#      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
-#      SPRING_DATA_MONGODB_URI: mongodb://mongouser:${MONGO_PASS}@mongodb:27017/auditoria?authSource=admin
-#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
-#    ports:
-#      - "8084:8080"
-#    networks:
-#      - backend-hutt
+  servico-auditoria:
+   build: ./servico-auditoria
+   container_name: servico-auditoria
+   restart: on-failure
+   depends_on:
+     rabbitmq:
+       condition: service_healthy
+     mongodb:
+       condition: service_healthy
+   environment:
+     SPRING_RABBITMQ_HOST: rabbitmq
+     SPRING_RABBITMQ_PORT: 5672
+     SPRING_RABBITMQ_USERNAME: rabbit
+     SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
+     SPRING_DATA_MONGODB_URI: mongodb://mongouser:${MONGO_PASS}@mongodb:27017/auditoria?authSource=admin
+     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
+   ports:
+     - "8084:8080"
+   networks:
+     - backend-hutt
 
 volumes:
   mysql_data:

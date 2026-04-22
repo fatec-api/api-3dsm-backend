@@ -1,4 +1,4 @@
-package com.jth.auditoria.config
+package br.com.jth.auditoria.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,22 +22,23 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-       JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
-       authenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
+        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
+        authenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
 
-       http.sessionManagement(sessionManagementConfigurer ->
-               sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-               .cors(Customizer.withDefaults())
-               .csrf(AbstractHttpConfigurer::disable)
-               .authorizeHttpRequests(auth -> auth
-                       .requestMatchers("/public", "/public/**").permitAll() // add rotas que são públicas
-                       .requestMatchers("/private", "/private/**").authenticated() // add rotas que precisa estar autenticado
-                       .anyRequest().authenticated());
+        http.sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/public", "/public/**").permitAll() // add rotas que são públicas
+                        .requestMatchers("/private", "/private/**").authenticated() // add rotas que precisa estar
+                                                                                    // autenticado
+                        .anyRequest().authenticated());
 
-       http.oauth2ResourceServer(rsc -> rsc
-               .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(authenticationConverter)));
+        http.oauth2ResourceServer(rsc -> rsc
+                .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(authenticationConverter)));
 
-       return http.build();
+        return http.build();
     }
 
     @Bean

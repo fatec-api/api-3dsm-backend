@@ -45,7 +45,7 @@ public class ApontamentoService {
     public ApontamentoResponseDTO salvarApontamento(ApontamentoRequestDTO dto) {
         ApontamentoModel novaEntidade = mapper.toEntity(dto);
 
-        if (repository.existeConflito(dto.dataApontamento(), dto.horaInicio(), dto.horaFim())) {
+        if (repository.existeConflito(dto.usuarioId(), dto.dataApontamento(), dto.horaInicio(), dto.horaFim())) {
             throw new NegocioException("Você já possui um apontamento nesse horário");
         }
         if (!validaFimAposInicio(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim())) {
@@ -86,6 +86,15 @@ public class ApontamentoService {
                 calcularHorasLiquidas(
                         apontamentoExistente.getHoraInicio(),
                         apontamentoExistente.getHoraFim()));
+
+        LocalDateTime inicio = apontamentoExistente.getHoraInicio();
+        LocalDateTime fim = apontamentoExistente.getHoraFim();
+        LocalDateTime data = apontamentoExistente.getDataApontamento();
+        UUID usuarioId = apontamentoExistente.getUsuarioId();
+
+        if (repository.existeConflitoParaEdicao(usuarioId, id, data, inicio, fim)) {
+            throw new NegocioException("Você já possui um apontamento nesse horário");
+        }
 
         ApontamentoModel atualizado = repository.save(apontamentoExistente);
         return mapper.toResponse(atualizado);

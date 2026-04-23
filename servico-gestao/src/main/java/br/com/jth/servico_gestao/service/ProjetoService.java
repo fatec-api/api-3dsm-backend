@@ -11,7 +11,6 @@ import br.com.jth.servico_gestao.repository.ClienteRepository;
 import br.com.jth.servico_gestao.repository.ProjetoRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,13 +29,16 @@ public class ProjetoService {
     private final ProjetoEventProducer projetoEventProducer;
 
     public ProjetoResponseDTO criarProjeto(ProjetoRequestDTO dto) {
-        if (dto.getDataFim().isBefore(dto.getDataInicio()))
+
+        if (dto.getDataFim().isBefore(dto.getDataInicio())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "A data de término não pode ser anterior à data de início.");
+        }
 
-        if (dto.getValorOrcamento().compareTo(new BigDecimal("100000")) > 0)
+        if (dto.getValorOrcamento().compareTo(new BigDecimal("100000")) > 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Valor de orçamento muito alto.");
+        }
 
         UsuarioModel gestor = usuarioRepository.findById(dto.getGestorId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -47,9 +49,11 @@ public class ProjetoService {
             profissional = usuarioRepository.findById(dto.getProfissionalAlocadoId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Profissional não encontrado."));
-            if (!profissional.isAtivo())
+
+            if (!profissional.isAtivo()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "O profissional alocado não está ativo.");
+            }
         }
 
         ClienteModel cliente = null;
@@ -65,7 +69,6 @@ public class ProjetoService {
         model.setCliente(cliente);
 
         ProjetoModel salvo = projetoRepository.save(model);
-
         projetoEventProducer.publicarProjetoCriado(salvo);
 
         return projetoMapper.toResponse(salvo);
@@ -90,6 +93,7 @@ public class ProjetoService {
         ProjetoModel model = projetoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Projeto não encontrado: " + id));
+
         projetoRepository.delete(model);
         projetoEventProducer.publicarProjetoDeletado(id);
     }

@@ -3,6 +3,7 @@ package br.com.jth.servico_gestao.service;
 import br.com.jth.servico_gestao.dto.request.ItemRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ItemResponseDTO;
 import br.com.jth.servico_gestao.mapper.ItemMapper;
+import br.com.jth.servico_gestao.mensageria.ItemEventProducer;
 import br.com.jth.servico_gestao.model.ItemModel;
 import br.com.jth.servico_gestao.model.ProjetoModel;
 import br.com.jth.servico_gestao.model.UsuarioModel;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
+
     @Autowired
     private ItemRepository itemRepository;
 
@@ -33,14 +35,21 @@ public class ItemService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private ItemEventProducer itemEventProducer;
+
     public ItemResponseDTO cadastrarItem(ItemRequestDTO dto) {
+
         ProjetoModel projeto = projetoRepository.findById(dto.getProjetoId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Projeto não encontrado com id: " + dto.getProjetoId()));
+
         String codigo = gerarCodigo(projeto);
+
         ItemModel item = itemMapper.toEntity(dto);
         item.setCodigo(codigo);
         item.setProjetoModel(projeto);
+
         if (item.getDataAtribuicao() == null) {
             item.setDataAtribuicao(LocalDate.now());
         }
@@ -51,9 +60,20 @@ public class ItemService {
                             HttpStatus.NOT_FOUND, "Usuário não encontrado com id: " + dto.getUsuarioId()));
             item.setUsuarioModel(usuario);
         }
+
         ItemModel salvo = itemRepository.save(item);
-        //itemEventProducer.publicarItemCriado(salvo); // ← adiciona essa linha
+        itemEventProducer.publicarItemCriado(salvo);
+
         return itemMapper.toResponse(salvo);
+    }
+
+    public void excluirItem(Long id) {
+        ItemModel item = itemRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Item não encontrado com id: " + id));
+
+        itemRepository.delete(item);
+        itemEventProducer.publicarItemDeletado(id);
     }
 
     public List<ItemResponseDTO> listarPorProjeto(Long projetoId) {
@@ -75,13 +95,11 @@ public class ItemService {
 
         String prefixo = letras.length() >= 3
                 ? letras.substring(0, 3)
-                : String.format("%-3s", letras).replace(' ', 'X'); // padding com X se nome curto
+                : String.format("%-3s", letras).replace(' ', 'X');
 
         long total = itemRepository.countByProjetoModel(projeto);
         String sufixo = String.format("%04d", total + 1);
 
         return prefixo + sufixo;
     }
-
-
 }

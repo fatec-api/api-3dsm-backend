@@ -3,6 +3,7 @@ package br.com.jth.servico_gestao.service;
 import br.com.jth.servico_gestao.dto.request.UsuarioRequestDTO;
 import br.com.jth.servico_gestao.dto.request.UsuarioUpdateRequestDTO;
 import br.com.jth.servico_gestao.dto.response.UsuarioResponseDTO;
+import br.com.jth.servico_gestao.enums.usuario.Cargo;
 import br.com.jth.servico_gestao.exception.EmailJaCadastradoException;
 import br.com.jth.servico_gestao.exception.RecursoNaoEncontradoException;
 import br.com.jth.servico_gestao.mapper.UsuarioMapper;
@@ -12,11 +13,14 @@ import br.com.jth.servico_gestao.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -81,6 +85,37 @@ public class UsuarioService {
                 .map(usuarioMapper::toResponse)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário", id));
     }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioResponseDTO> listarProfissionaisAtivos() {
+        return usuarioRepository.findByAtivoTrueAndCargo(Cargo.Profissional).stream()
+                .map(user -> new UsuarioResponseDTO(
+                        user.getId(),
+                        user.getNomeUsuario(),
+                        user.getEmail(),
+                        user.getValorHora(),
+                        user.getCargo(),
+                        user.getNivelExperiencia(),
+                        user.isAtivo(),
+                        user.getCriado_em()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioResponseDTO> listarUsuariosAtivos() {
+        return usuarioRepository.findByAtivoTrue().stream()
+                .map(user -> new UsuarioResponseDTO(
+                        user.getId(),
+                        user.getNomeUsuario(),
+                        user.getEmail(),
+                        user.getValorHora(),
+                        user.getCargo(),
+                        user.getNivelExperiencia(),
+                        user.isAtivo(),
+                        user.getCriado_em()))
+                .collect(Collectors.toList());
+    }
+
     public void excluirUsuario(UUID id) {
         UsuarioModel model = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário", id));

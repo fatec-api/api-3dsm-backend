@@ -25,16 +25,10 @@ public class AlocacaoController {
     @Autowired
     private AlocacaoService alocacaoService;
 
-    @GetMapping("/profissionais/ativos")
+    @GetMapping("/profissionais-ativos")
     public ResponseEntity<List<UsuarioResponseDTO>> getTodosProfissionaisAtivos() {
         List<UsuarioResponseDTO> profissionais = alocacaoService.listarProfissionaisAtivos();
         return ResponseEntity.ok(profissionais);
-    }
-
-    @GetMapping("/usuarios/ativos")
-    public ResponseEntity<List<UsuarioResponseDTO>> getUsuariosAtivos() {
-        List<UsuarioResponseDTO> usuarios = alocacaoService.listarUsuariosAtivos();
-        return ResponseEntity.ok(usuarios);
     }
 
     @GetMapping("/projeto/{projectId}")
@@ -46,7 +40,7 @@ public class AlocacaoController {
     @PostMapping("/vincular")
     public ResponseEntity<String> vincular(@RequestBody AllocationRequestDTO request) {
         log.info("Recebida requisição de alocação: Projeto {}, Item {}, Profissionais: {}",
-                request.getProjectId(), request.getItemId(), request.getProfessionalIds());
+                request.getProjetoId(), request.getItemId(), request.getProfissionalIds());
 
         alocacaoService.vincularProfissionais(request);
 

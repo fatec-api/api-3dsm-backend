@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -34,6 +36,12 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable UUID id) {
         return ResponseEntity.ok(usuarioService.pegarUsuario(id));
+    }
+
+    @GetMapping("/ativos")
+    public ResponseEntity<List<UsuarioResponseDTO>> getUsuariosAtivos() {
+        List<UsuarioResponseDTO> usuarios = usuarioService.listarUsuariosAtivos();
+        return ResponseEntity.ok(usuarios);
     }
 
     @DeleteMapping("/deletar/{id}")

@@ -9,11 +9,11 @@ import java.util.UUID;
 @Data
 public class AllocationRequestDTO {
      @NotNull(message = "O ID do projeto é obrigatório")
-    private Long projectId;
+    private Long projetoId;
 
     @NotNull(message = "O ID do item é obrigatório")
     private Long itemId;
 
     @NotEmpty(message = "É necessário selecionar pelo menos um profissional")
-    private List<UUID> professionalIds;
+    private List<UUID> profissionalIds;
 }

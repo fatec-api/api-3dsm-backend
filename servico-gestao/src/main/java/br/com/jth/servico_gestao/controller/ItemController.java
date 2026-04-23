@@ -27,7 +27,7 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.cadastrarItem(dto));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<ItemResponseDTO>> listarItensPorProfissional(@PathVariable UUID usuarioId) {
         List<ItemResponseDTO> itens = itemService.listarPorProfissional(usuarioId);
 

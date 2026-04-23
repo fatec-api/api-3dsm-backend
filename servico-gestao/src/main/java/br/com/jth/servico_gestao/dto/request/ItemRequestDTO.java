@@ -1,7 +1,6 @@
 package br.com.jth.servico_gestao.dto.request;
 
 import br.com.jth.servico_gestao.enums.item.NivelAtividade;
-import br.com.jth.servico_gestao.model.ItemModel;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

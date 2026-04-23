@@ -53,21 +53,6 @@ public class AlocacaoService {
     }
 
     @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> listarUsuariosAtivos() {
-        return usuarioRepository.findByAtivoTrue().stream()
-                .map(user -> new UsuarioResponseDTO(
-                        user.getId(),
-                        user.getNomeUsuario(),
-                        user.getEmail(),
-                        user.getValorHora(),
-                        user.getCargo(),
-                        user.getNivelExperiencia(),
-                        user.isAtivo(),
-                        user.getCriado_em()))
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarProfissionaisDoProjeto(Long projectId) {
         log.info("Buscando profissionais vinculados ao projeto ID: {}", projectId);
 
@@ -93,15 +78,15 @@ public class AlocacaoService {
     @Transactional
     public void vincularProfissionais(AllocationRequestDTO request) {
         log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}",
-                request.getItemId(), request.getProjectId());
+                request.getItemId(), request.getProjetoId());
 
         ItemModel item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new RuntimeException("Erro: Item não encontrado."));
 
-        ProjetoModel projeto = projetoRepository.findById(request.getProjectId())
+        ProjetoModel projeto = projetoRepository.findById(request.getProjetoId())
                 .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
 
-        UUID profissionalId = request.getProfessionalIds().get(0);
+        UUID profissionalId = request.getProfissionalIds().get(0);
 
         UsuarioModel profissional = usuarioRepository.findById(profissionalId)
                 .orElseThrow(() -> new RuntimeException("Erro: Profissional não encontrado."));

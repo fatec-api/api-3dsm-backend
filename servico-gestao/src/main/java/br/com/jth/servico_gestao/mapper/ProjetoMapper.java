@@ -8,10 +8,11 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ProjetoMapper {
-
     @Mapping(target = "gestor", ignore = true)
     @Mapping(target = "cliente", ignore = true)
     @Mapping(target = "profissionalAlocado", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "ativo", ignore = true)
     ProjetoModel toEntity(ProjetoRequestDTO dto);
 
     @Mapping(source = "gestor.nomeUsuario", target = "nomeGestor")

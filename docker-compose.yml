@@ -125,30 +125,30 @@ services:
 
 
 
-#  servico-gestao:
-#    build: ./servico-gestao
-#    container_name: servico-gestao
-#    restart: on-failure
-#    depends_on:
-#      mysql:
-#        condition: service_healthy
-#      rabbitmq:
-#        condition: service_healthy
-#      keycloak:
-#        condition: service_healthy
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gestao_db
-#      SPRING_DATASOURCE_USERNAME: appuser
-#      SPRING_DATASOURCE_PASSWORD: ${DB_APP_PASS}
-#      SPRING_RABBITMQ_HOST: rabbitmq
-#      SPRING_RABBITMQ_PORT: 5672
-#      SPRING_RABBITMQ_USERNAME: rabbit
-#      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
-#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
-#    ports:
-#      - "8082:8080"
-#    networks:
-#      - backend-hutt
+ servico-gestao:
+   build: ./servico-gestao
+   container_name: servico-gestao
+   restart: on-failure
+   depends_on:
+     mysql:
+       condition: service_healthy
+     rabbitmq:
+       condition: service_healthy
+     keycloak:
+       condition: service_healthy
+   environment:
+     SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gestao_db
+     SPRING_DATASOURCE_USERNAME: appuser
+     SPRING_DATASOURCE_PASSWORD: ${DB_APP_PASS}
+     SPRING_RABBITMQ_HOST: rabbitmq
+     SPRING_RABBITMQ_PORT: 5672
+     SPRING_RABBITMQ_USERNAME: rabbit
+     SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
+     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
+   ports:
+     - "8082:8080"
+   networks:
+     - backend-hutt
 
   servico-apontamento:
     build: ./servico-apontamento

@@ -1,6 +1,5 @@
 package com.example.app.dto.request;
 
-
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
@@ -28,7 +27,11 @@ public record ApontamentoUpdateRequestDTO(
         LocalDateTime pausaFim,
 
         @Size(max = 300, message = "A observação deve ter no máximo 300 caracteres")
-        String observacao
+        String observacao,
+
+        String status,
+
+        String justificativa
 ) {
 
 }

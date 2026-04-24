@@ -16,6 +16,9 @@ public interface ApontamentoMapper {
     @Mapping(source = "item.id", target = "itemId")
     @Mapping(source = "item.descricao", target = "itemDescricao")
     @Mapping(source = "usuario.id", target = "usuarioId")
+    @Mapping(source = "status", target = "status") 
+    @Mapping(source = "justificativa", target = "justificativa")
+
     ApontamentoResponseDTO toResponse(ApontamentoModel entity);
 
     List<ApontamentoResponseDTO> toResponseList(List<ApontamentoModel> entities);
@@ -24,5 +27,8 @@ public interface ApontamentoMapper {
     @Mapping(source = "itemId", target = "item.id")
     @Mapping(source = "usuarioId", target = "usuario.id")
     @Mapping(target = "horasLiquidas", ignore = true)
+    @Mapping(target = "status", ignore = true) 
+    @Mapping(target = "justificativa", ignore = true)
+
     ApontamentoModel toEntity(ApontamentoRequestDTO request);
 }

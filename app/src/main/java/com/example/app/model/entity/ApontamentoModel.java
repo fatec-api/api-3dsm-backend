@@ -1,12 +1,11 @@
 package com.example.app.model.entity;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -56,4 +55,11 @@ public class ApontamentoModel {
 
     @Column(nullable = false)
     private Double horasLiquidas;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusApontamento status = StatusApontamento.PENDENTE;
+
+    @Column(columnDefinition = "TEXT")
+    private String justificativa;
 }

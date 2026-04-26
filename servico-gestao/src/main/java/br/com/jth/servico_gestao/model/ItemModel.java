@@ -1,6 +1,5 @@
 package br.com.jth.servico_gestao.model;
 
-import java.sql.Time;
 import java.time.LocalDate;
 
 import br.com.jth.servico_gestao.enums.item.NivelAtividade;

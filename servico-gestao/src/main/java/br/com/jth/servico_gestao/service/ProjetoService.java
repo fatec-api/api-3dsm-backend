@@ -10,12 +10,14 @@ import br.com.jth.servico_gestao.model.UsuarioModel;
 import br.com.jth.servico_gestao.repository.ClienteRepository;
 import br.com.jth.servico_gestao.repository.ProjetoRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 @Service
@@ -74,17 +76,21 @@ public class ProjetoService {
         return projetoMapper.toResponse(salvo);
     }
 
+    @Transactional
     public ProjetoResponseDTO buscarPorId(Long id) {
-        return projetoMapper.toResponse(
-                projetoRepository.findById(id)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Projeto não encontrado: " + id))
-        );
+        ProjetoModel projeto = projetoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Projeto não encontrado: " + id));
+
+        calcularHoras(projeto);
+        return projetoMapper.toResponse(projeto);
     }
 
+    @Transactional
     public List<ProjetoResponseDTO> listarTodos() {
         return projetoRepository.findAll()
                 .stream()
+                .peek(this::calcularHoras)
                 .map(projetoMapper::toResponse)
                 .toList();
     }
@@ -96,5 +102,23 @@ public class ProjetoService {
 
         projetoRepository.delete(model);
         projetoEventProducer.publicarProjetoDeletado(id);
+    }
+
+    private void calcularHoras(ProjetoModel projeto) {
+        BigInteger totalPrevistas = projeto.getItens().stream()
+                .filter(item -> item.getPrevisaoHoras() != null)
+                .map(item -> BigInteger.valueOf(item.getPrevisaoHoras()))
+                .reduce(BigInteger.ZERO, BigInteger::add);
+
+        projeto.setHorasPrevistasTotal(totalPrevistas);
+
+        if (totalPrevistas.compareTo(BigInteger.ZERO) > 0
+                && projeto.getHorasRealizadasTotal() != null) {
+            double progresso = projeto.getHorasRealizadasTotal()
+                    .doubleValue() / totalPrevistas.doubleValue() * 100;
+            projeto.setProgressoProjeto(progresso); // sem Math.min pra permitir acima de 100% como nos radiais
+        } else {
+            projeto.setProgressoProjeto(0.0);
+        }
     }
 }

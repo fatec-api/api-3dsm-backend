@@ -1,6 +1,7 @@
 package br.com.jth.servico_gestao.controller;
 
 import br.com.jth.servico_gestao.dto.request.ItemRequestDTO;
+import br.com.jth.servico_gestao.dto.response.HorasPorAtividadeDTO;
 import br.com.jth.servico_gestao.dto.response.ItemResponseDTO;
 import br.com.jth.servico_gestao.dto.response.ProjetoResponseDTO;
 import br.com.jth.servico_gestao.service.ItemService;
@@ -48,6 +49,11 @@ public class ItemController {
         }
 
         return ResponseEntity.ok(itens);
+    }
+
+    @GetMapping("/projeto/{projetoId}/horas")
+    public ResponseEntity<List<HorasPorAtividadeDTO>> buscarHorasPorAtividade(@PathVariable Long projetoId) {
+        return ResponseEntity.ok(itemService.buscarHorasPorAtividade(projetoId));
     }
 
 }

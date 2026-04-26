@@ -1,22 +1,15 @@
 package br.com.jth.servico_gestao.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.jth.servico_gestao.enums.projeto.StatusProjeto;
 import br.com.jth.servico_gestao.enums.projeto.TipoProjeto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,6 +45,12 @@ public class ProjetoModel {
     @Column(nullable = false)
     private StatusProjeto status;
 
+    @Column(nullable = false)
+    private BigInteger horasRealizadasTotal; // Soma de horasLiquidas de todos os apontamentos Aprovados - ainda não
+
+    @Column
+    private BigInteger horasPendentesTotal; // Soma de horasLiquidas de todos os apontamentos Pendentes(que ainda não foram aprovados/reprovados). - ainda não
+
     @ManyToOne
     @JoinColumn(name = "id_cliente", nullable = true)
     private ClienteModel cliente;
@@ -69,6 +68,15 @@ public class ProjetoModel {
     @ManyToOne
     @JoinColumn(name = "id_profissional_alocado", nullable = true)
     private UsuarioModel profissionalAlocado;
+
+    @OneToMany(mappedBy = "projetoModel", fetch = FetchType.LAZY)
+    private List<ItemModel> itens = new ArrayList<>();
+
+    @Transient // campo transient não persiste na coluna, mas é serializado no objeto
+    private BigInteger horasPrevistasTotal;
+
+    @Transient
+    private Double progressoProjeto;
 
     @PrePersist
     public void prePersist() {

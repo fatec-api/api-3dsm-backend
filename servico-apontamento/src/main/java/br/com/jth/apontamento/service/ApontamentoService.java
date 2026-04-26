@@ -49,7 +49,7 @@ public class ApontamentoService {
             throw new NegocioException("Você já possui um apontamento nesse horário");
         }
         if (!validaFimAposInicio(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim())) {
-            throw new NegocioException("Horário de fim não pode ser anterior ao início");
+            throw new NegocioException("Horário de fim não pode ser igual ou anterior ao início");
         }
 
         double horas = calcularHorasLiquidas(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim());
@@ -94,6 +94,9 @@ public class ApontamentoService {
 
         if (repository.existeConflitoParaEdicao(usuarioId, id, data, inicio, fim)) {
             throw new NegocioException("Você já possui um apontamento nesse horário");
+        }
+        if (!validaFimAposInicio(apontamentoExistente.getHoraInicio(), apontamentoExistente.getHoraFim())) {
+            throw new NegocioException("Horário de fim não pode ser igual ou anterior ao início");
         }
 
         ApontamentoModel atualizado = repository.save(apontamentoExistente);

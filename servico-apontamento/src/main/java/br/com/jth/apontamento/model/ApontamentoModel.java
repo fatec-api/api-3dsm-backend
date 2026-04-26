@@ -1,5 +1,6 @@
 package br.com.jth.apontamento.model;
 
+import br.com.jth.apontamento.enums.ApontamentoStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,5 +48,12 @@ public class ApontamentoModel {
 
     @Column(nullable = false)
     private Double horasLiquidas;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ApontamentoStatus status = ApontamentoStatus.PENDENTE;
+
+    @Column(length = 500)
+    private String justificativaReprovacao;
 
 }

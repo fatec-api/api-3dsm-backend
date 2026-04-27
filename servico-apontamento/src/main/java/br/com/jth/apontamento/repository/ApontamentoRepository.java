@@ -1,5 +1,6 @@
 package br.com.jth.apontamento.repository;
 
+import br.com.jth.apontamento.enums.ApontamentoStatus;
 import br.com.jth.apontamento.model.ApontamentoModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,4 +35,6 @@ public interface ApontamentoRepository extends JpaRepository<ApontamentoModel, L
         """)
     boolean existeConflitoParaEdicao(UUID usuarioId, Long idAtual, LocalDateTime data, LocalDateTime novoInicio, LocalDateTime novoFim);
 
+
+    List<ApontamentoModel> findByItemIdInAndStatus(List<Long> itemIds, ApontamentoStatus status);
 }

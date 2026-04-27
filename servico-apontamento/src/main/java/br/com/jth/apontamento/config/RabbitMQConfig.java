@@ -23,6 +23,9 @@ public class RabbitMQConfig {
     public static final String APONTAMENTO_AVALIADO_KEY = "apontamento.avaliado";
     public static final String APONTAMENTO_DELETADO_KEY = "apontamento.deletado";
 
+
+    public static final String PROJETO_QUERY_KEY = "projeto.query.buscar.itens";
+
     @Bean
     public TopicExchange gestaoExchange() {
         return new TopicExchange(GESTAO_EXCHANGE, true, false);

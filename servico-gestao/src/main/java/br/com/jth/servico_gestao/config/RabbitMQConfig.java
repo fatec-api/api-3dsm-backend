@@ -35,6 +35,10 @@ public class RabbitMQConfig {
     public static final String QUEUE_APONTAMENTO_CRIADO        = "apontamento.criado.queue";
     public static final String APONTAMENTO_CRIADO_KEY          = "apontamento.criado";
 
+
+
+
+    
     @Bean
     public Queue apontamentoCriadoQueue() {
         return QueueBuilder.durable(QUEUE_APONTAMENTO_CRIADO).build();

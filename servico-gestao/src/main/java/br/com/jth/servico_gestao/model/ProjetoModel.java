@@ -45,12 +45,6 @@ public class ProjetoModel {
     @Column(nullable = false)
     private StatusProjeto status;
 
-    @Column(nullable = false)
-    private BigInteger horasRealizadasTotal; // Soma de horasLiquidas de todos os apontamentos Aprovados - ainda não
-
-    @Column
-    private BigInteger horasPendentesTotal; // Soma de horasLiquidas de todos os apontamentos Pendentes(que ainda não foram aprovados/reprovados). - ainda não
-
     @ManyToOne
     @JoinColumn(name = "id_cliente", nullable = true)
     private ClienteModel cliente;
@@ -72,9 +66,15 @@ public class ProjetoModel {
     @OneToMany(mappedBy = "projetoModel", fetch = FetchType.LAZY)
     private List<ItemModel> itens = new ArrayList<>();
 
+    @Column
+    private Double horasRealizadasTotal = 0.0;
+
+    @Column
+    private Double horasPendentesTotal = 0.0;
+
     @Transient // campo transient não persiste na coluna, mas é serializado no objeto
     private BigInteger horasPrevistasTotal;
-
+    
     @Transient
     private Double progressoProjeto;
 

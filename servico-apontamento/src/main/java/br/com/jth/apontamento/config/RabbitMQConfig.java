@@ -16,6 +16,18 @@ public class RabbitMQConfig {
     public static final String EXCHANGE_APONTAMENTOS    = "apontamentos.exchange";
     public static final String ROUTING_KEY_APONTAMENTOS = "apontamentos.routing-key";
 
+    // comunicação com servico-gestao
+    public static final String GESTAO_EXCHANGE = "gestao.exchange";
+
+    public static final String APONTAMENTO_CRIADO_KEY   = "apontamento.criado";
+    public static final String APONTAMENTO_AVALIADO_KEY = "apontamento.avaliado";
+    public static final String APONTAMENTO_DELETADO_KEY = "apontamento.deletado";
+
+    @Bean
+    public TopicExchange gestaoExchange() {
+        return new TopicExchange(GESTAO_EXCHANGE, true, false);
+    }
+
     // Fila durável (sobrevive a restart do broker)
     @Bean
     public Queue queueApontamentos() {

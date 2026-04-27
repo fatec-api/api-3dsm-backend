@@ -29,6 +29,33 @@ public class RabbitMQConfig {
     public static final String ITEM_ATUALIZADO_KEY = "item.atualizado";
     public static final String ITEM_DELETADO_KEY   = "item.deletado";
 
+    // comunicacao com servico-apontamento
+    public static final String QUEUE_APONTAMENTO        = "apontamento.queue";
+    public static final String APONTAMENTO_AVALIADO_KEY = "apontamento.avaliado";
+    public static final String QUEUE_APONTAMENTO_CRIADO        = "apontamento.criado.queue";
+    public static final String APONTAMENTO_CRIADO_KEY          = "apontamento.criado";
+
+    @Bean
+    public Queue apontamentoCriadoQueue() {
+        return QueueBuilder.durable(QUEUE_APONTAMENTO_CRIADO).build();
+    }
+
+    @Bean
+    public Binding apontamentoCriadoBinding(Queue apontamentoCriadoQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(apontamentoCriadoQueue).to(gestaoExchange).with(APONTAMENTO_CRIADO_KEY);
+    }
+
+    @Bean
+    public Queue apontamentoQueue() {
+        return QueueBuilder.durable(QUEUE_APONTAMENTO).build();
+    }
+
+    @Bean
+    public Binding apontamentoAvaliadoBinding(Queue apontamentoQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(apontamentoQueue).to(gestaoExchange).with(APONTAMENTO_AVALIADO_KEY);
+    }
+    //
+
     @Bean
     public TopicExchange gestaoExchange() {
         return new TopicExchange(GESTAO_EXCHANGE, true, false);

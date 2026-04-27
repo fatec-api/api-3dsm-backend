@@ -8,6 +8,7 @@ import br.com.jth.apontamento.enums.ApontamentoStatus;
 import br.com.jth.apontamento.exception.NegocioException;
 import br.com.jth.apontamento.exception.RecursoNaoEncontradoException;
 import br.com.jth.apontamento.mapper.ApontamentoMapper;
+import br.com.jth.apontamento.mensageria.ApontamentoEventProducer;
 import br.com.jth.apontamento.model.ApontamentoModel;
 import br.com.jth.apontamento.repository.ApontamentoRepository;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class ApontamentoService {
     private final ApontamentoRepository repository;
     private final ApontamentoMapper mapper;
+    private final ApontamentoEventProducer apontamentoEventProducer;
     private final HandlerMapping resourceHandlerMapping;
 
     public List<ApontamentoResponseDTO> listarApontamentos() {
@@ -45,19 +47,23 @@ public class ApontamentoService {
 
     @Transactional
     public ApontamentoResponseDTO salvarApontamento(ApontamentoRequestDTO dto) {
-        ApontamentoModel novaEntidade = mapper.toEntity(dto);
+        ApontamentoModel apontamento = mapper.toEntity(dto);
 
         if (repository.existeConflito(dto.usuarioId(), dto.dataApontamento(), dto.horaInicio(), dto.horaFim())) {
             throw new NegocioException("Você já possui um apontamento nesse horário");
         }
-        if (!validaFimAposInicio(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim())) {
+        if (!validaFimAposInicio(apontamento.getHoraInicio(), apontamento.getHoraFim())) {
             throw new NegocioException("Horário de fim não pode ser igual ou anterior ao início");
         }
 
-        double horas = calcularHorasLiquidas(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim());
-        novaEntidade.setHorasLiquidas(horas);
-        System.out.println("ITEM ID: " + novaEntidade.getItemId());
-        return mapper.toResponse(repository.save(novaEntidade));
+        double horas = calcularHorasLiquidas(apontamento.getHoraInicio(), apontamento.getHoraFim());
+        apontamento.setHorasLiquidas(horas);
+        System.out.println("ITEM ID: " + apontamento.getItemId());
+
+        ApontamentoModel salvo = repository.save(apontamento);
+        apontamentoEventProducer.publicarApontamentoCriado(salvo);
+
+        return mapper.toResponse(salvo);
     }
 
     @Transactional
@@ -132,7 +138,10 @@ public class ApontamentoService {
         apontamento.setStatus(dto.status());
         apontamento.setJustificativaReprovacao(dto.justificativaReprovacao());
 
-        return mapper.toResponse(repository.save(apontamento));
+        ApontamentoModel salvo = repository.save(apontamento);
+        apontamentoEventProducer.publicarApontamentoAvaliado(salvo);
+
+        return mapper.toResponse(salvo);
     }
 
     private Double calcularHorasLiquidas(LocalDateTime horaInicio, LocalDateTime horaFim) {

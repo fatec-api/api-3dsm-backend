@@ -112,11 +112,13 @@ public class ProjetoService {
 
         projeto.setHorasPrevistasTotal(totalPrevistas);
 
-        if (totalPrevistas.compareTo(BigInteger.ZERO) > 0
-                && projeto.getHorasRealizadasTotal() != null) {
-            double progresso = projeto.getHorasRealizadasTotal()
-                    .doubleValue() / totalPrevistas.doubleValue() * 100;
-            projeto.setProgressoProjeto(progresso); // sem Math.min pra permitir acima de 100% como nos radiais
+        // garante que nunca vem null (projetos criados antes dos eventos)
+        if (projeto.getHorasRealizadasTotal() == null) projeto.setHorasRealizadasTotal(0.0);
+        if (projeto.getHorasPendentesTotal() == null)  projeto.setHorasPendentesTotal(0.0);
+
+        if (totalPrevistas.compareTo(BigInteger.ZERO) > 0) {
+            double progresso = projeto.getHorasRealizadasTotal() / totalPrevistas.doubleValue() * 100;
+            projeto.setProgressoProjeto(progresso);
         } else {
             projeto.setProgressoProjeto(0.0);
         }

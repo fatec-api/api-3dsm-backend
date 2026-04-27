@@ -7,13 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ItemRepository extends JpaRepository<ItemModel, Long> {
     long countByProjetoModel(ProjetoModel projetoModel);
     List<ItemModel> findByProjetoModelId(Long projetoId);
     List<ItemModel> findByUsuarioModelId(UUID usuarioId);
-    
+
     @Query("""
     SELECT i.nivelAtividade, SUM(i.previsaoHoras)
     FROM ItemModel i
@@ -23,4 +24,7 @@ public interface ItemRepository extends JpaRepository<ItemModel, Long> {
     GROUP BY i.nivelAtividade
 """)
     List<Object[]> somarHorasPorNivelAtividade(@Param("projetoId") Long projetoId);
+
+    @Query("SELECT i.projetoModel.id FROM ItemModel i WHERE i.id = :itemId")
+    Optional<Long> findProjetoIdByItemId(@Param("itemId") Long itemId);
 }

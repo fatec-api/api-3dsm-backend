@@ -51,6 +51,7 @@ public class ItemController {
         return ResponseEntity.ok(itens);
     }
 
+    // detalhes de horas de cada atividade em um projeto
     @GetMapping("/projeto/{projetoId}/horas")
     public ResponseEntity<List<HorasPorAtividadeDTO>> buscarHorasPorAtividade(@PathVariable Long projetoId) {
         return ResponseEntity.ok(itemService.buscarHorasPorAtividade(projetoId));

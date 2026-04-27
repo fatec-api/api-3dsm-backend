@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.example.app.mensageria.ApontamentoProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.HandlerMapping;
@@ -25,6 +26,7 @@ public class ApontamentoService {
     private final ApontamentoRepository repository;
     private final ApontamentoMapper mapper;
     private final HandlerMapping resourceHandlerMapping;
+    private final ApontamentoProducer producer;
 
     public List<ApontamentoResponseDTO> listarApontamentos() {
         return mapper.toResponseList(repository.findAll());
@@ -65,6 +67,8 @@ public class ApontamentoService {
         double horas = calcularHorasLiquidas(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim(),
                 novaEntidade.getPausaInicio(), novaEntidade.getPausaFim());
         novaEntidade.setHorasLiquidas(horas);
+        // mensagem publicada
+        producer.publicar(dto);
         return mapper.toResponse(repository.save(novaEntidade));
     }
 

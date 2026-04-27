@@ -1,6 +1,8 @@
 package br.com.jth.auditoria.mensageria;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -24,14 +26,19 @@ public class AuditoriaListener {
         log.info("Evento recebido: {}", event);
 
         AuditoriaLog logAuditoria = new AuditoriaLog();
-        logAuditoria.setCorrelationId(event.correlationId());
-        logAuditoria.setTimestamp(LocalDateTime.now());
-        logAuditoria.setServicoOrigem(event.servicoOrigem());
         logAuditoria.setUsuarioId(event.usuarioId());
-        logAuditoria.setTipoAcao(event.tipoAcao());
-        logAuditoria.setDetalhes(event.detalhes());
+        logAuditoria.setTimestamp(LocalDateTime.now());
 
-        auditoriaRepository.save(logAuditoria);
-        log.info("Log salvo com sucesso: {}", logAuditoria.getId());
+        Map<String, Object> detalhes = new HashMap<>();
+        detalhes.put("itemId", event.itemId());
+        detalhes.put("dataApontamento", event.dataApontamento());
+        detalhes.put("horaInicio", event.horaInicio());
+        detalhes.put("horaFim", event.horaFim());
+        detalhes.put("observacao", event.observacao());
+
+        logAuditoria.setDetalhes(detalhes);
+
+        AuditoriaLog salvo = auditoriaRepository.save(logAuditoria);
+        log.info("Log salvo com sucesso: {}", salvo.getId());
     }
 }

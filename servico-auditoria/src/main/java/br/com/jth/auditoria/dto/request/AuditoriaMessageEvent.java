@@ -1,11 +1,12 @@
 package br.com.jth.auditoria.dto.request;
 
-import java.util.Map;
+import java.time.LocalDateTime;
 
 public record AuditoriaMessageEvent(
-                String correlationId,
-                String servicoOrigem,
-                String usuarioId,
-                String tipoAcao,
-                Map<String, Object> detalhes) {
+        String usuarioId,
+        Long itemId,
+        LocalDateTime dataApontamento,
+        LocalDateTime horaInicio,
+        LocalDateTime horaFim,
+        String observacao) {
 }

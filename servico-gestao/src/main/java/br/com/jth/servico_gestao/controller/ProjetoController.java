@@ -38,4 +38,11 @@ public class ProjetoController {
         projetoService.excluirProjeto(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/gestor/{gestorId}")
+    public ResponseEntity<List<ProjetoResponseDTO>> listarPorGestor(
+            @PathVariable Long gestorId) {
+
+        return ResponseEntity.ok(projetoService.listarProjetosPorGestor(gestorId));
+    }
 }

@@ -1,5 +1,7 @@
 package br.com.jth.auditoria.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -10,8 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.jth.auditoria.model.AuditoriaLog;
-import br.com.jth.auditoria.repository.AuditoriaRepository;
+import br.com.jth.auditoria.dto.response.AuditoriaLogResponseDTO;
+import br.com.jth.auditoria.service.AuditoriaService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -19,17 +21,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuditoriaController {
 
-    private final AuditoriaRepository auditoriaRepository;
+    private final AuditoriaService auditoriaService;
 
     @GetMapping
-    // @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Page<AuditoriaLog>> listar(
+    public ResponseEntity<Page<AuditoriaLogResponseDTO>> listar(
             @PageableDefault(sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(auditoriaRepository.findAll(pageable));
+        return ResponseEntity.ok(auditoriaService.listar(pageable));
     }
 
     @GetMapping("/usuario/{id}")
-    public ResponseEntity<?> buscarPorUsuario(@PathVariable String id) {
-        return ResponseEntity.ok(auditoriaRepository.findByUsuarioId(id));
+    public ResponseEntity<List<AuditoriaLogResponseDTO>> buscarPorUsuario(@PathVariable String id) {
+        return ResponseEntity.ok(auditoriaService.buscarPorUsuario(id));
     }
 }

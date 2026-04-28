@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/public", "/public/**").permitAll()
                         .requestMatchers("/auditorias/**").permitAll()
                         .requestMatchers("/private", "/private/**").authenticated()
-                        .anyRequest().authenticated());
+                        .anyRequest().permitAll());
 
         http.oauth2ResourceServer(rsc -> rsc
                 .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(authenticationConverter)));

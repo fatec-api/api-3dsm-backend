@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/projetos")
@@ -41,7 +42,7 @@ public class ProjetoController {
 
     @GetMapping("/gestor/{gestorId}")
     public ResponseEntity<List<ProjetoResponseDTO>> listarPorGestor(
-            @PathVariable Long gestorId) {
+            @PathVariable UUID gestorId) {
 
         return ResponseEntity.ok(projetoService.listarProjetosPorGestor(gestorId));
     }

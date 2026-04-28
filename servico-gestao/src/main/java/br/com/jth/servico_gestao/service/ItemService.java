@@ -72,6 +72,7 @@ public class ItemService {
     }
 
     public List<ItemResponseDTO> listarPorProjeto(Long projetoId) {
+        System.out.println(">>> DAO: Buscando itens no banco para o projeto ID: " + projetoId);
         return itemRepository.findByProjetoModelId(projetoId).stream()
                 .map(itemMapper::toResponse)
                 .collect(Collectors.toList());

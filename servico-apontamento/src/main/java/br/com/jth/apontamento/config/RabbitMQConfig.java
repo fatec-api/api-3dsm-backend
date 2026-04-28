@@ -24,7 +24,7 @@ public class RabbitMQConfig {
     public static final String APONTAMENTO_DELETADO_KEY = "apontamento.deletado";
 
 
-    public static final String PROJETO_QUERY_KEY = "projeto.query.buscar.itens";
+    public static final String PROJETO_QUERY_KEY = "projeto.query.request";
 
     @Bean
     public TopicExchange gestaoExchange() {
@@ -64,16 +64,5 @@ public class RabbitMQConfig {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
-    }
-
-    @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
-            ConnectionFactory connectionFactory,
-            MessageConverter messageConverter) {
-
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
-        factory.setMessageConverter(messageConverter);
-        return factory;
     }
 }

@@ -5,7 +5,7 @@ import br.com.jth.apontamento.dto.request.ApontamentoUpdateRequestDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoAvaliacaoDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoResponseDTO;
 import br.com.jth.apontamento.dto.response.ItemResponseDTO;
-import br.com.jth.apontamento.enums.ApontamentoStatus;
+import br.com.jth.apontamento.enums.Status_Apontamento;
 import br.com.jth.apontamento.exception.NegocioException;
 import br.com.jth.apontamento.exception.RecursoNaoEncontradoException;
 import br.com.jth.apontamento.mapper.ApontamentoMapper;
@@ -127,14 +127,14 @@ public class ApontamentoService {
         ApontamentoModel apontamento = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Apontamento não encontrado com id: " + id));
 
-        if (apontamento.getStatus() != ApontamentoStatus.PENDENTE) {
+        if (apontamento.getStatus() != Status_Apontamento.PENDENTE) {
             throw new NegocioException("Apontamento já foi avaliado");
         }
-        if (dto.status() == ApontamentoStatus.REPROVADO &&
+        if (dto.status() == Status_Apontamento.REPROVADO &&
                 (dto.justificativaReprovacao() == null || dto.justificativaReprovacao().isBlank())) {
             throw new NegocioException("Justificativa é obrigatória ao reprovar um apontamento");
         }
-        if (dto.status() == ApontamentoStatus.PENDENTE) {
+        if (dto.status() == Status_Apontamento.PENDENTE) {
             throw new NegocioException("Não é possível avaliar um apontamento como pendente");
         }
 
@@ -178,7 +178,7 @@ public class ApontamentoService {
         // 3. Faz o select no banco local de Apontamentos
         // Aqui buscamos apontamentos que estejam ligados a esses itens e que tenham status PENDENTE
         List<ApontamentoModel> apontamentosPendentes = repository
-                .findByItemIdInAndStatus(itensIds, ApontamentoStatus.PENDENTE);
+                .findByItemIdInAndStatus(itensIds, Status_Apontamento.PENDENTE);
 
         // 4. Converte para DTO e retorna
         return apontamentosPendentes.stream()

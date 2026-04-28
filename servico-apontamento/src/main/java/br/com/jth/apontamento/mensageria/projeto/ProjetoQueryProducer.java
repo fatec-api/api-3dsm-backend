@@ -18,6 +18,7 @@ public class ProjetoQueryProducer {
     private final RabbitTemplate rabbitTemplate;
 
     public List<ItemResponseDTO> buscarItensParaApontamento(Long projetoId) {
+        System.out.println(">>> MENSAGERIA: Solicitando itens do Projeto ID: " + projetoId);
         BuscarItensPorProjetoRequestDTO request = new BuscarItensPorProjetoRequestDTO(projetoId);
 
         // Utilizamos o convertSendAndReceive para esperar a resposta do outro microserviço

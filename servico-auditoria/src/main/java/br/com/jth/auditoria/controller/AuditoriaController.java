@@ -2,7 +2,6 @@ package br.com.jth.auditoria.controller;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -24,13 +23,15 @@ public class AuditoriaController {
     private final AuditoriaService auditoriaService;
 
     @GetMapping
-    public ResponseEntity<Page<AuditoriaLogResponseDTO>> listar(
+    public ResponseEntity<List<AuditoriaLogResponseDTO>> listar(
             @PageableDefault(sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(auditoriaService.listar(pageable));
+
+        return ResponseEntity.ok(auditoriaService.listar(pageable).getContent());
     }
 
     @GetMapping("/usuario/{id}")
     public ResponseEntity<List<AuditoriaLogResponseDTO>> buscarPorUsuario(@PathVariable String id) {
+
         return ResponseEntity.ok(auditoriaService.buscarPorUsuario(id));
     }
 }

@@ -125,7 +125,7 @@ public class ProjetoService {
         }
     }
 
-    public List<ProjetoResponseDTO> listarProjetosPorGestor(Long gestorId) {
+    public List<ProjetoResponseDTO> listarProjetosPorGestor(UUID gestorId) {
 
         if (!usuarioRepository.existsById(gestorId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,

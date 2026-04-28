@@ -1,5 +1,6 @@
 package br.com.jth.apontamento.dto.response;
 
+import br.com.jth.apontamento.enums.ApontamentoStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,11 @@ public record ApontamentoResponseDTO(
 
         Double horasLiquidas,
 
-        String observacao
+        String observacao,
+
+        ApontamentoStatus status,
+
+        String justificativaReprovacao
 
 ) {
 }

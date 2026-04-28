@@ -2,10 +2,13 @@ package br.com.jth.apontamento.service;
 
 import br.com.jth.apontamento.dto.request.ApontamentoRequestDTO;
 import br.com.jth.apontamento.dto.request.ApontamentoUpdateRequestDTO;
+import br.com.jth.apontamento.dto.response.ApontamentoAvaliacaoDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoResponseDTO;
+import br.com.jth.apontamento.enums.ApontamentoStatus;
 import br.com.jth.apontamento.exception.NegocioException;
 import br.com.jth.apontamento.exception.RecursoNaoEncontradoException;
 import br.com.jth.apontamento.mapper.ApontamentoMapper;
+import br.com.jth.apontamento.mensageria.ApontamentoEventProducer;
 import br.com.jth.apontamento.model.ApontamentoModel;
 import br.com.jth.apontamento.repository.ApontamentoRepository;
 import lombok.AllArgsConstructor;
@@ -22,6 +25,7 @@ import java.util.UUID;
 public class ApontamentoService {
     private final ApontamentoRepository repository;
     private final ApontamentoMapper mapper;
+    private final ApontamentoEventProducer apontamentoEventProducer;
     private final HandlerMapping resourceHandlerMapping;
 
     public List<ApontamentoResponseDTO> listarApontamentos() {
@@ -43,19 +47,23 @@ public class ApontamentoService {
 
     @Transactional
     public ApontamentoResponseDTO salvarApontamento(ApontamentoRequestDTO dto) {
-        ApontamentoModel novaEntidade = mapper.toEntity(dto);
+        ApontamentoModel apontamento = mapper.toEntity(dto);
 
         if (repository.existeConflito(dto.usuarioId(), dto.dataApontamento(), dto.horaInicio(), dto.horaFim())) {
             throw new NegocioException("Você já possui um apontamento nesse horário");
         }
-        if (!validaFimAposInicio(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim())) {
+        if (!validaFimAposInicio(apontamento.getHoraInicio(), apontamento.getHoraFim())) {
             throw new NegocioException("Horário de fim não pode ser igual ou anterior ao início");
         }
 
-        double horas = calcularHorasLiquidas(novaEntidade.getHoraInicio(), novaEntidade.getHoraFim());
-        novaEntidade.setHorasLiquidas(horas);
-        System.out.println("ITEM ID: " + novaEntidade.getItemId());
-        return mapper.toResponse(repository.save(novaEntidade));
+        double horas = calcularHorasLiquidas(apontamento.getHoraInicio(), apontamento.getHoraFim());
+        apontamento.setHorasLiquidas(horas);
+        System.out.println("ITEM ID: " + apontamento.getItemId());
+
+        ApontamentoModel salvo = repository.save(apontamento);
+        apontamentoEventProducer.publicarApontamentoCriado(salvo);
+
+        return mapper.toResponse(salvo);
     }
 
     @Transactional
@@ -109,6 +117,31 @@ public class ApontamentoService {
             throw new RecursoNaoEncontradoException("Não é possível excluir: ID não encontrado");
         }
         repository.deleteById(id);
+    }
+
+    @Transactional
+    public ApontamentoResponseDTO avaliar(Long id, ApontamentoAvaliacaoDTO dto) {
+        ApontamentoModel apontamento = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Apontamento não encontrado com id: " + id));
+
+        if (apontamento.getStatus() != ApontamentoStatus.PENDENTE) {
+            throw new NegocioException("Apontamento já foi avaliado");
+        }
+        if (dto.status() == ApontamentoStatus.REPROVADO &&
+                (dto.justificativaReprovacao() == null || dto.justificativaReprovacao().isBlank())) {
+            throw new NegocioException("Justificativa é obrigatória ao reprovar um apontamento");
+        }
+        if (dto.status() == ApontamentoStatus.PENDENTE) {
+            throw new NegocioException("Não é possível avaliar um apontamento como pendente");
+        }
+
+        apontamento.setStatus(dto.status());
+        apontamento.setJustificativaReprovacao(dto.justificativaReprovacao());
+
+        ApontamentoModel salvo = repository.save(apontamento);
+        apontamentoEventProducer.publicarApontamentoAvaliado(salvo);
+
+        return mapper.toResponse(salvo);
     }
 
     private Double calcularHorasLiquidas(LocalDateTime horaInicio, LocalDateTime horaFim) {

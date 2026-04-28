@@ -2,6 +2,7 @@ package br.com.jth.apontamento.controller;
 
 import br.com.jth.apontamento.dto.request.ApontamentoRequestDTO;
 import br.com.jth.apontamento.dto.request.ApontamentoUpdateRequestDTO;
+import br.com.jth.apontamento.dto.response.ApontamentoAvaliacaoDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoResponseDTO;
 import br.com.jth.apontamento.service.ApontamentoService;
 import jakarta.validation.Valid;
@@ -45,6 +46,12 @@ public class ApontamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(service.atualizar(id, request));
     }
 
+    @PatchMapping("/{id}/avaliar")
+    public ResponseEntity<ApontamentoResponseDTO> avaliar(@PathVariable Long id,
+                                                          @RequestBody @Valid ApontamentoAvaliacaoDTO request) {
+        return ResponseEntity.ok(service.avaliar(id, request));
+    }
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.excluir(id);

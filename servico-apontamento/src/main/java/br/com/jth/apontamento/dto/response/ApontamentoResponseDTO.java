@@ -1,7 +1,7 @@
 package br.com.jth.apontamento.dto.response;
 
 
-import br.com.jth.apontamento.enums.Status_Apontamento;
+import br.com.jth.apontamento.enums.ApontamentoStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -36,7 +36,7 @@ public record ApontamentoResponseDTO(
 
         String observacao,
 
-        Status_Apontamento status,
+        ApontamentoStatus status,
 
         String justificativaReprovacao
 

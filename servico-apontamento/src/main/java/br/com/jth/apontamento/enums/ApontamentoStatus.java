@@ -1,6 +1,6 @@
 package br.com.jth.apontamento.enums;
 
-public enum Status_Apontamento {
+public enum ApontamentoStatus {
     PENDENTE,
     APROVADO,
     REPROVADO

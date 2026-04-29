@@ -59,7 +59,7 @@ public class ApontamentoModel {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status_Apontamento status = Status_Apontamento.PENDENTE;
+    private ApontamentoStatus status = ApontamentoStatus.PENDENTE;
 
     @Column(length = 500)
     private String justificativaReprovacao;

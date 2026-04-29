@@ -5,8 +5,12 @@ import br.com.jth.apontamento.dto.response.ApontamentoAvaliadoEvent;
 import br.com.jth.apontamento.dto.response.ApontamentoCriadoEvent;
 import br.com.jth.apontamento.model.ApontamentoModel;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
+
+import br.com.jth.apontamento.dto.response.ApontamentoEventAuditoria;
+
 
 @Component
 @RequiredArgsConstructor
@@ -41,5 +45,11 @@ public class ApontamentoEventProducer {
                 RabbitMQConfig.APONTAMENTO_AVALIADO_KEY,
                 event
         );
+    }
+
+    public void publicarApontamentoAuditoria(ApontamentoModel apontamento){
+        ApontamentoEventAuditoria event = new ApontamentoEventAuditoria(
+
+        )
     }
 }

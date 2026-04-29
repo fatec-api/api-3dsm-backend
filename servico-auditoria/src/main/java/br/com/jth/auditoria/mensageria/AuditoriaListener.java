@@ -30,6 +30,7 @@ public class AuditoriaListener {
         logAuditoria.setTimestamp(LocalDateTime.now());
 
         Map<String, Object> detalhes = new HashMap<>();
+        detalhes.put("usuarioId", event.observacao());
         detalhes.put("itemId", event.itemId());
         detalhes.put("dataApontamento", event.dataApontamento());
         detalhes.put("horaInicio", event.horaInicio());

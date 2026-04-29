@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -112,9 +113,10 @@ public class ProjetoService {
 
         projeto.setHorasPrevistasTotal(totalPrevistas);
 
-        // garante que nunca vem null (projetos criados antes dos eventos)
-        if (projeto.getHorasRealizadasTotal() == null) projeto.setHorasRealizadasTotal(0.0);
-        if (projeto.getHorasPendentesTotal() == null)  projeto.setHorasPendentesTotal(0.0);
+        if (projeto.getHorasRealizadasTotal() == null)
+            projeto.setHorasRealizadasTotal(0.0);
+        if (projeto.getHorasPendentesTotal() == null)
+            projeto.setHorasPendentesTotal(0.0);
 
         if (totalPrevistas.compareTo(BigInteger.ZERO) > 0) {
             double progresso = projeto.getHorasRealizadasTotal() / totalPrevistas.doubleValue() * 100;
@@ -122,5 +124,21 @@ public class ProjetoService {
         } else {
             projeto.setProgressoProjeto(0.0);
         }
+    }
+
+    public List<ProjetoResponseDTO> listarProjetosPorGestor(UUID gestorId) {
+
+        if (!usuarioRepository.existsById(gestorId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Gestor não encontrado.");
+        }
+
+        List<ProjetoModel> projetos = projetoRepository.findByGestorId(gestorId);
+
+        // retorna lista vazia se não tiver projetos
+        return projetos.stream()
+                .peek(this::calcularHoras)
+                .map(projetoMapper::toResponse)
+                .toList();
     }
 }

@@ -1,4 +1,4 @@
-package com.jth.auditoria.config
+package br.com.jth.auditoria.config;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +17,7 @@ public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedA
         if (realmAccess == null || realmAccess.isEmpty()) {
             return new ArrayList<>();
         }
-        return ((List<String>) realmAccess.get("roles")).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return ((List<String>) realmAccess.get("roles")).stream().map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 }

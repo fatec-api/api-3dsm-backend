@@ -1,4 +1,4 @@
-package com.jth.apontamento.config
+package br.com.jth.apontamento.config;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;

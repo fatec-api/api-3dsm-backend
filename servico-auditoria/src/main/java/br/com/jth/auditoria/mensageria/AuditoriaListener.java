@@ -27,7 +27,7 @@ public class AuditoriaListener {
 
         AuditoriaLog logAuditoria = new AuditoriaLog();
         logAuditoria.setUsuarioId(event.usuarioId());
-        logAuditoria.setTimestamp(LocalDateTime.now());
+        logAuditoria.setCriadoEm(LocalDateTime.now());
 
         Map<String, Object> detalhes = new HashMap<>();
         detalhes.put("usuarioId", event.observacao());

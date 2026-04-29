@@ -31,7 +31,6 @@ public class ApontamentoService {
     private final ApontamentoRepository repository;
     private final ApontamentoMapper mapper;
     private final ApontamentoEventProducer apontamentoEventProducer;
-    private final ApontamentoEventAuditoria apontamentoEventAuditoria;
     private final HandlerMapping resourceHandlerMapping;
     private final ProjetoQueryProducer projetoQueryProducer;
 
@@ -192,7 +191,5 @@ public class ApontamentoService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
-
-
 
 }

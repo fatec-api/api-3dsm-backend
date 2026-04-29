@@ -50,6 +50,7 @@ public class ApontamentoEventProducer {
     public void publicarApontamentoAuditoria(ApontamentoModel apontamento) {
         ApontamentoEventAuditoria event = new ApontamentoEventAuditoria(
                 apontamento.getId(),
+                apontamento.getCriadoEm(),
                 apontamento.getItemId(),
                 apontamento.getUsuarioId(),
                 apontamento.getDataApontamento(),

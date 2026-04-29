@@ -15,7 +15,7 @@ public class AuditoriaLog {
     @Id
     private String id;
     private String correlationId;
-    private LocalDateTime timestamp;
+    private LocalDateTime criadoEm;
     private String servicoOrigem;
     private String usuarioId;
     private String tipoAcao;

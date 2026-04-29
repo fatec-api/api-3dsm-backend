@@ -47,9 +47,25 @@ public class ApontamentoEventProducer {
         );
     }
 
-    public void publicarApontamentoAuditoria(ApontamentoModel apontamento){
+    public void publicarApontamentoAuditoria(ApontamentoModel apontamento) {
         ApontamentoEventAuditoria event = new ApontamentoEventAuditoria(
+                apontamento.getId(),
+                apontamento.getItemId(),
+                apontamento.getUsuarioId(),
+                apontamento.getDataApontamento(),
+                apontamento.getHoraInicio(),
+                apontamento.getHoraFim(),
+                apontamento.getHorasLiquidas(),
+                apontamento.getObservacao()
+        );
 
-        )
+        rabbitTemplate.convertAndSend(
+            RabbitMQConfig.GESTAO_EXCHANGE,
+            RabbitMQConfig.APONTAMENTO_AUDITORIA_KEY,
+            event
+        );
     }
+
+    
 }
+

@@ -20,6 +20,12 @@ public class RabbitMQConfig {
     public static final String DLQ = "auditoria_queue_dlq";
     public static final String EXCHANGE = "auditoria.exchange";
 
+    public static final String GESTAO_EXCHANGE = "gestao.exchange";
+
+    public static final String APONTAMENTO_AUDITORIA_KEY   = "apontamento.auditoria";
+    public static final String APONTAMENTO_AVALIADO_KEY = "apontamento.avaliado";
+    public static final String APONTAMENTO_DELETADO_KEY = "apontamento.deletado";
+
     @Bean
     public Queue auditoriaQueue() {
         return QueueBuilder.durable(QUEUE)

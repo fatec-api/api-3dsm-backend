@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import br.com.jth.apontamento.dto.response.ApontamentoEventAuditoria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.HandlerMapping;
@@ -30,6 +31,7 @@ public class ApontamentoService {
     private final ApontamentoRepository repository;
     private final ApontamentoMapper mapper;
     private final ApontamentoEventProducer apontamentoEventProducer;
+    private final ApontamentoEventAuditoria apontamentoEventAuditoria;
     private final HandlerMapping resourceHandlerMapping;
     private final ProjetoQueryProducer projetoQueryProducer;
 
@@ -67,6 +69,8 @@ public class ApontamentoService {
 
         ApontamentoModel salvo = repository.save(apontamento);
         apontamentoEventProducer.publicarApontamentoCriado(salvo);
+        apontamentoEventProducer.publicarApontamentoAuditoria(salvo);
+
 
         return mapper.toResponse(salvo);
     }

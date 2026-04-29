@@ -22,6 +22,7 @@ public class RabbitMQConfig {
     public static final String APONTAMENTO_CRIADO_KEY   = "apontamento.criado";
     public static final String APONTAMENTO_AVALIADO_KEY = "apontamento.avaliado";
     public static final String APONTAMENTO_DELETADO_KEY = "apontamento.deletado";
+    public static final String APONTAMENTO_AUDITORIA_KEY   = "apontamento.auditoria";
 
 
     public static final String PROJETO_QUERY_KEY = "projeto.query.request";

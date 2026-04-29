@@ -1,11 +1,12 @@
 package br.com.jth.apontamento.model;
 
-import br.com.jth.apontamento.enums.ApontamentoStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import br.com.jth.apontamento.enums.Status_Apontamento;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class ApontamentoModel {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ApontamentoStatus status = ApontamentoStatus.PENDENTE;
+    private Status_Apontamento status = Status_Apontamento.PENDENTE;
 
     @Column(length = 500)
     private String justificativaReprovacao;

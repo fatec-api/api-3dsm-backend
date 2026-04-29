@@ -4,7 +4,8 @@ import br.com.jth.apontamento.dto.request.ApontamentoRequestDTO;
 import br.com.jth.apontamento.dto.request.ApontamentoUpdateRequestDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoAvaliacaoDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoResponseDTO;
-import br.com.jth.apontamento.enums.ApontamentoStatus;
+import br.com.jth.apontamento.dto.response.ItemResponseDTO;
+import br.com.jth.apontamento.enums.Status_Apontamento;
 import br.com.jth.apontamento.exception.NegocioException;
 import br.com.jth.apontamento.exception.RecursoNaoEncontradoException;
 import br.com.jth.apontamento.mapper.ApontamentoMapper;
@@ -15,10 +16,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.HandlerMapping;
-
+import br.com.jth.apontamento.mensageria.projeto.ProjetoQueryProducer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +29,7 @@ public class ApontamentoService {
     private final ApontamentoMapper mapper;
     private final ApontamentoEventProducer apontamentoEventProducer;
     private final HandlerMapping resourceHandlerMapping;
+    private final ProjetoQueryProducer projetoQueryProducer;
 
     public List<ApontamentoResponseDTO> listarApontamentos() {
         return mapper.toResponseList(repository.findAll());
@@ -124,14 +127,14 @@ public class ApontamentoService {
         ApontamentoModel apontamento = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Apontamento não encontrado com id: " + id));
 
-        if (apontamento.getStatus() != ApontamentoStatus.PENDENTE) {
+        if (apontamento.getStatus() != Status_Apontamento.PENDENTE) {
             throw new NegocioException("Apontamento já foi avaliado");
         }
-        if (dto.status() == ApontamentoStatus.REPROVADO &&
+        if (dto.status() == Status_Apontamento.REPROVADO &&
                 (dto.justificativaReprovacao() == null || dto.justificativaReprovacao().isBlank())) {
             throw new NegocioException("Justificativa é obrigatória ao reprovar um apontamento");
         }
-        if (dto.status() == ApontamentoStatus.PENDENTE) {
+        if (dto.status() == Status_Apontamento.PENDENTE) {
             throw new NegocioException("Não é possível avaliar um apontamento como pendente");
         }
 
@@ -156,5 +159,33 @@ public class ApontamentoService {
     private boolean validaFimAposInicio(LocalDateTime inicio, LocalDateTime fim) {
         return fim.isAfter(inicio);
     }
+
+    public List<ApontamentoResponseDTO> buscarApontamentoPendentePorProjetoId(Long projetoId) {
+        
+        // 1. Busca os itens que pertencem a esse projeto lá no microsserviço de Gestão
+        List<ItemResponseDTO> itensDoProjeto = projetoQueryProducer.buscarItensParaApontamento(projetoId);
+
+        // Se o projeto não existir ou não tiver itens, já retornamos vazio para evitar select desnecessário
+        if (itensDoProjeto.isEmpty()) {
+            return List.of();
+        }
+
+        // 2. Extrai apenas os IDs dos itens para facilitar a query (o famoso "select doido")
+        List<Long> itensIds = itensDoProjeto.stream()
+                .map(ItemResponseDTO::getId)
+                .collect(Collectors.toList());
+
+        // 3. Faz o select no banco local de Apontamentos
+        // Aqui buscamos apontamentos que estejam ligados a esses itens e que tenham status PENDENTE
+        List<ApontamentoModel> apontamentosPendentes = repository
+                .findByItemIdInAndStatus(itensIds, Status_Apontamento.PENDENTE);
+
+        // 4. Converte para DTO e retorna
+        return apontamentosPendentes.stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+
 
 }

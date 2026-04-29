@@ -1,5 +1,6 @@
 package br.com.jth.apontamento.controller;
 
+import br.com.jth.apontamento.dto.request.ApontamentoAprovarRequestDTO;
 import br.com.jth.apontamento.dto.request.ApontamentoRequestDTO;
 import br.com.jth.apontamento.dto.request.ApontamentoUpdateRequestDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoAvaliacaoDTO;
@@ -35,6 +36,11 @@ public class ApontamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarApontamentoPorId(id));
     }
 
+    @GetMapping("/pendente/projeto/{projetoId}")
+    public ResponseEntity<List<ApontamentoResponseDTO>> findPendentesPorProjetoId(@PathVariable Long projetoId) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.buscarApontamentoPendentePorProjetoId(projetoId));
+    }
+    
     @PostMapping
     public ResponseEntity<ApontamentoResponseDTO> salvar(@RequestBody @Valid ApontamentoRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvarApontamento(request));
@@ -46,7 +52,7 @@ public class ApontamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(service.atualizar(id, request));
     }
 
-    @PatchMapping("/{id}/avaliar")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<ApontamentoResponseDTO> avaliar(@PathVariable Long id,
                                                           @RequestBody @Valid ApontamentoAvaliacaoDTO request) {
         return ResponseEntity.ok(service.avaliar(id, request));

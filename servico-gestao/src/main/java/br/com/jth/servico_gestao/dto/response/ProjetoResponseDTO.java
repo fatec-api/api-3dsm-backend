@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 
 
@@ -23,6 +24,10 @@ public class ProjetoResponseDTO {
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private StatusProjeto status;
+    private BigInteger horasPrevistasTotal;
+    private Double horasRealizadasTotal;
+    private Double horasPendentesTotal;
+    private Double progressoProjeto;
     private String nomeGestor;
     private String nomeCliente;
 }

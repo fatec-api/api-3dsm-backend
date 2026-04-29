@@ -1,6 +1,7 @@
 package br.com.jth.servico_gestao.config;
 
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
@@ -28,6 +29,53 @@ public class RabbitMQConfig {
     public static final String ITEM_CRIADO_KEY     = "item.criado";
     public static final String ITEM_ATUALIZADO_KEY = "item.atualizado";
     public static final String ITEM_DELETADO_KEY   = "item.deletado";
+
+    // comunicacao com servico-apontamento
+    public static final String QUEUE_APONTAMENTO        = "apontamento.queue";
+    public static final String APONTAMENTO_AVALIADO_KEY = "apontamento.avaliado";
+    public static final String QUEUE_APONTAMENTO_CRIADO        = "apontamento.criado.queue";
+    public static final String APONTAMENTO_CRIADO_KEY          = "apontamento.criado";
+
+
+
+
+    public static final String QUEUE_PROJETO_ITENS_QUERY = "projeto.itens.query.queue";
+
+    public static final String PROJETO_QUERY_KEY = "projeto.query.request";
+
+    @Bean
+    public Binding projetoItensQueryBinding(Queue projetoItensQueryQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder
+                .bind(projetoItensQueryQueue)
+                .to(gestaoExchange)
+            .with(PROJETO_QUERY_KEY); 
+}
+
+    @Bean
+    public Queue projetoItensQueryQueue() {
+        return QueueBuilder.durable(QUEUE_PROJETO_ITENS_QUERY).build();
+    }
+        
+    @Bean
+    public Queue apontamentoCriadoQueue() {
+        return QueueBuilder.durable(QUEUE_APONTAMENTO_CRIADO).build();
+    }
+
+    @Bean
+    public Binding apontamentoCriadoBinding(Queue apontamentoCriadoQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(apontamentoCriadoQueue).to(gestaoExchange).with(APONTAMENTO_CRIADO_KEY);
+    }
+
+    @Bean
+    public Queue apontamentoQueue() {
+        return QueueBuilder.durable(QUEUE_APONTAMENTO).build();
+    }
+
+    @Bean
+    public Binding apontamentoAvaliadoBinding(Queue apontamentoQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(apontamentoQueue).to(gestaoExchange).with(APONTAMENTO_AVALIADO_KEY);
+    }
+    //
 
     @Bean
     public TopicExchange gestaoExchange() {
@@ -91,4 +139,16 @@ public class RabbitMQConfig {
         template.setMessageConverter(jsonMessageConverter());
         return template;
     }
-}
+
+
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+            ConnectionFactory connectionFactory,
+            MessageConverter jsonMessageConverter) {
+
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(jsonMessageConverter);
+        return factory;
+    }
+    }

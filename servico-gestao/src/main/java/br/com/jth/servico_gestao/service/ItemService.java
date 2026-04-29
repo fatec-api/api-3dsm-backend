@@ -1,7 +1,9 @@
 package br.com.jth.servico_gestao.service;
 
 import br.com.jth.servico_gestao.dto.request.ItemRequestDTO;
+import br.com.jth.servico_gestao.dto.response.HorasPorAtividadeDTO;
 import br.com.jth.servico_gestao.dto.response.ItemResponseDTO;
+import br.com.jth.servico_gestao.enums.item.NivelAtividade;
 import br.com.jth.servico_gestao.mapper.ItemMapper;
 import br.com.jth.servico_gestao.mensageria.ItemEventProducer;
 import br.com.jth.servico_gestao.model.ItemModel;
@@ -10,6 +12,7 @@ import br.com.jth.servico_gestao.model.UsuarioModel;
 import br.com.jth.servico_gestao.repository.ItemRepository;
 import br.com.jth.servico_gestao.repository.ProjetoRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,22 +24,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ItemService {
 
-    @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
-    private ItemMapper itemMapper;
-
-    @Autowired
-    private ProjetoRepository projetoRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private ItemEventProducer itemEventProducer;
+    private final ItemRepository itemRepository;
+    private final ItemMapper itemMapper;
+    private final ProjetoRepository projetoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ItemEventProducer itemEventProducer;
 
     public ItemResponseDTO cadastrarItem(ItemRequestDTO dto) {
 
@@ -77,6 +72,7 @@ public class ItemService {
     }
 
     public List<ItemResponseDTO> listarPorProjeto(Long projetoId) {
+        System.out.println(">>> DAO: Buscando itens no banco para o projeto ID: " + projetoId);
         return itemRepository.findByProjetoModelId(projetoId).stream()
                 .map(itemMapper::toResponse)
                 .collect(Collectors.toList());
@@ -101,5 +97,26 @@ public class ItemService {
         String sufixo = String.format("%04d", total + 1);
 
         return prefixo + sufixo;
+    }
+
+    // progresso de atividade
+    public List<HorasPorAtividadeDTO> buscarHorasPorAtividade(Long projetoId) {
+        if (!projetoRepository.existsById(projetoId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Projeto não encontrado com id: " + projetoId);
+        }
+
+        return itemRepository.somarHorasPorNivelAtividade(projetoId)
+                .stream()
+                .map(row -> {
+                    NivelAtividade nivel = (NivelAtividade) row[0];
+                    Integer previstas = ((Number) row[1]).intValue();
+                    Integer realizadas = 2; // placeholder até apontamentos
+                    Double percentual = previstas > 0
+                            ? (realizadas.doubleValue() / previstas.doubleValue()) * 100
+                            : 0.0;
+                    return new HorasPorAtividadeDTO(nivel, previstas, realizadas, percentual);
+                })
+                .toList();
     }
 }

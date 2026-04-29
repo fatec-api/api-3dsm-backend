@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import br.com.jth.apontamento.enums.Status_Apontamento;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -47,5 +49,12 @@ public class ApontamentoModel {
 
     @Column(nullable = false)
     private Double horasLiquidas;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status_Apontamento status = Status_Apontamento.PENDENTE;
+
+    @Column(length = 500)
+    private String justificativaReprovacao;
 
 }

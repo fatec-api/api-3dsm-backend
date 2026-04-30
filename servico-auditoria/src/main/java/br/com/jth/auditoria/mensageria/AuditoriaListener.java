@@ -23,23 +23,27 @@ public class AuditoriaListener {
 
     @RabbitListener(queues = QUEUE)
     public void consumir(AuditoriaMessageEvent event) {
-        log.info("Evento recebido: {}", event);
+
+        log.info(" Evento recebido: {}", event);
 
         AuditoriaLog logAuditoria = new AuditoriaLog();
+
         logAuditoria.setUsuarioId(event.usuarioId());
         logAuditoria.setCriadoEm(LocalDateTime.now());
 
         Map<String, Object> detalhes = new HashMap<>();
-        detalhes.put("usuarioId", event.observacao());
+        detalhes.put("usuarioId", event.usuarioId());
         detalhes.put("itemId", event.itemId());
         detalhes.put("dataApontamento", event.dataApontamento());
         detalhes.put("horaInicio", event.horaInicio());
         detalhes.put("horaFim", event.horaFim());
+        detalhes.put("horasLiquidas", event.horasLiquidas());
         detalhes.put("observacao", event.observacao());
 
         logAuditoria.setDetalhes(detalhes);
 
         AuditoriaLog salvo = auditoriaRepository.save(logAuditoria);
-        log.info("Log salvo com sucesso: {}", salvo.getId());
+
+        log.info(" Log salvo com sucesso ID: {}", salvo.getId());
     }
 }

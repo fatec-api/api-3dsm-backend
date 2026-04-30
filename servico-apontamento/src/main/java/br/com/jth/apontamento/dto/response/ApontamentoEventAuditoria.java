@@ -1,9 +1,9 @@
-package br.com.jth.auditoria.dto.request;
+package br.com.jth.apontamento.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record AuditoriaMessageEvent(
+public record ApontamentoEventAuditoria(
         Long id,
         LocalDateTime criadoEm,
         Long itemId,
@@ -12,5 +12,6 @@ public record AuditoriaMessageEvent(
         LocalDateTime horaInicio,
         LocalDateTime horaFim,
         Double horasLiquidas,
-        String observacao) {
+        String observacao
+) {
 }

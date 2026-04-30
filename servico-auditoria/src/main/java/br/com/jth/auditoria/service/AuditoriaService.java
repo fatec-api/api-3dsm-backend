@@ -54,7 +54,7 @@ public class AuditoriaService {
 
         return new AuditoriaLogResponseDTO(
                 log.getId(),
-                log.getTimestamp(),
+                log.getCriadoEm(),
                 itemId,
                 usuarioId,
                 dataApontamento,

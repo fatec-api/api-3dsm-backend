@@ -1,5 +1,15 @@
 package br.com.jth.apontamento.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import br.com.jth.apontamento.dto.response.ApontamentoEventAuditoria;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.HandlerMapping;
+
 import br.com.jth.apontamento.dto.request.ApontamentoRequestDTO;
 import br.com.jth.apontamento.dto.request.ApontamentoUpdateRequestDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoAvaliacaoDTO;
@@ -10,17 +20,10 @@ import br.com.jth.apontamento.exception.NegocioException;
 import br.com.jth.apontamento.exception.RecursoNaoEncontradoException;
 import br.com.jth.apontamento.mapper.ApontamentoMapper;
 import br.com.jth.apontamento.mensageria.ApontamentoEventProducer;
+import br.com.jth.apontamento.mensageria.projeto.ProjetoQueryProducer;
 import br.com.jth.apontamento.model.ApontamentoModel;
 import br.com.jth.apontamento.repository.ApontamentoRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.HandlerMapping;
-import br.com.jth.apontamento.mensageria.projeto.ProjetoQueryProducer;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -65,6 +68,8 @@ public class ApontamentoService {
 
         ApontamentoModel salvo = repository.save(apontamento);
         apontamentoEventProducer.publicarApontamentoCriado(salvo);
+        apontamentoEventProducer.publicarApontamentoAuditoria(salvo);
+
 
         return mapper.toResponse(salvo);
     }
@@ -144,6 +149,7 @@ public class ApontamentoService {
         ApontamentoModel salvo = repository.save(apontamento);
         apontamentoEventProducer.publicarApontamentoAvaliado(salvo);
 
+        
         return mapper.toResponse(salvo);
     }
 
@@ -185,7 +191,5 @@ public class ApontamentoService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
-
-
 
 }

@@ -5,8 +5,12 @@ import br.com.jth.apontamento.dto.response.ApontamentoAvaliadoEvent;
 import br.com.jth.apontamento.dto.response.ApontamentoCriadoEvent;
 import br.com.jth.apontamento.model.ApontamentoModel;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
+
+import br.com.jth.apontamento.dto.response.ApontamentoEventAuditoria;
+
 
 @Component
 @RequiredArgsConstructor
@@ -42,4 +46,27 @@ public class ApontamentoEventProducer {
                 event
         );
     }
+
+    public void publicarApontamentoAuditoria(ApontamentoModel apontamento) {
+        ApontamentoEventAuditoria event = new ApontamentoEventAuditoria(
+                apontamento.getId(),
+                apontamento.getCriadoEm(),
+                apontamento.getItemId(),
+                apontamento.getUsuarioId(),
+                apontamento.getDataApontamento(),
+                apontamento.getHoraInicio(),
+                apontamento.getHoraFim(),
+                apontamento.getHorasLiquidas(),
+                apontamento.getObservacao()
+        );
+
+        rabbitTemplate.convertAndSend(
+            RabbitMQConfig.GESTAO_EXCHANGE,
+            RabbitMQConfig.APONTAMENTO_AUDITORIA_KEY,
+            event
+        );
+    }
+
+    
 }
+

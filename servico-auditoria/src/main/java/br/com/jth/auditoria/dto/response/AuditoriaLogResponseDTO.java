@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public record AuditoriaLogResponseDTO(
         String id,
-        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime timestamp,
+        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime criadoEm,
         Long itemId,
         UUID usuarioId,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime dataApontamento,

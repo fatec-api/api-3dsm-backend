@@ -14,25 +14,25 @@ import br.com.jth.auditoria.repository.AuditoriaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuditoriaListener {
 
     private final AuditoriaRepository auditoriaRepository;
 
     @RabbitListener(queues = QUEUE)
     public void consumir(AuditoriaMessageEvent event) {
-
-        log.info(" Evento recebido: {}", event);
+        log.info("Evento recebido: {}", event);
 
         AuditoriaLog logAuditoria = new AuditoriaLog();
 
-        logAuditoria.setUsuarioId(event.usuarioId());
+        logAuditoria.setUsuarioId(
+                event.usuarioId() != null ? event.usuarioId().toString() : null);
+
         logAuditoria.setCriadoEm(LocalDateTime.now());
 
         Map<String, Object> detalhes = new HashMap<>();
-        detalhes.put("usuarioId", event.usuarioId());
         detalhes.put("itemId", event.itemId());
         detalhes.put("dataApontamento", event.dataApontamento());
         detalhes.put("horaInicio", event.horaInicio());
@@ -44,6 +44,6 @@ public class AuditoriaListener {
 
         AuditoriaLog salvo = auditoriaRepository.save(logAuditoria);
 
-        log.info(" Log salvo com sucesso ID: {}", salvo.getId());
+        log.info("Log salvo com sucesso: {}", salvo.getId());
     }
 }

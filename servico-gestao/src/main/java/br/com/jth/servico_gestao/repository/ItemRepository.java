@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface ItemRepository extends JpaRepository<ItemModel, Long> {
     long countByProjetoModel(ProjetoModel projetoModel);
     List<ItemModel> findByProjetoModelId(Long projetoId);
-    List<ItemModel> findByUsuarioModelId(UUID usuarioId);
+    List<ItemModel> findByUsuariosId(UUID usuarioId);
 
     @Query("""
     SELECT i.nivelAtividade, SUM(i.previsaoHoras)

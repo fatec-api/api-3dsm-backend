@@ -1,6 +1,8 @@
 package br.com.jth.servico_gestao.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.jth.servico_gestao.enums.item.NivelAtividade;
 import jakarta.persistence.*;
@@ -31,9 +33,13 @@ public class ItemModel {
     @Column(nullable = true)
     private NivelAtividade nivelAtividade;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = true)
-    private UsuarioModel usuarioModel;
+    @ManyToMany
+    @JoinTable(
+            name = "item_usuario",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    private List<UsuarioModel> usuarios = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "id_projeto", nullable = false)

@@ -1,8 +1,7 @@
 package br.com.jth.servico_gestao.service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import br.com.jth.servico_gestao.dto.request.AllocationRequestDTO;
@@ -77,6 +76,7 @@ public class AlocacaoService {
 
     @Transactional
     public void vincularProfissionais(AllocationRequestDTO request) {
+
         log.info("Iniciando alocação para o Item ID: {} no Projeto ID: {}",
                 request.getItemId(), request.getProjetoId());
 
@@ -86,23 +86,27 @@ public class AlocacaoService {
         ProjetoModel projeto = projetoRepository.findById(request.getProjetoId())
                 .orElseThrow(() -> new RuntimeException("Erro: Projeto não encontrado."));
 
-        UUID profissionalId = request.getProfissionalIds().get(0);
+        List<UsuarioModel> novosProfissionais = usuarioRepository.findAllById(request.getProfissionalIds());
 
-        UsuarioModel profissional = usuarioRepository.findById(profissionalId)
-                .orElseThrow(() -> new RuntimeException("Erro: Profissional não encontrado."));
+        Set<UsuarioModel> profissionaisAtuais = new HashSet<>(item.getUsuarios());
+        profissionaisAtuais.addAll(novosProfissionais);
 
-        item.setUsuarioModel(profissional);
+        item.setUsuarios(new ArrayList<>(profissionaisAtuais));
         itemRepository.save(item);
 
-        if (!projetoUsuarioRepository.existsByProjetoAndUsuario(projeto, profissional)) {
-            ProjetoUsuarioModel novoVinculo = new ProjetoUsuarioModel();
-            novoVinculo.setProjeto(projeto);
-            novoVinculo.setUsuario(profissional);
-            novoVinculo.setDataVinculo(LocalDate.now());
-            projetoUsuarioRepository.save(novoVinculo);
+        for (UsuarioModel profissional : novosProfissionais) {
+            if (!projetoUsuarioRepository.existsByProjetoAndUsuario(projeto, profissional)) {
 
-            log.info("Profissional {} vinculado ao item {} com sucesso.",
-                    profissional.getNomeUsuario(), item.getDescricao());
+                ProjetoUsuarioModel novoVinculo = new ProjetoUsuarioModel();
+                novoVinculo.setProjeto(projeto);
+                novoVinculo.setUsuario(profissional);
+                novoVinculo.setDataVinculo(LocalDate.now());
+
+                projetoUsuarioRepository.save(novoVinculo);
+
+                log.info("Profissional {} vinculado ao projeto {}",
+                        profissional.getNomeUsuario(), projeto.getNomeProjeto());
+            }
         }
     }
 }

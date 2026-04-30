@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,17 +48,31 @@ public class ItemService {
             item.setDataAtribuicao(LocalDate.now());
         }
 
-        if (dto.getUsuarioId() != null) {
-            UsuarioModel usuario = usuarioRepository.findById(dto.getUsuarioId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND, "Usuário não encontrado com id: " + dto.getUsuarioId()));
-            item.setUsuarioModel(usuario);
+        if (dto.getUsuarioIds() != null && !dto.getUsuarioIds().isEmpty()) {
+            List<UsuarioModel> usuarios = usuarioRepository.findAllById(dto.getUsuarioIds());
+            item.setUsuarios(new ArrayList<>(usuarios));
         }
 
         ItemModel salvo = itemRepository.save(item);
         itemEventProducer.publicarItemCriado(salvo);
 
         return itemMapper.toResponse(salvo);
+    }
+
+    public void vincularProfissionais(Long itemId, List<UUID> usuarioIds) {
+        ItemModel item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Item não encontrado com id: " + itemId));
+
+        List<UsuarioModel> novosUsuarios = usuarioRepository.findAllById(usuarioIds);
+
+        // sem valores duplicados e sem sobrescrever os existentes
+        Set<UsuarioModel> usuariosAtuais = new HashSet<>(item.getUsuarios());
+        usuariosAtuais.addAll(novosUsuarios);
+
+        item.setUsuarios(new ArrayList<>(usuariosAtuais));
+
+        itemRepository.save(item);
     }
 
     public void excluirItem(Long id) {
@@ -72,14 +85,13 @@ public class ItemService {
     }
 
     public List<ItemResponseDTO> listarPorProjeto(Long projetoId) {
-        System.out.println(">>> DAO: Buscando itens no banco para o projeto ID: " + projetoId);
         return itemRepository.findByProjetoModelId(projetoId).stream()
                 .map(itemMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     public List<ItemResponseDTO> listarPorProfissional(UUID usuarioId) {
-        return itemRepository.findByUsuarioModelId(usuarioId).stream()
+        return itemRepository.findByUsuariosId(usuarioId).stream()
                 .map(itemMapper::toResponse)
                 .collect(Collectors.toList());
     }
@@ -99,7 +111,6 @@ public class ItemService {
         return prefixo + sufixo;
     }
 
-    // progresso de atividade
     public List<HorasPorAtividadeDTO> buscarHorasPorAtividade(Long projetoId) {
         if (!projetoRepository.existsById(projetoId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,

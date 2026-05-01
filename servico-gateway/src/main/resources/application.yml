@@ -18,33 +18,100 @@ spring:
                 - Path=/gestao/**
               filters:
                 - StripPrefix=1
+                - name: Retry
+                  args:
+                    retries: 3
+                    statuses: BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
+                    methods: GET
+                    backoff:
+                      firstBackoff: 100ms
+                      maxBackoff: 1000ms
+                      factor: 2
+                - name: CircuitBreaker
+                  args:
+                    name: gestao-cb
+                    fallbackUri: forward:/fallback/gestao
+
             - id: servico-apontamento
               uri: http://localhost:8083
               predicates:
                 - Path=/apontamento/**
               filters:
                 - StripPrefix=1
+                - name: Retry
+                  args:
+                    retries: 3
+                    statuses: BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
+                    methods: GET
+                    backoff:
+                      firstBackoff: 100ms
+                      maxBackoff: 1000ms
+                      factor: 2
+                - name: CircuitBreaker
+                  args:
+                    name: apontamento-cb
+                    fallbackUri: forward:/fallback/apontamento
+
             - id: servico-auditoria
               uri: http://localhost:8084
               predicates:
                 - Path=/auditoria/**
               filters:
                 - StripPrefix=1
+                - name: Retry
+                  args:
+                    retries: 3
+                    statuses: BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
+                    methods: GET
+                    backoff:
+                      firstBackoff: 100ms
+                      maxBackoff: 1000ms
+                      factor: 2
+                - name: CircuitBreaker
+                  args:
+                    name: auditoria-cb
+                    fallbackUri: forward:/fallback/auditoria
 
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8081/realms/java-the-hutt/protocol/openid-connect/certs
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      gestao-cb:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 15s
+        permittedNumberOfCallsInHalfOpenState: 3
+      apontamento-cb:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 15s
+        permittedNumberOfCallsInHalfOpenState: 3
+      auditoria-cb:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 15s
+        permittedNumberOfCallsInHalfOpenState: 3
+
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
 logging:
   level:
     io.netty: WARN
     reactor.netty: WARN
     org.springframework.cloud.gateway: TRACE
     org.springframework.security: DEBUG
-    reactor.netty.http.client: DEBUG

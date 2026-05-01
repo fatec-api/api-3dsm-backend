@@ -2,6 +2,7 @@ package br.com.jth.servico_gestao.controller;
 
 import br.com.jth.servico_gestao.dto.request.ProjetoRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ProjetoResponseDTO;
+import br.com.jth.servico_gestao.repository.ProjetoUsuarioRepository;
 import br.com.jth.servico_gestao.service.ProjetoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class ProjetoController {
         return ResponseEntity.ok(projetoService.listarTodos());
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<ProjetoResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(projetoService.buscarPorId(id));
@@ -46,4 +48,10 @@ public class ProjetoController {
 
         return ResponseEntity.ok(projetoService.listarProjetosPorGestor(gestorId));
     }
+
+    @GetMapping("/projeto/usuario/{usuarioId}")
+    public ResponseEntity<List<ProjetoResponseDTO>> listarPorUsuarioLogado(@PathVariable UUID usuarioId){
+        return ResponseEntity.ok(projetoService.listarProjetosPorUsuarioLogado(usuarioId));
+    }
+
 }

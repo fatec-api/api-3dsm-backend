@@ -8,23 +8,19 @@ import br.com.jth.servico_gestao.repository.ProjetoRepository;
 import br.com.jth.servico_gestao.repository.ProjetoUsuarioRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ProjetoUsuarioService {
 
-    @Autowired
-    private ProjetoUsuarioRepository projetoUsuarioRepository;
-
-    @Autowired
-    private ProjetoRepository projetoRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final ProjetoUsuarioRepository projetoUsuarioRepository;
+    private final ProjetoRepository projetoRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Transactional
     public void associar(ProjetoUsuarioDTO dto) {

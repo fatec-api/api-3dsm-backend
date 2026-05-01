@@ -16,26 +16,23 @@ import br.com.jth.servico_gestao.repository.ItemRepository;
 import br.com.jth.servico_gestao.repository.ProjetoRepository;
 import br.com.jth.servico_gestao.repository.ProjetoUsuarioRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class AlocacaoService {
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private ProjetoRepository projetoRepository;
+    private final ProjetoRepository projetoRepository;
 
-    @Autowired
-    private ProjetoUsuarioRepository projetoUsuarioRepository;
+    private final ProjetoUsuarioRepository projetoUsuarioRepository;
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarProfissionaisAtivos() {

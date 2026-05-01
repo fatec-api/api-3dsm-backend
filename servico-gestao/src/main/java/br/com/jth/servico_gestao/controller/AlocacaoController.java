@@ -3,7 +3,7 @@ package br.com.jth.servico_gestao.controller;
 import java.util.List;
 
 import br.com.jth.servico_gestao.dto.request.AllocationRequestDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 @RequestMapping("/alocacoes")
 @CrossOrigin(origins = "http://localhost:5173")
 public class AlocacaoController {
-    @Autowired
-    private AlocacaoService alocacaoService;
+
+    private final AlocacaoService alocacaoService;
 
     @GetMapping("/profissionais-ativos")
     public ResponseEntity<List<UsuarioResponseDTO>> getTodosProfissionaisAtivos() {

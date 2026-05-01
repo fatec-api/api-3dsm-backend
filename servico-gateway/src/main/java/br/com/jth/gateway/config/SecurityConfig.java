@@ -32,26 +32,20 @@ public class SecurityConfig {
                         .pathMatchers("/actuator/**").permitAll()
                         
                         // --- EXCEÇÃO ---
-                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/apontamento/usuario/**").authenticated()
-                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/apontamento/**").authenticated()
-                        .pathMatchers(org.springframework.http.HttpMethod.POST, "/apontamento/").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/apontamento/apontamento/usuario/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/gestao/itens/usuario/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.PUT, "/gestao/usuarios/atualizar/**").authenticated()
                         
-                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/usuario/**").authenticated()
-                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/usuarios/**").authenticated()
-                        
-                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/alocacoes/projeto/**").authenticated()
-                        
-                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/itens/usuario/**").authenticated()
-                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/itens/projeto/**").authenticated()
-                        
-                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/projetos/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.POST, "/apontamento/apontamentos/").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.PATCH, "/apontamento/apontamentos/**/status").hasAnyRole("GESTOR") 
+                        .pathMatchers(org.springframework.http.HttpMethod.PATCH, "/apontamento/apontamentos/**").authenticated()
 
                         // --- REGRA GERAL ---
-                        .pathMatchers("/gestao/**").hasAnyRole("GESTOR","FINANCEIRO") 
+                        .pathMatchers("/gestao/**").hasAnyRole("GESTOR") 
                         
-                        .pathMatchers("/apontamento/**").hasAnyRole("GESTOR","FINANCEIRO") 
+                        .pathMatchers("/apontamento/**").hasAnyRole("GESTOR") 
 
-                        .pathMatchers("/auditoria/**").hasAnyRole("GESTOR","FINANCEIRO") 
+                        .pathMatchers("/auditoria/**").hasAnyRole("GESTOR") 
                         
                         .anyExchange().authenticated()
                 )

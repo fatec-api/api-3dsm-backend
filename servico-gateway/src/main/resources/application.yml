@@ -7,99 +7,44 @@ spring:
 
   cloud:
     gateway:
-      default-filters:
-        - AddRequestHeader=X-Gateway, servico-gateway
+      server:
+        webflux:
+          default-filters:
+            - AddRequestHeader=X-Gateway, servico-gateway
+          routes:
+            - id: servico-gestao
+              uri: http://localhost:8082
+              predicates:
+                - Path=/gestao/**
+              filters:
+                - StripPrefix=1
+            - id: servico-apontamento
+              uri: http://localhost:8083
+              predicates:
+                - Path=/apontamento/**
+              filters:
+                - StripPrefix=1
+            - id: servico-auditoria
+              uri: http://localhost:8084
+              predicates:
+                - Path=/auditoria/**
+              filters:
+                - StripPrefix=1
 
-      routes:
-        - id: servico-gestao
-          uri: http://servico-gestao:8082
-          predicates:
-            - Path=/gestao/**
-          filters:
-            - StripPrefix=1
-
-        - id: servico-apontamento
-          uri: http://servico-apontamento:8083
-          predicates:
-            - Path=/apontamento/**
-          filters:
-            - StripPrefix=1
-
-        - id: servico-auditoria
-          uri: http://servico-auditoria:8084
-          predicates:
-            - Path=/auditoria/**
-          filters:
-            - StripPrefix=1
-
-      globalcors:
-        corsConfiguration:
-          '[/**]':
-            allowedOrigins: "http://localhost:5173"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - PATCH
-              - DELETE
-              - OPTIONS
-            allowedHeaders: "*"
-            allowedCredentials: true
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/java-the-hutt
-
+          jwk-set-uri: http://localhost:8081/realms/java-the-hutt/protocol/openid-connect/certs
 management:
   endpoints:
     web:
       exposure:
         include: health,info
-
 logging:
   level:
     io.netty: WARN
     reactor.netty: WARN
-    org.springframework.cloud.gateway: DEBUG
-
-#server:
-#  port: 8080
-#
-#spring:
-#  application:
-#    name: api-gateway
-#
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          # Aponta pro Keycloak do seu compose (de fora do Docker: localhost:8081)
-#          issuer-uri: http://localhost:8081/realms/java-the-hutt
-#
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: servico-gestao
-#          uri: ${GATEWAY_ROUTE_GESTAO_URI:http://localhost:8082}
-#          predicates:
-#            - Path=/gestao/**
-#          filters:
-#            - StripPrefix=1
-#            - TokenRelay=   # <-- propaga o Bearer token
-#
-#        - id: servico-apontamento
-#          uri: ${GATEWAY_ROUTE_APONTAMENTO_URI:http://localhost:8083}
-#          predicates:
-#            - Path=/apontamento/**
-#          filters:
-#            - StripPrefix=1
-#            - TokenRelay=
-#
-#        - id: servico-auditoria
-#          uri: ${GATEWAY_ROUTE_AUDITORIA_URI:http://localhost:8084}
-#          predicates:
-#            - Path=/auditoria/**
-#          filters:
-#            - StripPrefix=1
-#            - TokenRelay=
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.security: DEBUG
+    reactor.netty.http.client: DEBUG

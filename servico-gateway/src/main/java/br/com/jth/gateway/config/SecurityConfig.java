@@ -25,11 +25,34 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
+                        
+                        // --- EXCEÇÃO ---
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/apontamento/usuario/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/apontamento/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.POST, "/apontamento/").authenticated()
+                        
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/usuario/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/usuarios/**").authenticated()
+                        
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/alocacoes/projeto/**").authenticated()
+                        
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/itens/usuario/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/itens/projeto/**").authenticated()
+                        
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/projetos/**").authenticated()
+
+                        // --- REGRA GERAL ---
+                        .pathMatchers("/gestao/**").hasAnyRole("GESTOR","FINANCEIRO") 
+                        
+                        .pathMatchers("/apontamento/**").hasAnyRole("GESTOR","FINANCEIRO") 
+
+                        .pathMatchers("/auditoria/**").hasAnyRole("GESTOR","FINANCEIRO") 
+                        
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -59,3 +82,4 @@ public class SecurityConfig {
         return source;
     }
 }
+

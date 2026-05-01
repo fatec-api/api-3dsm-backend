@@ -32,12 +32,13 @@ services:
       mysql:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:9000/health/ready || exit 1" ]
+      test: ["CMD-SHELL", "{ printf 'HEAD /health/ready HTTP/1.0\\r\\n\\r\\n' >&0; grep 'HTTP/1.0 200'; } 0<>/dev/tcp/localhost/9000"]
       interval: 15s
       timeout: 5s
       retries: 20
       start_period: 120s
     environment:
+      KC_HEALTH_ENABLED: "true"
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASS}
       KC_DB: mysql
@@ -98,20 +99,31 @@ services:
 
   # MICROSSERVIÇOS
 
-  servico-gateway:
-    build:
-      context: .
-      dockerfile: servico-gateway/Dockerfile
-    container_name: servico-gateway
-    depends_on:
-      keycloak:
-        condition: service_healthy
-    environment:
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
-    ports:
-      - "8080:8080"
-    networks:
-      - backend-hutt
+#  app:
+#    build: ./app
+#    container_name: app
+#    restart: on-failure
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_healthy
+#      keycloak:
+#        condition: service_healthy
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/app
+#      SPRING_DATASOURCE_USERNAME: appuser
+#      SPRING_DATASOURCE_PASSWORD: ${DB_APP_PASS}
+#      SPRING_RABBITMQ_HOST: rabbitmq
+#      SPRING_RABBITMQ_PORT: 5672
+#      SPRING_RABBITMQ_USERNAME: rabbit
+#      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
+#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
+#    ports:
+#      - "8086:8080"
+#    networks:
+#      - backend-hutt
+
 
   servico-gestao:
     build:
@@ -136,7 +148,7 @@ services:
       SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
     ports:
-      - "8082:8080"
+      - "8082:8082"
     networks:
       - backend-hutt
 
@@ -161,7 +173,7 @@ services:
       SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASS}
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
     ports:
-      - "8083:8080"
+      - "8083:8083"
     networks:
       - backend-hutt
 
@@ -185,7 +197,7 @@ services:
      SPRING_DATA_MONGODB_URI: mongodb://mongouser:${MONGO_PASS}@mongodb:27017/auditoria?authSource=admin
      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/java-the-hutt
     ports:
-     - "8084:8080"
+     - "8084:8084"
     networks:
      - backend-hutt
 

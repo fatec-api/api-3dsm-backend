@@ -81,10 +81,10 @@ services:
     image: mongo:7.0
     container_name: mongodb_hutt
     restart: always
+    command: mongod --noauth
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongouser
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
-      MONGO_INITDB_DATABASE: auditoria
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/auditoria
+      
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s

@@ -8,5 +8,6 @@ public record AuditoriaMessageEvent(
         LocalDateTime dataApontamento,
         LocalDateTime horaInicio,
         LocalDateTime horaFim,
-        String observacao) {
-}
+        Double horasLiquidas,
+        String observacao
+) { }

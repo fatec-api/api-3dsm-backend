@@ -162,30 +162,22 @@ public class ApontamentoService {
 
     public List<ApontamentoResponseDTO> buscarApontamentoPendentePorProjetoId(Long projetoId) {
         
-        // 1. Busca os itens que pertencem a esse projeto lá no microsserviço de Gestão
         List<ItemResponseDTO> itensDoProjeto = projetoQueryProducer.buscarItensParaApontamento(projetoId);
 
-        // Se o projeto não existir ou não tiver itens, já retornamos vazio para evitar select desnecessário
         if (itensDoProjeto.isEmpty()) {
             return List.of();
         }
 
-        // 2. Extrai apenas os IDs dos itens para facilitar a query (o famoso "select doido")
         List<Long> itensIds = itensDoProjeto.stream()
                 .map(ItemResponseDTO::getId)
                 .collect(Collectors.toList());
 
-        // 3. Faz o select no banco local de Apontamentos
-        // Aqui buscamos apontamentos que estejam ligados a esses itens e que tenham status PENDENTE
         List<ApontamentoModel> apontamentosPendentes = repository
                 .findByItemIdInAndStatus(itensIds, ApontamentoStatus.PENDENTE);
 
-        // 4. Converte para DTO e retorna
         return apontamentosPendentes.stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
-
-
-
+    
 }

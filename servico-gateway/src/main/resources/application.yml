@@ -18,6 +18,7 @@ spring:
                 - Path=/gestao/**
               filters:
                 - StripPrefix=1
+                - TokenRelay=
                 - name: Retry
                   args:
                     retries: 3
@@ -38,6 +39,7 @@ spring:
                 - Path=/apontamento/**
               filters:
                 - StripPrefix=1
+                - TokenRelay=
                 - name: Retry
                   args:
                     retries: 3
@@ -58,6 +60,7 @@ spring:
                 - Path=/auditoria/**
               filters:
                 - StripPrefix=1
+                - TokenRelay=
                 - name: Retry
                   args:
                     retries: 3
@@ -76,7 +79,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/java-the-hutt
+          issuer-uri: http://keycloak:8081/realms/java-the-hutt
 
 resilience4j:
   circuitbreaker:

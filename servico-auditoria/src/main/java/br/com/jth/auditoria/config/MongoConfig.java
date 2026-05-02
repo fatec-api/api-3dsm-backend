@@ -14,7 +14,7 @@ public class MongoConfig {
     @Bean
     public MongoClient mongoClient() {
         ConnectionString connectionString = new ConnectionString(
-                "mongodb://mongouser:mongo123@mongodb:27017/auditoria?authSource=admin");
+                "mongodb://mongouser:mongopass@mongodb:27017/auditoria?authSource=admin");
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();

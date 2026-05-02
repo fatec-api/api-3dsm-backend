@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -20,5 +22,6 @@ public class ItemResponseDTO {
     private NivelAtividade nivelAtividade;
     private Long projetoId;
     private String projetoNome;
-    private String usuarioNome;
+    private List<String> usuarioNomes;
+    private List<UUID> usuarioIds;
 }

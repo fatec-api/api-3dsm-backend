@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -19,12 +20,12 @@ public class ItemRequestDTO {
 
     private LocalDate dataAtribuicao;
 
-    @Min(value = 0, message = "A previsão de horas não pode ser negativa.") // ✅ era 1, agora 0
+    @Min(value = 0, message = "A previsão de horas não pode ser negativa.")
     private Integer previsaoHoras;
 
     private NivelAtividade nivelAtividade;
 
-    private UUID usuarioId;
+    private List<UUID> usuarioIds;
 
     @NotNull(message = "O projeto é obrigatório.")
     private Long projetoId;

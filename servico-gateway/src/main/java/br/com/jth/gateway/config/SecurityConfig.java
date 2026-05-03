@@ -1,6 +1,7 @@
 package br.com.jth.gateway.config;
 
-import br.com.jth.gateway.utils.KeycloakRoleConverter;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -11,15 +12,15 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+
+import br.com.jth.gateway.utils.KeycloakRoleConverter;
 import reactor.core.publisher.Mono;
-import java.util.List;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -50,13 +51,13 @@ public class SecurityConfig {
                         .pathMatchers(org.springframework.http.HttpMethod.GET, "/apontamento/apontamento/usuario/**").authenticated()
                         .pathMatchers(org.springframework.http.HttpMethod.GET, "/gestao/itens/usuario/**").authenticated()
                         .pathMatchers(org.springframework.http.HttpMethod.PUT, "/gestao/usuarios/atualizar/**").authenticated()
-                        .pathMatchers(org.springframework.http.HttpMethod.POST, "/apontamento/apontamentos/").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.POST, "/apontamento/apontamentos").authenticated()
                         .pathMatchers(org.springframework.http.HttpMethod.PATCH, "/apontamento/apontamentos/*/status").hasAnyRole("GESTOR")
                         .pathMatchers(org.springframework.http.HttpMethod.PATCH, "/apontamento/apontamentos/**").authenticated()
 
                         // --- REGRA GERAL ---
-                        .pathMatchers("/gestao/**").hasAnyRole("GESTOR")
-                        .pathMatchers("/apontamento/**").hasAnyRole("GESTOR")
+                        .pathMatchers("/gestao/**").hasAnyRole("GESTOR","PROFISSIONAL")
+                        .pathMatchers("/apontamento/**").hasAnyRole("GESTOR","PROFISSIONAL")
                         .pathMatchers("/auditoria/**").hasAnyRole("GESTOR")
                         .anyExchange().authenticated()
                 )

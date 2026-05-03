@@ -43,7 +43,7 @@ public class SecurityConfig {
 
         return jwtDecoder;
     }
-    
+
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();

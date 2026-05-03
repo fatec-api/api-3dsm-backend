@@ -1,19 +1,20 @@
 package br.com.jth.servico_gestao.mensageria;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.stereotype.Component;
+
 import br.com.jth.servico_gestao.config.RabbitMQConfig;
 import br.com.jth.servico_gestao.mensageria.evento.AuditoriaEventDTO;
 import br.com.jth.servico_gestao.mensageria.evento.ItemEventDTO;
 import br.com.jth.servico_gestao.model.ItemModel;
 import br.com.jth.servico_gestao.model.UsuarioModel;
 import lombok.AllArgsConstructor;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Component
 @AllArgsConstructor

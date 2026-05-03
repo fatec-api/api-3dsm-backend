@@ -18,8 +18,6 @@ public class RabbitMQConfig {
     public static final String GESTAO_EXCHANGE = "gestao.exchange";
     public static final String APONTAMENTO_AUDITORIA_KEY = "apontamento.auditoria";
 
-    private static final String GESTAO_EXCHANGE = "gestao.exchange";
-
     @Bean
     public Queue auditoriaQueue() {
         return QueueBuilder.durable(QUEUE)
@@ -44,11 +42,6 @@ public class RabbitMQConfig {
                 .bind(auditoriaQueue)
                 .to(gestaoExchange)
                 .with(APONTAMENTO_AUDITORIA_KEY);
-    }
-
-    @Bean
-    public TopicExchange gestaoExchange() {
-        return new TopicExchange(GESTAO_EXCHANGE, true, false);
     }
 
     // escuta tudo que vem do gestao.exchange com routing key apontamento.*

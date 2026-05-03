@@ -29,11 +29,10 @@ public class SecurityConfig {
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
         String jwkSetUri = "http://keycloak:8080/realms/java-the-hutt/protocol/openid-connect/certs";
-        
+
         NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
 
-        // Mantemos a marreta para ignorar a briga de nomes (iss)
-        jwtDecoder.setJwtValidator(JwtValidators.createDefault()); 
+        jwtDecoder.setJwtValidator(JwtValidators.createDefault());
 
         return jwtDecoder;
     }

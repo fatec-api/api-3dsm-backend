@@ -45,7 +45,7 @@ services:
       KC_DB_URL: jdbc:mysql://mysql:3306/keycloak
       KC_DB_USERNAME: appuser
       KC_DB_PASSWORD: ${DB_APP_PASS}
-      KC_HOSTNAME: keycloak
+      KC_HOSTNAME: localhost
       KC_HOSTNAME_STRICT: "false"
       KK_TO_RMQ_URL: amqp://rabbit:rabbit@rabbitmq:5672
       KK_TO_RMQ_EXCHANGE: keycloak.events

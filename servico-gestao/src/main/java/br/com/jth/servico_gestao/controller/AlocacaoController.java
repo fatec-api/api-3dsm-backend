@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/alocacoes")
-@CrossOrigin(origins = "http://localhost:5173")
 public class AlocacaoController {
 
     private final AlocacaoService alocacaoService;

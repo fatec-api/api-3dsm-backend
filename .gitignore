@@ -49,3 +49,6 @@ Thumbs.db
 
 ### Secrets ###
 .env
+
+## temp
+req.http

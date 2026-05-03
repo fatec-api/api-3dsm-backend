@@ -1,10 +1,6 @@
 package br.com.jth.auditoria.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -21,6 +17,8 @@ public class RabbitMQConfig {
 
     public static final String GESTAO_EXCHANGE = "gestao.exchange";
     public static final String APONTAMENTO_AUDITORIA_KEY = "apontamento.auditoria";
+
+    private static final String GESTAO_EXCHANGE = "gestao.exchange";
 
     @Bean
     public Queue auditoriaQueue() {
@@ -46,6 +44,17 @@ public class RabbitMQConfig {
                 .bind(auditoriaQueue)
                 .to(gestaoExchange)
                 .with(APONTAMENTO_AUDITORIA_KEY);
+    }
+
+    @Bean
+    public TopicExchange gestaoExchange() {
+        return new TopicExchange(GESTAO_EXCHANGE, true, false);
+    }
+
+    // escuta tudo que vem do gestao.exchange com routing key apontamento.*
+    @Bean
+    public Binding bindingApontamentos(Queue auditoriaQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(auditoriaQueue).to(gestaoExchange).with("apontamento.*");
     }
 
     @Bean

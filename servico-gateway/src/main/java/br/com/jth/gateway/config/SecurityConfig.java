@@ -1,46 +1,89 @@
 package br.com.jth.gateway.config;
 
+import br.com.jth.gateway.utils.KeycloakRoleConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtValidators;
+import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
+import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http
+    public ReactiveJwtDecoder jwtDecoder() {
+        String jwkSetUri = "http://keycloak:8080/realms/java-the-hutt/protocol/openid-connect/certs";
+
+        NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
+
+        jwtDecoder.setJwtValidator(JwtValidators.createDefault());
+
+        return jwtDecoder;
+    }
+
+
+    @Bean
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeExchange(auth -> auth
-                        .pathMatchers("/public/**").permitAll()
+                .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .pathMatchers("/actuator/**").permitAll()
+
+                        // --- EXCEÇÃO ---
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/apontamento/apontamento/usuario/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/gestao/itens/usuario/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.PUT, "/gestao/usuarios/atualizar/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.POST, "/apontamento/apontamentos/").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.PATCH, "/apontamento/apontamentos/*/status").hasAnyRole("GESTOR")
+                        .pathMatchers(org.springframework.http.HttpMethod.PATCH, "/apontamento/apontamentos/**").authenticated()
+
+                        // --- REGRA GERAL ---
+                        .pathMatchers("/gestao/**").hasAnyRole("GESTOR")
+                        .pathMatchers("/apontamento/**").hasAnyRole("GESTOR")
+                        .pathMatchers("/auditoria/**").hasAnyRole("GESTOR")
                         .anyExchange().authenticated()
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                )
+                .build();
+    }
 
-        return http.build();
+    @Bean
+    public Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtAuthenticationConverter() {
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
+        return new ReactiveJwtAuthenticationConverterAdapter(converter);
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedMethods(List.of("*"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
+
         return source;
     }
 }

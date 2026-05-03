@@ -1,14 +1,17 @@
 package br.com.jth.servico_gestao.service;
 
+import br.com.jth.servico_gestao.controller.ProjetoUsuarioController;
 import br.com.jth.servico_gestao.dto.request.ProjetoRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ProjetoResponseDTO;
 import br.com.jth.servico_gestao.mapper.ProjetoMapper;
 import br.com.jth.servico_gestao.mensageria.ProjetoEventProducer;
 import br.com.jth.servico_gestao.model.ClienteModel;
 import br.com.jth.servico_gestao.model.ProjetoModel;
+import br.com.jth.servico_gestao.model.ProjetoUsuarioModel;
 import br.com.jth.servico_gestao.model.UsuarioModel;
 import br.com.jth.servico_gestao.repository.ClienteRepository;
 import br.com.jth.servico_gestao.repository.ProjetoRepository;
+import br.com.jth.servico_gestao.repository.ProjetoUsuarioRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ public class ProjetoService {
     private final ClienteRepository clienteRepository;
     private final ProjetoMapper projetoMapper;
     private final ProjetoEventProducer projetoEventProducer;
+    private final ProjetoUsuarioRepository projetoUsuarioRepository;
 
     public ProjetoResponseDTO criarProjeto(ProjetoRequestDTO dto) {
 
@@ -139,6 +143,21 @@ public class ProjetoService {
         return projetos.stream()
                 .peek(this::calcularHoras)
                 .map(projetoMapper::toResponse)
+                .toList();
+    }
+
+    public List<ProjetoResponseDTO> listarProjetosPorUsuarioLogado(UUID usuarioId){
+
+        if(!usuarioRepository.existsById(usuarioId)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Usuário não encontrado.");
+        }
+
+        List<ProjetoUsuarioModel> projetos = projetoUsuarioRepository.findByUsuarioIdAndDataDesvinculoIsNull(usuarioId);
+
+        return projetos.stream()
+                .map(vinculo -> vinculo.getProjeto())
+                .map(projetoMapper :: toResponse)
                 .toList();
     }
 }

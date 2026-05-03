@@ -21,7 +21,12 @@ public class ApontamentoEventProducer {
     public void publicarApontamentoCriado(ApontamentoModel apontamento) {
         ApontamentoCriadoEvent event = new ApontamentoCriadoEvent(
                 apontamento.getId(),
+                apontamento.getUsuarioId(),
                 apontamento.getItemId(),
+                apontamento.getDataApontamento(),
+                apontamento.getHoraInicio(),
+                apontamento.getHoraFim(),
+                apontamento.getObservacao(),
                 apontamento.getHorasLiquidas()
         );
 

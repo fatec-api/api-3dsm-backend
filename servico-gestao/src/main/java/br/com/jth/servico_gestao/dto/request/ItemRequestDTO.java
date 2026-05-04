@@ -14,6 +14,9 @@ import java.util.UUID;
 @Data
 public class ItemRequestDTO {
 
+    @NotBlank(message = "O campo de titulo não pode estar vazio")
+    private String titulo;
+
     @NotBlank(message = "O campo de descrição não pode estar vazio.")
     @Size(max = 300, message = "Descrição deve ter no máximo 300 caracteres.")
     private String descricao;

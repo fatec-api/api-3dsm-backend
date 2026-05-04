@@ -37,10 +37,8 @@ public class ItemService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Projeto não encontrado com id: " + dto.getProjetoId()));
 
-        String codigo = gerarCodigo(projeto);
-
         ItemModel item = itemMapper.toEntity(dto);
-        item.setCodigo(codigo);
+        item.setCodigo(dto.getTitulo());
         item.setProjetoModel(projeto);
 
         if (item.getDataAtribuicao() == null) {

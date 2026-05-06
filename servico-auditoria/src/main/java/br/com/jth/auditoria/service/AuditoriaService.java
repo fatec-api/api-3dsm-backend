@@ -1,6 +1,8 @@
 package br.com.jth.auditoria.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 public class AuditoriaService {
 
     private final AuditoriaRepository auditoriaRepository;
+
+    private static final ZoneId BRASILIA = ZoneId.of("America/Sao_Paulo");
+
 
     public Page<AuditoriaLogResponseDTO> listar(Pageable pageable) {
         return auditoriaRepository.findAll(pageable).map(this::toResponse);
@@ -51,17 +56,30 @@ public class AuditoriaService {
                 : null;
 
         String observacao = detalhes != null ? (String) detalhes.get("observacao") : null;
+        String justificativa = detalhes != null ? (String) detalhes.get("justificativa") : null;
+        String status = detalhes != null ? (String) detalhes.get("status") : null;
 
         return new AuditoriaLogResponseDTO(
                 log.getId(),
-                log.getCriadoEm(),
+                toUtcBrasilia(log.getCriadoEm()),
                 itemId,
                 usuarioId,
-                dataApontamento,
-                horaInicio,
-                horaFim,
+                toUtcBrasilia(dataApontamento),
+                toUtcBrasilia(horaInicio),
+                toUtcBrasilia(horaFim),
                 horasLiquidas,
-                observacao);
+                observacao,
+                justificativa,
+                status
+        );
+    }
+
+
+    private LocalDateTime toUtcBrasilia(LocalDateTime ldt) {
+        if (ldt == null) return null;
+        return ldt.atZone(ZoneOffset.UTC)
+                .withZoneSameInstant(BRASILIA)
+                .toLocalDateTime();
     }
 
     private LocalDateTime parseDate(Object value) {

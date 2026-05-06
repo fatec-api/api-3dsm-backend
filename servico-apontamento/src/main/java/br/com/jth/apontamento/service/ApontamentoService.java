@@ -148,7 +148,7 @@ public class ApontamentoService {
 
         ApontamentoModel salvo = repository.save(apontamento);
         apontamentoEventProducer.publicarApontamentoAvaliado(salvo);
-
+        apontamentoEventProducer.publicarApontamentoAuditoria(salvo);
         
         return mapper.toResponse(salvo);
     }

@@ -44,12 +44,6 @@ public class RabbitMQConfig {
                 .with(APONTAMENTO_AUDITORIA_KEY);
     }
 
-    // escuta tudo que vem do gestao.exchange com routing key apontamento.*
-    @Bean
-    public Binding bindingApontamentos(Queue auditoriaQueue, TopicExchange gestaoExchange) {
-        return BindingBuilder.bind(auditoriaQueue).to(gestaoExchange).with("apontamento.*");
-    }
-
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

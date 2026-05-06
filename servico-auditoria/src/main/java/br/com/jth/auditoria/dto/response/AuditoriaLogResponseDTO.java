@@ -14,5 +14,7 @@ public record AuditoriaLogResponseDTO(
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime horaInicio,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime horaFim,
         Double horasLiquidas,
-        String observacao) {
-}
+        String observacao,
+        String justificativa,
+        String status
+) {}

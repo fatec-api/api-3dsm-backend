@@ -39,6 +39,8 @@ public class AuditoriaListener {
         detalhes.put("horaFim", event.horaFim());
         detalhes.put("horasLiquidas", event.horasLiquidas());
         detalhes.put("observacao", event.observacao());
+        detalhes.put("justificativa", event.justificativa());
+        detalhes.put("status", event.status());
 
         logAuditoria.setDetalhes(detalhes);
 

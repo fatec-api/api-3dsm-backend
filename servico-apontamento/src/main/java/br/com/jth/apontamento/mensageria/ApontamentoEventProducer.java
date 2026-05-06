@@ -62,7 +62,9 @@ public class ApontamentoEventProducer {
                 apontamento.getHoraInicio(),
                 apontamento.getHoraFim(),
                 apontamento.getHorasLiquidas(),
-                apontamento.getObservacao()
+                apontamento.getObservacao(),
+                apontamento.getJustificativaReprovacao(),
+                apontamento.getStatus().name()
         );
 
         rabbitTemplate.convertAndSend(

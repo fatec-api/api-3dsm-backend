@@ -61,4 +61,5 @@ public class ApontamentoEventConsumer {
 
         projetoRepository.save(projeto);
     }
+
 }

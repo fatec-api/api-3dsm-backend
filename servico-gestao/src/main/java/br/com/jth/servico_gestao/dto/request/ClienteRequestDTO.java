@@ -1,18 +1,24 @@
 package br.com.jth.servico_gestao.dto.request;
 
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
 public class ClienteRequestDTO {
 
-    @NotBlank
+    @NotBlank(message = "Nome da empresa é obrigatório")
     private String nomeEmpresa;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "E-mail é obrigatório")
+    @Email(message = "E-mail inválido")
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "CNPJ é obrigatório")
+    @Pattern(
+        regexp = "\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}",
+        message = "CNPJ deve estar obrigatoriamente no formato 00.000.000/0000-00"
+    )
     private String cnpj;
 }

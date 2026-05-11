@@ -1,6 +1,6 @@
 package br.com.jth.servico_gestao.dto.request;
 
-import jakarta.validation.constraints.Email;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -10,10 +10,9 @@ public class ClienteRequestDTO {
     @NotBlank
     private String nomeEmpresa;
 
-    @Email
-    @NotBlank
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank
+    @Column(nullable = false, unique = true)
     private String cnpj;
 }

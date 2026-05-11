@@ -1,5 +1,12 @@
 package br.com.jth.servico_gestao.service;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import br.com.jth.servico_gestao.dto.ProjetoUsuarioDTO;
 import br.com.jth.servico_gestao.model.ProjetoModel;
 import br.com.jth.servico_gestao.model.ProjetoUsuarioModel;
@@ -7,12 +14,7 @@ import br.com.jth.servico_gestao.model.UsuarioModel;
 import br.com.jth.servico_gestao.repository.ProjetoRepository;
 import br.com.jth.servico_gestao.repository.ProjetoUsuarioRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -48,5 +50,17 @@ public class ProjetoUsuarioService {
 
             projetoUsuarioRepository.save(associacao);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProjetoUsuarioDTO> listarAssociacoes() {
+        return projetoUsuarioRepository.findAll().stream()
+                .map(associacao -> {
+                    ProjetoUsuarioDTO dto = new ProjetoUsuarioDTO();
+                    dto.setProjetoId(associacao.getProjeto().getId());
+                    dto.setUsuarioId(List.of(associacao.getUsuario().getId()));
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }

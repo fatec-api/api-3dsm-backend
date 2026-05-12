@@ -22,6 +22,8 @@ public class ClienteService {
         String cnpj = normalizarCnpj(dto.getCnpj());
 
         validarCnpjMatematico(cnpj);
+        validarEmailUnico(email, null);
+        validarCnpjUnico(cnpj, null);
 
         ClienteModel model = clienteMapper.toModel(dto);
 

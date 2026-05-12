@@ -6,6 +6,9 @@ import br.com.jth.servico_gestao.mapper.ClienteMapper;
 import br.com.jth.servico_gestao.model.ClienteModel;
 import br.com.jth.servico_gestao.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,6 +37,36 @@ public class ClienteService {
         model.setCnpj(cnpj);
 
         return clienteMapper.toResponse(clienteRepository.save(model));
+    }
+
+    public List<ClienteResponseDTO> listarTodos() {
+        return clienteRepository.findAll()
+                .stream()
+                .map(clienteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<ClienteResponseDTO> listarAtivos() {
+        return clienteRepository.findByAtivoTrue()
+                .stream()
+                .map(clienteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<ClienteResponseDTO> buscar(String termo) {
+        String t = termo == null ? "" : termo.trim();
+        return clienteRepository
+                .findByAtivoTrueAndNomeEmpresaContainingIgnoreCaseOrAtivoTrueAndCnpjContaining(t, t)
+                .stream()
+                .map(clienteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    public ClienteResponseDTO buscarPorId(Long id) {
+        return clienteMapper.toResponse(buscarModelPorId(id));
     }
 
     private void validarEmailUnico(String email, Long idIgnorar) {

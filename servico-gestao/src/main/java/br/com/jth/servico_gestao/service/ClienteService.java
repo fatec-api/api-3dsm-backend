@@ -32,6 +32,28 @@ public class ClienteService {
         return clienteMapper.toResponse(clienteRepository.save(model));
     }
 
+    private void validarEmailUnico(String email, Long idIgnorar) {
+
+        clienteRepository.findByEmail(email).ifPresent(existente -> {
+
+            if (!existente.getId().equals(idIgnorar)) {
+                throw new IllegalArgumentException(
+                        "E-mail já cadastrado: " + email);
+            }
+        });
+    }
+
+    private void validarCnpjUnico(String cnpj, Long idIgnorar) {
+
+        clienteRepository.findByCnpj(cnpj).ifPresent(existente -> {
+
+            if (!existente.getId().equals(idIgnorar)) {
+                throw new IllegalArgumentException(
+                        "CNPJ já cadastrado: " + cnpj);
+            }
+        });
+    }
+
     String normalizarCnpj(String cnpj) {
         if (cnpj == null)
             return "";

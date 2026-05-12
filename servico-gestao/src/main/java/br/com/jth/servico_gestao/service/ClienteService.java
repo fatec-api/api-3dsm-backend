@@ -25,6 +25,8 @@ public class ClienteService {
         validarEmailUnico(email, null);
         validarCnpjUnico(cnpj, null);
 
+        public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto)
+
         ClienteModel model = clienteMapper.toModel(dto);
 
         model.setNomeEmpresa(nomeEmpresa);

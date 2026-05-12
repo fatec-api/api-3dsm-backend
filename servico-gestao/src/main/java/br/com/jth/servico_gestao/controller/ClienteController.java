@@ -43,4 +43,28 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.buscar(q));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(clienteService.buscarPorId(id));
+    }
+ 
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid ClienteRequestDTO dto) {
+ 
+        return ResponseEntity.ok(clienteService.atualizar(id, dto));
+    }
+ 
+    @PatchMapping("/{id}/inativar")
+    public ResponseEntity<Void> inativar(@PathVariable Long id) {
+        clienteService.inativar(id);
+        return ResponseEntity.noContent().build();
+    }
+ 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        clienteService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

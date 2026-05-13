@@ -21,7 +21,9 @@ public class ClienteService {
                 .map(cliente -> new ClienteResponseDTO(
                         cliente.getId().toString(),
                         cliente.getNomeEmpresa(),
-                        cliente.getCnpj()
+                        cliente.getCnpj(),
+                        cliente.getEmail(),
+                        cliente.isAtivo()
                 ))
                 .collect(Collectors.toList());
     }
@@ -31,7 +33,9 @@ public class ClienteService {
         return clienteRepository.findById(id).map(cliente -> new ClienteResponseDTO(
                 cliente.getId().toString(),
                 cliente.getNomeEmpresa(),
-                cliente.getCnpj()
+                cliente.getCnpj(),
+                cliente.getEmail(),
+                cliente.isAtivo()
         )).orElse(null);
     }
 }

@@ -23,7 +23,7 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.buscarPorId(id));
     }
 
-    @GetMapping("/todos")
+    @GetMapping
     public ResponseEntity<List<ClienteResponseDTO>> listarClientes() {
         List<ClienteResponseDTO> clientes = clienteService.listarClientes();
         return ResponseEntity.ok(clientes);

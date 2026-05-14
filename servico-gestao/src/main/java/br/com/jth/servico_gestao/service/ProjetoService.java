@@ -139,22 +139,28 @@ public class ProjetoService {
             projeto.setGestor(gestor);
         }
 
-        if (dto.getProfissionalAlocadoId() != null) {
-            UsuarioModel profissional = usuarioRepository.findById(dto.getProfissionalAlocadoId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Profissional não encontrado."));
-            if (!profissional.isAtivo()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "O profissional alocado não está ativo.");
-            }
-            projeto.setProfissionalAlocado(profissional);
-        }
-
         if (dto.getClienteId() != null) {
             ClienteModel cliente = clienteRepository.findById(dto.getClienteId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Cliente não encontrado."));
             projeto.setCliente(cliente);
+        }
+        if (dto.getProfissionalAlocadoIds() != null) {
+            // Remove todos os vínculos atuais
+            projetoUsuarioRepository.deleteByProjeto(projeto);
+
+            // Insere os novos
+            for (UUID uid : dto.getProfissionalAlocadoIds()) {
+                UsuarioModel profissional = usuarioRepository.findById(uid)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Usuário não encontrado: " + uid));
+
+                ProjetoUsuarioModel vinculo = new ProjetoUsuarioModel();
+                vinculo.setProjeto(projeto);
+                vinculo.setUsuario(profissional);
+                vinculo.setDataVinculo(LocalDate.now());
+                projetoUsuarioRepository.save(vinculo);
+            }
         }
 
         ProjetoModel salvo = projetoRepository.save(projeto);

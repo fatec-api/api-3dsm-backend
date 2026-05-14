@@ -190,14 +190,17 @@ public class ApontamentoService {
         List<Long> itensIds = itensDoProjeto.stream()
                 .map(ItemResponseDTO::getId)
                 .collect(Collectors.toList());
-         List<ApontamentoModel> apontamentosAprovados =
-            repository.findByItemIdInAndStatus(
-                    itensIds,
-                    ApontamentoStatus.APROVADO
-            );
+
+        if (itensIds.isEmpty()) {
+            return 0.0;
+        }
+        
+        List<ApontamentoModel> apontamentosAprovados = repository.findByItemIdInAndStatus(
+                itensIds,
+                ApontamentoStatus.APROVADO);
         return apontamentosAprovados.stream()
-        .mapToDouble(ApontamentoModel::getHorasLiquidas)
-        .sum();
+                .mapToDouble(ApontamentoModel::getHorasLiquidas)
+                .sum();
     }
 
 }

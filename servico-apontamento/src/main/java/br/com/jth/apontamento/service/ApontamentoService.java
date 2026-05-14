@@ -190,6 +190,11 @@ public class ApontamentoService {
         List<Long> itensIds = itensDoProjeto.stream()
                 .map(ItemResponseDTO::getId)
                 .collect(Collectors.toList());
+         List<ApontamentoModel> apontamentosAprovados =
+            repository.findByItemIdInAndStatus(
+                    itensIds,
+                    ApontamentoStatus.APROVADO
+            );
         return 0.0;
     }
 

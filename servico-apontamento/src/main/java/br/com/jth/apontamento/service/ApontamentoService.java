@@ -195,7 +195,9 @@ public class ApontamentoService {
                     itensIds,
                     ApontamentoStatus.APROVADO
             );
-        return 0.0;
+        return apontamentosAprovados.stream()
+        .mapToDouble(ApontamentoModel::getHorasLiquidas)
+        .sum();
     }
 
 }

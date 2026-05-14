@@ -165,6 +165,16 @@ public class ApontamentoService {
         return fim.isAfter(inicio);
     }
 
+    private List<Long> buscarIdsItensProjeto(Long projetoId) {
+
+    List<ItemResponseDTO> itensDoProjeto =
+            projetoQueryProducer.buscarItensParaApontamento(projetoId);
+
+    return itensDoProjeto.stream()
+            .map(ItemResponseDTO::getId)
+            .collect(Collectors.toList());
+}
+
     public List<ApontamentoResponseDTO> buscarApontamentoPendentePorProjetoId(Long projetoId) {
 
         List<ItemResponseDTO> itensDoProjeto = projetoQueryProducer.buscarItensParaApontamento(projetoId);

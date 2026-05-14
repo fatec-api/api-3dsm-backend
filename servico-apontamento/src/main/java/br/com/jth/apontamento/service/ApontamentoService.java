@@ -187,6 +187,9 @@ public class ApontamentoService {
 
     public Double calcularHorasAprovadasProjeto(Long projetoId) {
         List<ItemResponseDTO> itensDoProjeto = projetoQueryProducer.buscarItensParaApontamento(projetoId);
+        List<Long> itensIds = itensDoProjeto.stream()
+                .map(ItemResponseDTO::getId)
+                .collect(Collectors.toList());
         return 0.0;
     }
 

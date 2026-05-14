@@ -5,6 +5,7 @@ import br.com.jth.apontamento.enums.ApontamentoStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -38,7 +39,9 @@ public record ApontamentoResponseDTO(
 
         ApontamentoStatus status,
 
-        String justificativaReprovacao
+        String justificativaReprovacao,
+
+        BigDecimal valorHoraAplicado
 
 ) {
 }

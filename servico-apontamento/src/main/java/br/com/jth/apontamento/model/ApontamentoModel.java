@@ -17,6 +17,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
+
 
 @Data
 @Entity
@@ -63,5 +65,8 @@ public class ApontamentoModel {
 
     @Column(length = 500)
     private String justificativaReprovacao;
+
+    @Column(name = "valor_hora_aplicado", precision = 10, scale = 2)
+    private BigDecimal valorHoraAplicado;
 
 }

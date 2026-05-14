@@ -1,5 +1,6 @@
 package br.com.jth.apontamento.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import br.com.jth.apontamento.exception.RecursoNaoEncontradoException;
 import br.com.jth.apontamento.mapper.ApontamentoMapper;
 import br.com.jth.apontamento.mensageria.ApontamentoEventProducer;
 import br.com.jth.apontamento.mensageria.projeto.ProjetoQueryProducer;
+import br.com.jth.apontamento.mensageria.usuario.UsuarioQueryProducer;
 import br.com.jth.apontamento.model.ApontamentoModel;
 import br.com.jth.apontamento.repository.ApontamentoRepository;
 import lombok.AllArgsConstructor;
@@ -33,6 +35,7 @@ public class ApontamentoService {
     private final ApontamentoEventProducer apontamentoEventProducer;
     private final HandlerMapping resourceHandlerMapping;
     private final ProjetoQueryProducer projetoQueryProducer;
+    private final UsuarioQueryProducer usuarioQueryProducer;
 
     public List<ApontamentoResponseDTO> listarApontamentos() {
         return mapper.toResponseList(repository.findAll());
@@ -64,12 +67,22 @@ public class ApontamentoService {
 
         double horas = calcularHorasLiquidas(apontamento.getHoraInicio(), apontamento.getHoraFim());
         apontamento.setHorasLiquidas(horas);
+
+
+        BigDecimal valorHoraAtual = usuarioQueryProducer.buscarValorHoraAtual(apontamento.getUsuarioId());
+
+        if (valorHoraAtual == null || valorHoraAtual.compareTo(BigDecimal.ZERO) <= 0) {
+        throw new NegocioException("Não foi possível recuperar o valor da sua hora. Por favor, verifique seu cadastro de usuário.");
+        }
+
+        apontamento.setValorHoraAplicado(valorHoraAtual);
+
         System.out.println("ITEM ID: " + apontamento.getItemId());
 
         ApontamentoModel salvo = repository.save(apontamento);
+
         apontamentoEventProducer.publicarApontamentoCriado(salvo);
         apontamentoEventProducer.publicarApontamentoAuditoria(salvo);
-
 
         return mapper.toResponse(salvo);
     }

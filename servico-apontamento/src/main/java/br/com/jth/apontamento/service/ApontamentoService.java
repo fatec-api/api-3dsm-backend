@@ -70,7 +70,6 @@ public class ApontamentoService {
         apontamentoEventProducer.publicarApontamentoCriado(salvo);
         apontamentoEventProducer.publicarApontamentoAuditoria(salvo);
 
-
         return mapper.toResponse(salvo);
     }
 
@@ -149,7 +148,7 @@ public class ApontamentoService {
         ApontamentoModel salvo = repository.save(apontamento);
         apontamentoEventProducer.publicarApontamentoAvaliado(salvo);
         apontamentoEventProducer.publicarApontamentoAuditoria(salvo);
-        
+
         return mapper.toResponse(salvo);
     }
 
@@ -167,7 +166,7 @@ public class ApontamentoService {
     }
 
     public List<ApontamentoResponseDTO> buscarApontamentoPendentePorProjetoId(Long projetoId) {
-        
+
         List<ItemResponseDTO> itensDoProjeto = projetoQueryProducer.buscarItensParaApontamento(projetoId);
 
         if (itensDoProjeto.isEmpty()) {
@@ -185,5 +184,9 @@ public class ApontamentoService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    public Double calcularHorasAprovadasProjeto(Long projetoId) {
+        return 0.0;
+    }
+
 }

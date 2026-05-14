@@ -1,6 +1,7 @@
 package br.com.jth.servico_gestao.controller;
 
 import br.com.jth.servico_gestao.dto.request.ProjetoRequestDTO;
+import br.com.jth.servico_gestao.dto.request.ProjetoUpdateRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ProjetoResponseDTO;
 import br.com.jth.servico_gestao.repository.ProjetoUsuarioRepository;
 import br.com.jth.servico_gestao.service.ProjetoService;
@@ -23,6 +24,12 @@ public class ProjetoController {
     @PostMapping("/cadastrar")
     public ResponseEntity<ProjetoResponseDTO> cadastrar(@RequestBody @Valid ProjetoRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(projetoService.criarProjeto(dto));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProjetoResponseDTO> editar(@PathVariable Long id,
+                                                     @RequestBody @Valid ProjetoUpdateRequestDTO dto) {
+        return ResponseEntity.ok(projetoService.editarProjeto(id, dto));
     }
 
     @GetMapping("/listar")

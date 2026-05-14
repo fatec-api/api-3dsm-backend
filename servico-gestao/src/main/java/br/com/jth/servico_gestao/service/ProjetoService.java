@@ -2,6 +2,7 @@ package br.com.jth.servico_gestao.service;
 
 import br.com.jth.servico_gestao.controller.ProjetoUsuarioController;
 import br.com.jth.servico_gestao.dto.request.ProjetoRequestDTO;
+import br.com.jth.servico_gestao.dto.request.ProjetoUpdateRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ProjetoResponseDTO;
 import br.com.jth.servico_gestao.mapper.ProjetoMapper;
 import br.com.jth.servico_gestao.mensageria.ProjetoEventProducer;
@@ -21,6 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -98,6 +101,67 @@ public class ProjetoService {
                 .peek(this::calcularHoras)
                 .map(projetoMapper::toResponse)
                 .toList();
+    }
+
+    @Transactional
+    public ProjetoResponseDTO editarProjeto(Long id, ProjetoUpdateRequestDTO dto) {
+
+        ProjetoModel projeto = projetoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Projeto não encontrado: " + id));
+
+        if (dto.getDataInicio() != null || dto.getDataFim() != null) {
+            LocalDate inicio = dto.getDataInicio() != null ? dto.getDataInicio() : projeto.getDataInicio();
+            LocalDate fim    = dto.getDataFim()    != null ? dto.getDataFim()    : projeto.getDataFim();
+            if (fim.isBefore(inicio)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "A data de término não pode ser anterior à data de início.");
+            }
+        }
+
+        if (dto.getValorOrcamento() != null &&
+                dto.getValorOrcamento().compareTo(new BigDecimal("100000")) > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Valor de orçamento muito alto.");
+        }
+
+        if (dto.getNomeProjeto()    != null) projeto.setNomeProjeto(dto.getNomeProjeto());
+        if (dto.getTipoProjeto()    != null) projeto.setTipoProjeto(dto.getTipoProjeto());
+        if (dto.getValorOrcamento() != null) projeto.setValorOrcamento(dto.getValorOrcamento());
+        if (dto.getDataInicio()     != null) projeto.setDataInicio(dto.getDataInicio());
+        if (dto.getDataFim()        != null) projeto.setDataFim(dto.getDataFim());
+        if (dto.getStatus()         != null) projeto.setStatus(dto.getStatus());
+
+        if (dto.getGestorId() != null) {
+            UsuarioModel gestor = usuarioRepository.findById(dto.getGestorId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Gestor não encontrado."));
+            projeto.setGestor(gestor);
+        }
+
+        if (dto.getProfissionalAlocadoId() != null) {
+            UsuarioModel profissional = usuarioRepository.findById(dto.getProfissionalAlocadoId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Profissional não encontrado."));
+            if (!profissional.isAtivo()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "O profissional alocado não está ativo.");
+            }
+            projeto.setProfissionalAlocado(profissional);
+        }
+
+        if (dto.getClienteId() != null) {
+            ClienteModel cliente = clienteRepository.findById(dto.getClienteId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Cliente não encontrado."));
+            projeto.setCliente(cliente);
+        }
+
+        ProjetoModel salvo = projetoRepository.save(projeto);
+        calcularHoras(salvo);
+        projetoEventProducer.publicarProjetoAtualizado(salvo);
+
+        return projetoMapper.toResponse(salvo);
     }
 
     public void excluirProjeto(Long id) {

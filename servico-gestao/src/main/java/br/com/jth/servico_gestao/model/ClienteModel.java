@@ -1,11 +1,17 @@
 package br.com.jth.servico_gestao.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -20,9 +26,6 @@ public class ClienteModel {
 
     @Column(nullable = false)
     private String nomeEmpresa;
-
-    @Column(nullable = false)
-    private String nomeResponsavel;
 
     @Column(nullable = false, unique = true, length = 200)
     private String email;

@@ -64,12 +64,12 @@ public class ApontamentoService {
 
         double horas = calcularHorasLiquidas(apontamento.getHoraInicio(), apontamento.getHoraFim());
         apontamento.setHorasLiquidas(horas);
+        apontamento.setValorHoraAplicado(java.math.BigDecimal.ZERO);
         System.out.println("ITEM ID: " + apontamento.getItemId());
 
         ApontamentoModel salvo = repository.save(apontamento);
         apontamentoEventProducer.publicarApontamentoCriado(salvo);
         apontamentoEventProducer.publicarApontamentoAuditoria(salvo);
-
 
         return mapper.toResponse(salvo);
     }
@@ -149,7 +149,7 @@ public class ApontamentoService {
         ApontamentoModel salvo = repository.save(apontamento);
         apontamentoEventProducer.publicarApontamentoAvaliado(salvo);
         apontamentoEventProducer.publicarApontamentoAuditoria(salvo);
-        
+
         return mapper.toResponse(salvo);
     }
 
@@ -166,8 +166,17 @@ public class ApontamentoService {
         return fim.isAfter(inicio);
     }
 
+    private List<Long> buscarIdsItensProjeto(Long projetoId) {
+
+        List<ItemResponseDTO> itensDoProjeto = projetoQueryProducer.buscarItensParaApontamento(projetoId);
+
+        return itensDoProjeto.stream()
+                .map(ItemResponseDTO::getId)
+                .collect(Collectors.toList());
+    }
+
     public List<ApontamentoResponseDTO> buscarApontamentoPendentePorProjetoId(Long projetoId) {
-        
+
         List<ItemResponseDTO> itensDoProjeto = projetoQueryProducer.buscarItensParaApontamento(projetoId);
 
         if (itensDoProjeto.isEmpty()) {
@@ -185,5 +194,33 @@ public class ApontamentoService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    public Double calcularHorasAprovadasProjeto(Long projetoId) {
+        /*
+         * List<ItemResponseDTO> itensDoProjeto =
+         * projetoQueryProducer.buscarItensParaApontamento(projetoId);
+         * List<Long> itensIds = itensDoProjeto.stream()
+         * .map(ItemResponseDTO::getId)
+         * .collect(Collectors.toList());
+         */
+
+        List<Long> itensIds = buscarIdsItensProjeto(projetoId);
+
+        if (itensIds.isEmpty()) {
+            return 0.0;
+        }
+
+        List<ApontamentoModel> apontamentosAprovados = repository.findByItemIdInAndStatus(
+                itensIds,
+                ApontamentoStatus.APROVADO);
+
+        return apontamentosAprovados.stream()
+                .map(apontamento -> apontamento.getValorHoraAplicado()
+                        .multiply(
+                                java.math.BigDecimal.valueOf(
+                                        apontamento.getHorasLiquidas())))
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add)
+                .doubleValue();
+    }
+
 }

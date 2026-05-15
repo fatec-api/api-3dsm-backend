@@ -1,6 +1,7 @@
 package br.com.jth.apontamento.model;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -56,6 +57,9 @@ public class ApontamentoModel {
 
     @Column(nullable = false)
     private Double horasLiquidas;
+    
+    @Column(nullable = false)
+    private BigDecimal valorHoraAplicado;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

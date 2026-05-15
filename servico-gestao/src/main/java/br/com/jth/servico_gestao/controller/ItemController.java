@@ -33,6 +33,8 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.cadastrarItem(dto));
     }
 
+
+    @PreAuthorize("hasRole('GESTOR') or #usuarioId.toString() == authentication.name")
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<ItemResponseDTO>> listarItensPorProfissional(@PathVariable UUID usuarioId) {
         List<ItemResponseDTO> itens = itemService.listarPorProfissional(usuarioId);
@@ -56,7 +58,7 @@ public class ItemController {
         return ResponseEntity.ok(itens);
     }
 
-    // detalhes de horas de cada atividade em um projeto
+    @PreAuthorize("hasRole('GESTOR')")
     @GetMapping("/projeto/{projetoId}/horas")
     public ResponseEntity<List<HorasPorAtividadeDTO>> buscarHorasPorAtividade(@PathVariable Long projetoId) {
         return ResponseEntity.ok(itemService.buscarHorasPorAtividade(projetoId));

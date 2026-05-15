@@ -5,6 +5,7 @@ import java.util.List;
 import br.com.jth.servico_gestao.dto.request.AllocationRequestDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,18 +26,21 @@ public class AlocacaoController {
 
     private final AlocacaoService alocacaoService;
 
+    @PreAuthorize("hasRole('GESTOR')")
     @GetMapping("/profissionais-ativos")
     public ResponseEntity<List<UsuarioResponseDTO>> getTodosProfissionaisAtivos() {
         List<UsuarioResponseDTO> profissionais = alocacaoService.listarProfissionaisAtivos();
         return ResponseEntity.ok(profissionais);
     }
 
+    @PreAuthorize("hasRole('GESTOR','PROFISSIONAL')")
     @GetMapping("/projeto/{projectId}")
     public ResponseEntity<List<UsuarioResponseDTO>> getProfissionaisDoProjeto(@PathVariable Long projectId) {
         List<UsuarioResponseDTO> equipe = alocacaoService.listarProfissionaisDoProjeto(projectId);
         return ResponseEntity.ok(equipe);
     }
 
+    @PreAuthorize("hasRole('GESTOR')")
     @PostMapping("/vincular")
     public ResponseEntity<String> vincular(@RequestBody AllocationRequestDTO request) {
         log.info("Recebida requisição de alocação: Projeto {}, Item {}, Profissionais: {}",

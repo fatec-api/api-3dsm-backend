@@ -64,6 +64,7 @@ public class ApontamentoService {
 
         double horas = calcularHorasLiquidas(apontamento.getHoraInicio(), apontamento.getHoraFim());
         apontamento.setHorasLiquidas(horas);
+        apontamento.setValorHoraAplicado(java.math.BigDecimal.ZERO);
         System.out.println("ITEM ID: " + apontamento.getItemId());
 
         ApontamentoModel salvo = repository.save(apontamento);

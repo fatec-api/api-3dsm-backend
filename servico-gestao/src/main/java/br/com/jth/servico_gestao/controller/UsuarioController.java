@@ -45,7 +45,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.pegarUsuario(id));
     }
 
-    @GetMapping("/todos")
+    @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> getTodosUsuarios() {
         List<UsuarioResponseDTO> usuarios = usuarioService.listarUsuarios();
         return ResponseEntity.ok(usuarios);

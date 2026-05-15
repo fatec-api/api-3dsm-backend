@@ -81,11 +81,6 @@ public class UsuarioService {
         usuarioEventProducer.publicarUsuarioAtualizado(atualizado);
         return usuarioMapper.toResponse(atualizado);
     }
-    public UsuarioResponseDTO pegarUsuario(UUID id) {
-        return usuarioRepository.findById(id)
-                .map(usuarioMapper::toResponse)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário", id));
-    }
     
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarUsuarios() {
@@ -101,6 +96,13 @@ public class UsuarioService {
                         user.getCriado_em()))
                 .collect(Collectors.toList());
     }
+
+    public UsuarioResponseDTO pegarUsuario(UUID id) {
+        return usuarioRepository.findById(id)
+                .map(usuarioMapper::toResponse)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário", id));
+    }
+    
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarProfissionaisAtivos() {

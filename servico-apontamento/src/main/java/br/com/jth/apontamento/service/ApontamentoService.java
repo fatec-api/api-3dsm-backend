@@ -167,13 +167,12 @@ public class ApontamentoService {
 
     private List<Long> buscarIdsItensProjeto(Long projetoId) {
 
-    List<ItemResponseDTO> itensDoProjeto =
-            projetoQueryProducer.buscarItensParaApontamento(projetoId);
+        List<ItemResponseDTO> itensDoProjeto = projetoQueryProducer.buscarItensParaApontamento(projetoId);
 
-    return itensDoProjeto.stream()
-            .map(ItemResponseDTO::getId)
-            .collect(Collectors.toList());
-}
+        return itensDoProjeto.stream()
+                .map(ItemResponseDTO::getId)
+                .collect(Collectors.toList());
+    }
 
     public List<ApontamentoResponseDTO> buscarApontamentoPendentePorProjetoId(Long projetoId) {
 
@@ -196,23 +195,31 @@ public class ApontamentoService {
     }
 
     public Double calcularHorasAprovadasProjeto(Long projetoId) {
-        /* List<ItemResponseDTO> itensDoProjeto = projetoQueryProducer.buscarItensParaApontamento(projetoId);
-        List<Long> itensIds = itensDoProjeto.stream()
-                .map(ItemResponseDTO::getId)
-                .collect(Collectors.toList()); */
+        /*
+         * List<ItemResponseDTO> itensDoProjeto =
+         * projetoQueryProducer.buscarItensParaApontamento(projetoId);
+         * List<Long> itensIds = itensDoProjeto.stream()
+         * .map(ItemResponseDTO::getId)
+         * .collect(Collectors.toList());
+         */
 
         List<Long> itensIds = buscarIdsItensProjeto(projetoId);
 
         if (itensIds.isEmpty()) {
             return 0.0;
         }
-        
+
         List<ApontamentoModel> apontamentosAprovados = repository.findByItemIdInAndStatus(
                 itensIds,
                 ApontamentoStatus.APROVADO);
+
         return apontamentosAprovados.stream()
-                .mapToDouble(ApontamentoModel::getHorasLiquidas)
-                .sum();
+                .map(apontamento -> apontamento.getValorHoraAplicado()
+                        .multiply(
+                                java.math.BigDecimal.valueOf(
+                                        apontamento.getHorasLiquidas())))
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add)
+                .doubleValue();
     }
 
 }

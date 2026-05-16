@@ -59,6 +59,9 @@ public class ProjetoModel {
     @Column(nullable = false)
     private Timestamp criadoEm;
 
+    @Column
+    private Timestamp atualizadoEm;
+
     @ManyToOne
     @JoinColumn(name = "id_profissional_alocado", nullable = true)
     private UsuarioModel profissionalAlocado;
@@ -83,5 +86,9 @@ public class ProjetoModel {
         this.criadoEm = new Timestamp(System.currentTimeMillis());
     }
 
+    @PreUpdate
+    public void preUpdate() {
+        this.atualizadoEm = new Timestamp(System.currentTimeMillis());
+    }
 
 }

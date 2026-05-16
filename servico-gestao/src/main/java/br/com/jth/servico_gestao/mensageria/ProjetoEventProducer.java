@@ -29,6 +29,17 @@ public class ProjetoEventProducer {
         );
     }
 
+    public void publicarProjetoAtualizado(ProjetoModel model) {
+        amqpTemplate.convertAndSend(
+                RabbitMQConfig.GESTAO_EXCHANGE,
+                RabbitMQConfig.PROJETO_ATUALIZADO_KEY,
+                toEventDTO(model)
+        );
+        publicarAuditoria("PROJETO_ATUALIZADO", model.getId(),
+                Map.of("id", model.getId(), "nome", model.getNomeProjeto(), "status", model.getStatus())
+        );
+    }
+
     public void publicarProjetoDeletado(Long id) {
         amqpTemplate.convertAndSend(
                 RabbitMQConfig.GESTAO_EXCHANGE,

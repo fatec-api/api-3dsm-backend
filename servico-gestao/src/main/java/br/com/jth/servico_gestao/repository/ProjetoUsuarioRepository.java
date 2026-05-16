@@ -11,4 +11,5 @@ public interface ProjetoUsuarioRepository extends JpaRepository<ProjetoUsuarioMo
     boolean existsByProjetoAndUsuario(ProjetoModel projeto, UsuarioModel usuario);
     List<ProjetoUsuarioModel> findByProjetoIdAndDataDesvinculoIsNull(Long projetoId);
     List<ProjetoUsuarioModel> findByUsuarioIdAndDataDesvinculoIsNull(UUID usuarioId);
+    void deleteByProjeto(ProjetoModel projeto);
 }

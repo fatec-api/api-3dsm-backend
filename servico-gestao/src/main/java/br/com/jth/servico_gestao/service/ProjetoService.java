@@ -2,7 +2,9 @@ package br.com.jth.servico_gestao.service;
 
 import br.com.jth.servico_gestao.controller.ProjetoUsuarioController;
 import br.com.jth.servico_gestao.dto.request.ProjetoRequestDTO;
+import br.com.jth.servico_gestao.dto.request.ProjetoUpdateRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ProjetoResponseDTO;
+import br.com.jth.servico_gestao.enums.usuario.Cargo;
 import br.com.jth.servico_gestao.mapper.ProjetoMapper;
 import br.com.jth.servico_gestao.mensageria.ProjetoEventProducer;
 import br.com.jth.servico_gestao.model.ClienteModel;
@@ -21,6 +23,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -98,6 +102,80 @@ public class ProjetoService {
                 .peek(this::calcularHoras)
                 .map(projetoMapper::toResponse)
                 .toList();
+    }
+
+    @Transactional
+    public ProjetoResponseDTO editarProjeto(Long id, ProjetoUpdateRequestDTO dto) {
+
+        ProjetoModel projeto = projetoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Projeto não encontrado: " + id));
+
+        if (dto.getDataInicio() != null || dto.getDataFim() != null) {
+            LocalDate inicio = dto.getDataInicio() != null ? dto.getDataInicio() : projeto.getDataInicio();
+            LocalDate fim    = dto.getDataFim()    != null ? dto.getDataFim()    : projeto.getDataFim();
+            if (fim.isBefore(inicio)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "A data de término não pode ser anterior à data de início.");
+            }
+        }
+
+        if (dto.getValorOrcamento() != null &&
+                dto.getValorOrcamento().compareTo(new BigDecimal("100000")) > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Valor de orçamento muito alto.");
+        }
+
+        if (dto.getNomeProjeto()    != null) projeto.setNomeProjeto(dto.getNomeProjeto());
+        if (dto.getTipoProjeto()    != null) projeto.setTipoProjeto(dto.getTipoProjeto());
+        if (dto.getValorOrcamento() != null) projeto.setValorOrcamento(dto.getValorOrcamento());
+        if (dto.getDataInicio()     != null) projeto.setDataInicio(dto.getDataInicio());
+        if (dto.getDataFim()        != null) projeto.setDataFim(dto.getDataFim());
+        if (dto.getStatus()         != null) projeto.setStatus(dto.getStatus());
+
+        if (dto.getGestorId() != null) {
+            UsuarioModel gestor = usuarioRepository.findById(dto.getGestorId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Gestor não encontrado."));
+
+            // Validação de cargo
+            if (gestor.getCargo() != Cargo.Gestor) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "O usuário selecionado não é Gestor.");
+            }
+
+            projeto.setGestor(gestor);
+        }
+
+        if (dto.getClienteId() != null) {
+            ClienteModel cliente = clienteRepository.findById(dto.getClienteId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Cliente não encontrado."));
+            projeto.setCliente(cliente);
+        }
+        if (dto.getProfissionalAlocadoIds() != null) {
+            // Remove todos os vínculos atuais
+            projetoUsuarioRepository.deleteByProjeto(projeto);
+
+            // Insere os novos
+            for (UUID uid : dto.getProfissionalAlocadoIds()) {
+                UsuarioModel profissional = usuarioRepository.findById(uid)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Usuário não encontrado: " + uid));
+
+                ProjetoUsuarioModel vinculo = new ProjetoUsuarioModel();
+                vinculo.setProjeto(projeto);
+                vinculo.setUsuario(profissional);
+                vinculo.setDataVinculo(LocalDate.now());
+                projetoUsuarioRepository.save(vinculo);
+            }
+        }
+
+        ProjetoModel salvo = projetoRepository.save(projeto);
+        calcularHoras(salvo);
+        projetoEventProducer.publicarProjetoAtualizado(salvo);
+
+        return projetoMapper.toResponse(salvo);
     }
 
     public void excluirProjeto(Long id) {

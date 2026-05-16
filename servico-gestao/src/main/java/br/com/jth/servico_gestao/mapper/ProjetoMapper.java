@@ -10,7 +10,6 @@ import org.mapstruct.Mapping;
 public interface ProjetoMapper {
     @Mapping(target = "gestor", ignore = true)
     @Mapping(target = "cliente", ignore = true)
-    @Mapping(target = "profissionalAlocado", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "ativo", ignore = true)
     ProjetoModel toEntity(ProjetoRequestDTO dto);

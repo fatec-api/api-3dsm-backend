@@ -23,9 +23,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/gestao/clientes")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('GESTOR')")
 public class ClienteController {
 
     private final ClienteService clienteService;

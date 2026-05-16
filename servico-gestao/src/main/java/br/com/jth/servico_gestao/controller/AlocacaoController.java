@@ -26,21 +26,18 @@ public class AlocacaoController {
 
     private final AlocacaoService alocacaoService;
 
-    @PreAuthorize("hasRole('GESTOR')")
     @GetMapping("/profissionais-ativos")
     public ResponseEntity<List<UsuarioResponseDTO>> getTodosProfissionaisAtivos() {
         List<UsuarioResponseDTO> profissionais = alocacaoService.listarProfissionaisAtivos();
         return ResponseEntity.ok(profissionais);
     }
 
-    @PreAuthorize("hasRole('GESTOR','PROFISSIONAL')")
     @GetMapping("/projeto/{projectId}")
     public ResponseEntity<List<UsuarioResponseDTO>> getProfissionaisDoProjeto(@PathVariable Long projectId) {
         List<UsuarioResponseDTO> equipe = alocacaoService.listarProfissionaisDoProjeto(projectId);
         return ResponseEntity.ok(equipe);
     }
 
-    @PreAuthorize("hasRole('GESTOR')")
     @PostMapping("/vincular")
     public ResponseEntity<String> vincular(@RequestBody AllocationRequestDTO request) {
         log.info("Recebida requisição de alocação: Projeto {}, Item {}, Profissionais: {}",

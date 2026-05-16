@@ -17,7 +17,6 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@PreAuthorize("hasRole('GESTOR')")
 public class ProjetoUsuarioController {
     private final ProjetoUsuarioService projetoUsuarioService;
 

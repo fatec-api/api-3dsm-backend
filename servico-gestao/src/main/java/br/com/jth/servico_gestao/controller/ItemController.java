@@ -27,14 +27,11 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    @PreAuthorize("hasRole('GESTOR')")
     @PostMapping("/cadastrar")
     public ResponseEntity<ItemResponseDTO> cadastrar(@RequestBody @Valid ItemRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.cadastrarItem(dto));
     }
 
-
-    @PreAuthorize("hasRole('GESTOR') or #usuarioId.toString() == authentication.name")
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<ItemResponseDTO>> listarItensPorProfissional(@PathVariable UUID usuarioId) {
         List<ItemResponseDTO> itens = itemService.listarPorProfissional(usuarioId);
@@ -46,7 +43,6 @@ public class ItemController {
         return ResponseEntity.ok(itens);
     }
 
-    @PreAuthorize("hasAnyRole('GESTOR', 'PROFISSIONAL')")
     @GetMapping("/projeto/{projetoId}")
     public ResponseEntity<List<ItemResponseDTO>> listarItensPorProjeto(@PathVariable Long projetoId) {
         List<ItemResponseDTO> itens = itemService.listarPorProjeto(projetoId);
@@ -58,7 +54,6 @@ public class ItemController {
         return ResponseEntity.ok(itens);
     }
 
-    @PreAuthorize("hasRole('GESTOR')")
     @GetMapping("/projeto/{projetoId}/horas")
     public ResponseEntity<List<HorasPorAtividadeDTO>> buscarHorasPorAtividade(@PathVariable Long projetoId) {
         return ResponseEntity.ok(itemService.buscarHorasPorAtividade(projetoId));

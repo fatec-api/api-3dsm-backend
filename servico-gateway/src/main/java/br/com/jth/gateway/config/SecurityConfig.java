@@ -26,10 +26,9 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-
-    @Bean
+@Bean
     public ReactiveJwtDecoder jwtDecoder() {
-        String jwkSetUri = "http://keycloak:8080/realms/java-the-hutt/protocol/openid-connect/certs";
+        String jwkSetUri = "http://localhost:8080/realms/java-the-hutt/protocol/openid-connect/certs";
 
         NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
 
@@ -38,7 +37,6 @@ public class SecurityConfig {
         return jwtDecoder;
     }
 
-
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
@@ -46,6 +44,9 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
+
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/gestao/clientes/**").hasAnyRole("GESTOR", "FINANCEIRO", "PROFISSIONAL")
+                        .pathMatchers("/gestao/clientes/**").hasAnyRole("GESTOR", "FINANCEIRO")
 
                         // --- EXCEÇÃO ---
                         .pathMatchers(org.springframework.http.HttpMethod.GET, "/apontamento/apontamento/usuario/**").authenticated()

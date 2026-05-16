@@ -25,7 +25,6 @@ import lombok.AllArgsConstructor;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/usuarios")
-@PreAuthorize("hasRole('GESTOR')")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;

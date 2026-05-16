@@ -4,6 +4,7 @@ import br.com.jth.servico_gestao.controller.ProjetoUsuarioController;
 import br.com.jth.servico_gestao.dto.request.ProjetoRequestDTO;
 import br.com.jth.servico_gestao.dto.request.ProjetoUpdateRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ProjetoResponseDTO;
+import br.com.jth.servico_gestao.enums.usuario.Cargo;
 import br.com.jth.servico_gestao.mapper.ProjetoMapper;
 import br.com.jth.servico_gestao.mensageria.ProjetoEventProducer;
 import br.com.jth.servico_gestao.model.ClienteModel;
@@ -136,6 +137,13 @@ public class ProjetoService {
             UsuarioModel gestor = usuarioRepository.findById(dto.getGestorId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Gestor não encontrado."));
+
+            // Validação de cargo
+            if (gestor.getCargo() != Cargo.Gestor) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "O usuário selecionado não é Gestor.");
+            }
+
             projeto.setGestor(gestor);
         }
 

@@ -43,6 +43,10 @@ public class RabbitMQConfig {
 
     public static final String PROJETO_QUERY_KEY = "projeto.query.request";
 
+    public static final String USUARIO_VALOR_QUERY_KEY = "usuario.valor.query.request";
+
+    public static final String QUEUE_USUARIO_VALOR_QUERY = "usuario.valor.query.queue";
+
     @Bean
     public Binding projetoItensQueryBinding(Queue projetoItensQueryQueue, TopicExchange gestaoExchange) {
         return BindingBuilder
@@ -50,6 +54,19 @@ public class RabbitMQConfig {
                 .to(gestaoExchange)
             .with(PROJETO_QUERY_KEY); 
 }
+
+    @Bean
+    public Binding usuarioValorQueryBinding(Queue usuarioValorQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder
+                .bind(usuarioValorQueue)
+                .to(gestaoExchange)
+                .with(USUARIO_VALOR_QUERY_KEY); 
+    }
+
+    @Bean
+    public Queue usuarioValorQueue() {
+        return QueueBuilder.durable(QUEUE_USUARIO_VALOR_QUERY).build();
+    }
 
     @Bean
     public Queue projetoItensQueryQueue() {

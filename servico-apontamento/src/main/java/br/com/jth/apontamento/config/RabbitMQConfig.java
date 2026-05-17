@@ -27,6 +27,8 @@ public class RabbitMQConfig {
 
     public static final String PROJETO_QUERY_KEY = "projeto.query.request";
 
+    public static final String USUARIO_VALOR_QUERY_KEY = "usuario.valor.query.request";
+
     @Bean
     public TopicExchange gestaoExchange() {
         return new TopicExchange(GESTAO_EXCHANGE, true, false);

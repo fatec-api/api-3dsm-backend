@@ -70,7 +70,4 @@ public class ApontamentoModel {
     @Column(length = 500)
     private String justificativaReprovacao;
 
-    @Column(name = "valor_hora_aplicado", precision = 10, scale = 2)
-    private BigDecimal valorHoraAplicado;
-
 }

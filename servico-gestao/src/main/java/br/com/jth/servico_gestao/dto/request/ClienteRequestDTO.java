@@ -11,6 +11,9 @@ public class ClienteRequestDTO {
     @NotBlank(message = "Nome da empresa é obrigatório")
     private String nomeEmpresa;
 
+    @NotBlank(message = "Nome do responsável é obrigatório")
+    private String nomeResponsavel;
+
     @NotBlank(message = "E-mail é obrigatório")
     @Email(message = "E-mail inválido")
     private String email;

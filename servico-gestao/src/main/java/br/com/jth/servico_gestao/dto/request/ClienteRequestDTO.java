@@ -24,4 +24,7 @@ public class ClienteRequestDTO {
         message = "CNPJ deve estar obrigatoriamente no formato 00.000.000/0000-00"
     )
     private String cnpj;
+
+    @NotBlank(message = "Telefone do responsável é obrigatório")
+    private String telefoneResponsavel;
 }

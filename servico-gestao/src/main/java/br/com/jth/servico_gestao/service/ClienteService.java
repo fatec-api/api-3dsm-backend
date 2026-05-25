@@ -25,17 +25,21 @@ public class ClienteService {
         String nomeResponsavel = dto.getNomeResponsavel().trim();
         String email = normalizarEmail(dto.getEmail());
         String cnpj = normalizarCnpj(dto.getCnpj());
+        String telefoneResponsavel = normalizarTelefone(dto.getTelefoneResponsavel());
+        String telefoneEmpresa = normalizarTelefone(dto.getTelefoneEmpresa());
 
         validarCnpjMatematico(cnpj);
         validarEmailUnico(email, null);
         validarCnpjUnico(cnpj, null);
 
         ClienteModel model = clienteMapper.toModel(dto);
+
         model.setNomeEmpresa(nomeEmpresa);
         model.setNomeResponsavel(nomeResponsavel);
         model.setEmail(email);
         model.setCnpj(cnpj);
-
+        model.setTelefoneResponsavel(telefoneResponsavel);
+        model.setTelefoneEmpresa(telefoneEmpresa);
         return clienteMapper.toResponse(clienteRepository.save(model));
     }
 
@@ -72,6 +76,8 @@ public class ClienteService {
         String nomeResponsavel = dto.getNomeResponsavel().trim();
         String email = normalizarEmail(dto.getEmail());
         String cnpj = normalizarCnpj(dto.getCnpj());
+        String telefoneResponsavel = normalizarTelefone(dto.getTelefoneResponsavel());
+        String telefoneEmpresa = normalizarTelefone(dto.getTelefoneEmpresa());
 
         validarCnpjMatematico(cnpj);
         validarEmailUnico(email, id);
@@ -81,6 +87,8 @@ public class ClienteService {
         model.setNomeResponsavel(nomeResponsavel);
         model.setEmail(email);
         model.setCnpj(cnpj);
+        model.setTelefoneResponsavel(telefoneResponsavel);
+        model.setTelefoneEmpresa(telefoneEmpresa);
         return clienteMapper.toResponse(clienteRepository.save(model));
     }
 
@@ -115,6 +123,13 @@ public class ClienteService {
                 throw new IllegalArgumentException("CNPJ já cadastrado: " + cnpj);
             }
         });
+    }
+
+    //formatação do telefone para evitar erros de cadastro
+    String normalizarTelefone(String telefone) {
+        if (telefone == null)
+            return "";
+        return telefone.replaceAll("[^0-9]", "").trim();
     }
 
     // formatação do cnpj para evitar erros de cadastro

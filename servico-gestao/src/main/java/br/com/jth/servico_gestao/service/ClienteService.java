@@ -22,6 +22,7 @@ public class ClienteService {
 
     public ClienteResponseDTO cadastrar(ClienteRequestDTO dto) {
         String nomeEmpresa = dto.getNomeEmpresa().trim();
+        String nomeResponsavel = dto.getNomeResponsavel().trim();
         String email = normalizarEmail(dto.getEmail());
         String cnpj = normalizarCnpj(dto.getCnpj());
 
@@ -31,6 +32,7 @@ public class ClienteService {
 
         ClienteModel model = clienteMapper.toModel(dto);
         model.setNomeEmpresa(nomeEmpresa);
+        model.setNomeResponsavel(nomeResponsavel);
         model.setEmail(email);
         model.setCnpj(cnpj);
 
@@ -66,8 +68,8 @@ public class ClienteService {
 
     public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto) {
         ClienteModel model = buscarModelPorId(id);
-
         String nomeEmpresa = dto.getNomeEmpresa().trim();
+        String nomeResponsavel = dto.getNomeResponsavel().trim();
         String email = normalizarEmail(dto.getEmail());
         String cnpj = normalizarCnpj(dto.getCnpj());
 
@@ -76,9 +78,9 @@ public class ClienteService {
         validarCnpjUnico(cnpj, id);
 
         model.setNomeEmpresa(nomeEmpresa);
+        model.setNomeResponsavel(nomeResponsavel);
         model.setEmail(email);
         model.setCnpj(cnpj);
-
         return clienteMapper.toResponse(clienteRepository.save(model));
     }
 
@@ -145,7 +147,6 @@ public class ClienteService {
 
         int digito1 = calcularDigitoVerificador(cnpj, pesos1);
         int digito2 = calcularDigitoVerificador(cnpj, pesos2);
-
         boolean valido = digito1 == Character.getNumericValue(cnpj.charAt(12)) &&
                 digito2 == Character.getNumericValue(cnpj.charAt(13));
 

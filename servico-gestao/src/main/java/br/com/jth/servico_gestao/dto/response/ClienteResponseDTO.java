@@ -16,6 +16,7 @@ public class ClienteResponseDTO {
     private String nomeResponsavel;
     private String email;
     private String cnpj;
+    private String telefoneEmpresa;
     private LocalDate dataCadastro;
     private boolean ativo;
 }

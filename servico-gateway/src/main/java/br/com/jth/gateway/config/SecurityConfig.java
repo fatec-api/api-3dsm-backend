@@ -54,6 +54,9 @@ public class SecurityConfig {
                         .pathMatchers(org.springframework.http.HttpMethod.POST, "/apontamento/apontamentos").authenticated()
                         .pathMatchers(org.springframework.http.HttpMethod.PATCH, "/apontamento/apontamentos/*/status").hasAnyRole("GESTOR")
                         .pathMatchers(org.springframework.http.HttpMethod.PATCH, "/apontamento/apontamentos/**").authenticated()
+                        .pathMatchers(org.springframework.http.HttpMethod.GET, "/gestao/clientes/**").authenticated()
+                        
+                        .pathMatchers("/gestao/clientes/**").hasAnyRole("GESTOR")
 
                         // --- REGRA GERAL ---
                         .pathMatchers("/gestao/**").hasAnyRole("GESTOR","PROFISSIONAL")

@@ -11,6 +11,7 @@ public class ClienteMapper {
     public ClienteModel toModel(ClienteRequestDTO dto) {
         ClienteModel model = new ClienteModel();
         model.setNomeEmpresa(dto.getNomeEmpresa());
+        model.setNomeResponsavel(dto.getNomeResponsavel());
         model.setEmail(dto.getEmail());
         model.setCnpj(dto.getCnpj());
         return model;
@@ -20,6 +21,7 @@ public class ClienteMapper {
         return new ClienteResponseDTO(
                 model.getId(),
                 model.getNomeEmpresa(),
+                model.getNomeResponsavel(),
                 model.getEmail(),
                 model.getCnpj(),
                 model.getDataCadastro(),
@@ -27,4 +29,3 @@ public class ClienteMapper {
         );
     }
 }
-

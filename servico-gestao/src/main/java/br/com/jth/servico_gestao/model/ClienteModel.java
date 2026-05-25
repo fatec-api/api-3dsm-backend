@@ -27,6 +27,9 @@ public class ClienteModel {
     @Column(nullable = false)
     private String nomeEmpresa;
 
+    @Column(nullable = false)
+    private String nomeResponsavel;
+
     @Column(nullable = false, unique = true, length = 200)
     private String email;
 

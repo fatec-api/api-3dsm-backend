@@ -1,6 +1,7 @@
 package br.com.jth.servico_gestao.dto.response;
 
 
+import br.com.jth.servico_gestao.enums.projeto.StatusOrcamento;
 import br.com.jth.servico_gestao.enums.projeto.StatusProjeto;
 import br.com.jth.servico_gestao.enums.projeto.TipoProjeto;
 import lombok.Data;
@@ -27,6 +28,8 @@ public class ProjetoResponseDTO {
     private BigInteger horasPrevistasTotal;
     private Double horasRealizadasTotal;
     private Double horasPendentesTotal;
+    private Double custoRealTotal;
+    private StatusOrcamento statusOrcamento;
     private Double progressoProjeto;
     private String nomeGestor;
     private String nomeCliente;

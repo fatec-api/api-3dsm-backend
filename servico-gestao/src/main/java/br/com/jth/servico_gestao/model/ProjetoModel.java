@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.jth.servico_gestao.enums.projeto.StatusOrcamento;
 import br.com.jth.servico_gestao.enums.projeto.StatusProjeto;
 import br.com.jth.servico_gestao.enums.projeto.TipoProjeto;
 import jakarta.persistence.*;
@@ -74,6 +75,13 @@ public class ProjetoModel {
 
     @Column
     private Double horasPendentesTotal = 0.0;
+
+    @Column
+    private Double custoRealTotal = 10000.00;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private StatusOrcamento statusOrcamento;
 
     @Transient // campo transient não persiste na coluna, mas é serializado no objeto
     private BigInteger horasPrevistasTotal;

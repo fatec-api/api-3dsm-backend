@@ -35,13 +35,13 @@ public class AlocacaoService {
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarProfissionaisAtivos() {
-        return usuarioRepository.findByAtivoTrueAndCargo(Cargo.Profissional).stream()
+        return usuarioRepository.findByAtivoTrueAndCargo(Cargo.PROFISSIONAL).stream()
                 .map(user -> new UsuarioResponseDTO(
                         user.getId(),
                         user.getNomeUsuario(),
                         user.getEmail(),
                         user.getValorHora(),
-                        user.getCargo(),
+                        user.getCargos(),
                         user.getNivelExperiencia(),
                         user.isAtivo(),
                         user.getCriado_em()))
@@ -63,7 +63,7 @@ public class AlocacaoService {
                             user.getNomeUsuario(),
                             user.getEmail(),
                             user.getValorHora(),
-                            user.getCargo(),
+                            user.getCargos(),
                             user.getNivelExperiencia(),
                             user.isAtivo(),
                             user.getCriado_em());

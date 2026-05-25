@@ -25,6 +25,9 @@ public class ClienteRequestDTO {
     )
     private String cnpj;
 
+    @NotBlank(message = "Telefone da empresa é obrigatório")
+    private String telefoneEmpresa;
+
     @NotBlank(message = "Telefone do responsável é obrigatório")
     private String telefoneResponsavel;
 }

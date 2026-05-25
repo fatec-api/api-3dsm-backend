@@ -30,80 +30,59 @@ public class RabbitMQConfig {
     public static final String ITEM_ATUALIZADO_KEY = "item.atualizado";
     public static final String ITEM_DELETADO_KEY   = "item.deletado";
 
-    // comunicacao com servico-apontamento
-    public static final String QUEUE_APONTAMENTO        = "apontamento.queue";
-    public static final String APONTAMENTO_AVALIADO_KEY = "apontamento.avaliado";
-    public static final String QUEUE_APONTAMENTO_CRIADO        = "apontamento.criado.queue";
-    public static final String APONTAMENTO_CRIADO_KEY          = "apontamento.criado";
+    public static final String QUEUE_APONTAMENTO             = "apontamento.queue";
+    public static final String APONTAMENTO_AVALIADO_KEY      = "apontamento.avaliado";
+    public static final String QUEUE_APONTAMENTO_CRIADO      = "apontamento.criado.queue";
+    public static final String APONTAMENTO_CRIADO_KEY        = "apontamento.criado";
 
+    public static final String QUEUE_PROJETO_ITENS_QUERY     = "projeto.itens.query.queue";
+    public static final String PROJETO_QUERY_KEY             = "projeto.query.request";
+    public static final String USUARIO_VALOR_QUERY_KEY       = "usuario.valor.query.request";
+    public static final String QUEUE_USUARIO_VALOR_QUERY     = "usuario.valor.query.queue";
 
-
-
-    public static final String QUEUE_PROJETO_ITENS_QUERY = "projeto.itens.query.queue";
-
-    public static final String PROJETO_QUERY_KEY = "projeto.query.request";
-
-    public static final String USUARIO_VALOR_QUERY_KEY = "usuario.valor.query.request";
-
-    public static final String QUEUE_USUARIO_VALOR_QUERY = "usuario.valor.query.queue";
-
-    @Bean
-    public Binding projetoItensQueryBinding(Queue projetoItensQueryQueue, TopicExchange gestaoExchange) {
-        return BindingBuilder
-                .bind(projetoItensQueryQueue)
-                .to(gestaoExchange)
-            .with(PROJETO_QUERY_KEY); 
-}
-
-    @Bean
-    public Binding usuarioValorQueryBinding(Queue usuarioValorQueue, TopicExchange gestaoExchange) {
-        return BindingBuilder
-                .bind(usuarioValorQueue)
-                .to(gestaoExchange)
-                .with(USUARIO_VALOR_QUERY_KEY); 
-    }
-
-    @Bean
-    public Queue usuarioValorQueue() {
-        return QueueBuilder.durable(QUEUE_USUARIO_VALOR_QUERY).build();
-    }
-
-    @Bean
-    public Queue projetoItensQueryQueue() {
-        return QueueBuilder.durable(QUEUE_PROJETO_ITENS_QUERY).build();
-    }
-        
-    @Bean
-    public Queue apontamentoCriadoQueue() {
-        return QueueBuilder.durable(QUEUE_APONTAMENTO_CRIADO).build();
-    }
-
-    @Bean
-    public Binding apontamentoCriadoBinding(Queue apontamentoCriadoQueue, TopicExchange gestaoExchange) {
-        return BindingBuilder.bind(apontamentoCriadoQueue).to(gestaoExchange).with(APONTAMENTO_CRIADO_KEY);
-    }
-
-    @Bean
-    public Queue apontamentoQueue() {
-        return QueueBuilder.durable(QUEUE_APONTAMENTO).build();
-    }
-
-    @Bean
-    public Binding apontamentoAvaliadoBinding(Queue apontamentoQueue, TopicExchange gestaoExchange) {
-        return BindingBuilder.bind(apontamentoQueue).to(gestaoExchange).with(APONTAMENTO_AVALIADO_KEY);
-    }
-    //
+    public static final String KEYCLOAK_USUARIO_CRIADO_QUEUE     = "keycloak.usuario.criado.queue";
+    public static final String KEYCLOAK_USUARIO_ATUALIZADO_QUEUE = "keycloak.usuario.atualizado.queue";
+    public static final String KEYCLOAK_USUARIO_DELETADO_QUEUE   = "keycloak.usuario.deletado.queue";
 
     @Bean
     public TopicExchange gestaoExchange() {
         return new TopicExchange(GESTAO_EXCHANGE, true, false);
     }
 
-    @Bean public Queue usuarioQueue() { return QueueBuilder.durable(QUEUE_USUARIO).build(); }
-    @Bean public Queue projetoQueue() { return QueueBuilder.durable(QUEUE_PROJETO).build(); }
-    @Bean public Queue itemQueue()    { return QueueBuilder.durable(QUEUE_ITEM).build(); }
+    @Bean public Queue usuarioQueue()  { return QueueBuilder.durable(QUEUE_USUARIO).build(); }
+    @Bean public Queue projetoQueue()  { return QueueBuilder.durable(QUEUE_PROJETO).build(); }
+    @Bean public Queue itemQueue()     { return QueueBuilder.durable(QUEUE_ITEM).build(); }
 
-    // Usuario bindings
+    @Bean
+    public Queue apontamentoCriadoQueue() {
+        return QueueBuilder.durable(QUEUE_APONTAMENTO_CRIADO).build();
+    }
+    @Bean
+    public Queue apontamentoQueue() {
+        return QueueBuilder.durable(QUEUE_APONTAMENTO).build();
+    }
+    @Bean
+    public Queue projetoItensQueryQueue() {
+        return QueueBuilder.durable(QUEUE_PROJETO_ITENS_QUERY).build();
+    }
+    @Bean
+    public Queue usuarioValorQueue() {
+        return QueueBuilder.durable(QUEUE_USUARIO_VALOR_QUERY).build();
+    }
+
+    @Bean
+    public Queue keycloakUsuarioCriadoQueue() {
+        return QueueBuilder.durable(KEYCLOAK_USUARIO_CRIADO_QUEUE).build();
+    }
+    @Bean
+    public Queue keycloakUsuarioAtualizadoQueue() {
+        return QueueBuilder.durable(KEYCLOAK_USUARIO_ATUALIZADO_QUEUE).build();
+    }
+    @Bean
+    public Queue keycloakUsuarioDeletadoQueue() {
+        return QueueBuilder.durable(KEYCLOAK_USUARIO_DELETADO_QUEUE).build();
+    }
+
     @Bean
     public Binding usuarioCriadoBinding(Queue usuarioQueue, TopicExchange gestaoExchange) {
         return BindingBuilder.bind(usuarioQueue).to(gestaoExchange).with(USUARIO_CRIADO_KEY);
@@ -117,7 +96,19 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(usuarioQueue).to(gestaoExchange).with(USUARIO_DELETADO_KEY);
     }
 
-    // Projeto bindings
+    @Bean
+    public Binding keycloakUsuarioCriadoBinding(Queue keycloakUsuarioCriadoQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(keycloakUsuarioCriadoQueue).to(gestaoExchange).with(USUARIO_CRIADO_KEY);
+    }
+    @Bean
+    public Binding keycloakUsuarioAtualizadoBinding(Queue keycloakUsuarioAtualizadoQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(keycloakUsuarioAtualizadoQueue).to(gestaoExchange).with(USUARIO_ATUALIZADO_KEY);
+    }
+    @Bean
+    public Binding keycloakUsuarioDeletadoBinding(Queue keycloakUsuarioDeletadoQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(keycloakUsuarioDeletadoQueue).to(gestaoExchange).with(USUARIO_DELETADO_KEY);
+    }
+
     @Bean
     public Binding projetoCriadoBinding(Queue projetoQueue, TopicExchange gestaoExchange) {
         return BindingBuilder.bind(projetoQueue).to(gestaoExchange).with(PROJETO_CRIADO_KEY);
@@ -131,7 +122,6 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(projetoQueue).to(gestaoExchange).with(PROJETO_DELETADO_KEY);
     }
 
-    // Item bindings
     @Bean
     public Binding itemCriadoBinding(Queue itemQueue, TopicExchange gestaoExchange) {
         return BindingBuilder.bind(itemQueue).to(gestaoExchange).with(ITEM_CRIADO_KEY);
@@ -146,6 +136,24 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Binding apontamentoCriadoBinding(Queue apontamentoCriadoQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(apontamentoCriadoQueue).to(gestaoExchange).with(APONTAMENTO_CRIADO_KEY);
+    }
+    @Bean
+    public Binding apontamentoAvaliadoBinding(Queue apontamentoQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(apontamentoQueue).to(gestaoExchange).with(APONTAMENTO_AVALIADO_KEY);
+    }
+
+    @Bean
+    public Binding projetoItensQueryBinding(Queue projetoItensQueryQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(projetoItensQueryQueue).to(gestaoExchange).with(PROJETO_QUERY_KEY);
+    }
+    @Bean
+    public Binding usuarioValorQueryBinding(Queue usuarioValorQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(usuarioValorQueue).to(gestaoExchange).with(USUARIO_VALOR_QUERY_KEY);
+    }
+
+    @Bean
     public MessageConverter jsonMessageConverter() {
         return new JacksonJsonMessageConverter();
     }
@@ -157,15 +165,13 @@ public class RabbitMQConfig {
         return template;
     }
 
-
     @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             ConnectionFactory connectionFactory,
             MessageConverter jsonMessageConverter) {
-
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(jsonMessageConverter);
         return factory;
     }
-    }
+}

@@ -27,7 +27,7 @@ public class UsuarioEventProducer {
                 toEventDTO(model)
         );
         publicarAuditoria("USUARIO_CRIADO", model.getId().toString(),
-                Map.of("id", model.getId(), "email", model.getEmail(), "cargo", model.getCargo())
+                Map.of("id", model.getId(), "email", model.getEmail(), "cargos", model.getCargos())
         );
     }
 
@@ -70,7 +70,8 @@ public class UsuarioEventProducer {
     private UsuarioEventDTO toEventDTO(UsuarioModel m) {
         return new UsuarioEventDTO(
                 m.getId(), m.getNomeUsuario(), m.getEmail(),
-                m.getCargo(), m.getValorHora(), m.isAtivo()
+                m.getCargos(),
+                m.getValorHora(), m.isAtivo()
         );
     }
 }

@@ -7,6 +7,8 @@ import br.com.jth.servico_gestao.enums.usuario.Cargo;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -15,7 +17,6 @@ import java.util.UUID;
 public class UsuarioModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
     private UUID id;
 
@@ -26,14 +27,16 @@ public class UsuarioModel {
     private String email;
 
     @Column(nullable = false)
-    private String senha;
-
-    @Column(nullable = false)
     private BigDecimal valorHora;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "usuario_cargos",
+            joinColumns = @JoinColumn(name = "usuario_id")
+    )
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Cargo cargo;
+    @Column(name = "cargo", nullable = false)
+    private Set<Cargo> cargos = new HashSet<>();
 
     @Column(nullable = true)
     private String nivelExperiencia;

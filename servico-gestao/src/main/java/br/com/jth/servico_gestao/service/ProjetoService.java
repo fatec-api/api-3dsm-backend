@@ -138,12 +138,6 @@ public class ProjetoService {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Gestor não encontrado."));
 
-            // Validação de cargo
-            if (gestor.getCargo() != Cargo.Gestor) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "O usuário selecionado não é Gestor.");
-            }
-
             projeto.setGestor(gestor);
         }
 

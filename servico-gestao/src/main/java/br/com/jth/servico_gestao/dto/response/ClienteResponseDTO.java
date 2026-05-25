@@ -13,6 +13,7 @@ public class ClienteResponseDTO {
 
     private Long id;
     private String nomeEmpresa;
+    private String nomeResponsavel;
     private String email;
     private String cnpj;
     private LocalDate dataCadastro;

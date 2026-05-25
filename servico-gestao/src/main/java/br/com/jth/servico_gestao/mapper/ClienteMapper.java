@@ -14,6 +14,8 @@ public class ClienteMapper {
         model.setNomeResponsavel(dto.getNomeResponsavel());
         model.setEmail(dto.getEmail());
         model.setCnpj(dto.getCnpj());
+        model.setTelefoneResponsavel(dto.getTelefoneResponsavel());
+        model.setTelefoneEmpresa(dto.getTelefoneEmpresa());
         return model;
     }
 
@@ -24,6 +26,8 @@ public class ClienteMapper {
                 model.getNomeResponsavel(),
                 model.getEmail(),
                 model.getCnpj(),
+                model.getTelefoneResponsavel(),
+                model.getTelefoneEmpresa(),
                 model.getDataCadastro(),
                 model.isAtivo()
         );

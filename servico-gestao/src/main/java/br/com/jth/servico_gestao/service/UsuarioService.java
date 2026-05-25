@@ -41,96 +41,58 @@ public class UsuarioService {
             throw new EmailJaCadastradoException("E-mail informado já está em uso.");
         }
         UsuarioModel model = usuarioMapper.toEntity(dto);
-        model.setSenha(passwordEncoder.encode(dto.getSenha()));
-        model.setAtivo(true);
+
+        // cargos iniciam vazios — preenchidos via Keycloak
 
         UsuarioModel salvo = usuarioRepository.save(model);
-        usuarioEventProducer.publicarUsuarioCriado(salvo);        
-        return usuarioMapper.toResponse(salvo);
+        usuarioEventProducer.publicarUsuarioCriado(salvo);
+        return toResponse(salvo);
     }
+
     public UsuarioResponseDTO alterarUsuario(UUID id, UsuarioUpdateRequestDTO dto) {
         UsuarioModel model = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário", id));
+
         if (!model.getEmail().equals(dto.getEmail())) {
             if (usuarioRepository.existsByEmail(dto.getEmail())) {
                 throw new EmailJaCadastradoException("E-mail informado já está em uso por outro profissional.");
             }
         }
-        boolean senhaFoiInformada = dto.getSenha() != null && !dto.getSenha().isBlank();
-        boolean confirmacaoFoiInformada = dto.getConfirmaSenha() != null && !dto.getConfirmaSenha().isBlank();
-
-        if (senhaFoiInformada || confirmacaoFoiInformada) {
-            if (!dto.getSenha().equals(dto.getConfirmaSenha())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "As senhas estão diferentes.");
-            }
-            if (!SENHA_PATTERN.matcher(dto.getSenha()).matches()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Senha inválida: ela deve conter ao menos 8 caracteres, incluindo " +
-                                "letras maiúsculas, minúsculas, números e caracteres especiais.");
-            }
-            model.setSenha(passwordEncoder.encode(dto.getSenha()));
-        }
 
         model.setNomeUsuario(dto.getNomeUsuario());
         model.setEmail(dto.getEmail());
-        model.setCargo(dto.getCargo());
         model.setValorHora(dto.getValorHora());
         model.setNivelExperiencia(dto.getNivelExperiencia());
 
         UsuarioModel atualizado = usuarioRepository.save(model);
         usuarioEventProducer.publicarUsuarioAtualizado(atualizado);
-        return usuarioMapper.toResponse(atualizado);
+        return toResponse(atualizado);
     }
-    
+
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarUsuarios() {
         return usuarioRepository.findAll().stream()
-                .map(user -> new UsuarioResponseDTO(
-                        user.getId(),
-                        user.getNomeUsuario(),
-                        user.getEmail(),
-                        user.getValorHora(),
-                        user.getCargo(),
-                        user.getNivelExperiencia(),
-                        user.isAtivo(),
-                        user.getCriado_em()))
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
     public UsuarioResponseDTO pegarUsuario(UUID id) {
         return usuarioRepository.findById(id)
-                .map(usuarioMapper::toResponse)
+                .map(this::toResponse)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário", id));
     }
-    
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarProfissionaisAtivos() {
-        return usuarioRepository.findByAtivoTrueAndCargo(Cargo.Profissional).stream()
-                .map(user -> new UsuarioResponseDTO(
-                        user.getId(),
-                        user.getNomeUsuario(),
-                        user.getEmail(),
-                        user.getValorHora(),
-                        user.getCargo(),
-                        user.getNivelExperiencia(),
-                        user.isAtivo(),
-                        user.getCriado_em()))
+        return usuarioRepository.findByAtivoTrueAndCargo(Cargo.PROFISSIONAL).stream()
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarUsuariosAtivos() {
         return usuarioRepository.findByAtivoTrue().stream()
-                .map(user -> new UsuarioResponseDTO(
-                        user.getId(),
-                        user.getNomeUsuario(),
-                        user.getEmail(),
-                        user.getValorHora(),
-                        user.getCargo(),
-                        user.getNivelExperiencia(),
-                        user.isAtivo(),
-                        user.getCriado_em()))
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -139,5 +101,18 @@ public class UsuarioService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário", id));
         usuarioRepository.delete(model);
         usuarioEventProducer.publicarUsuarioDeletado(id);
+    }
+
+    private UsuarioResponseDTO toResponse(UsuarioModel u) {
+        return new UsuarioResponseDTO(
+                u.getId(),
+                u.getNomeUsuario(),
+                u.getEmail(),
+                u.getValorHora(),
+                u.getCargos(),
+                u.getNivelExperiencia(),
+                u.isAtivo(),
+                u.getCriado_em()
+        );
     }
 }

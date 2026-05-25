@@ -36,6 +36,9 @@ public class ClienteModel {
     @Column(nullable = false, length = 20)
     private String telefoneEmpresa;
 
+    @Column(nullable = false, length = 20)
+    private String telefoneResponsavel;
+
     @Column(nullable = false, unique = true, length = 14)
     private String cnpj;
 

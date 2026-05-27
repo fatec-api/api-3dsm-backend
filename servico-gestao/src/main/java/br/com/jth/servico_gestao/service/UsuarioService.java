@@ -2,14 +2,10 @@ package br.com.jth.servico_gestao.service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import br.com.jth.servico_gestao.dto.request.UsuarioRequestDTO;
 import br.com.jth.servico_gestao.dto.request.UsuarioUpdateRequestDTO;
@@ -27,13 +23,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UsuarioService {
 
-    private static final Pattern SENHA_PATTERN = Pattern.compile(
-            "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-={}|:<>?]).{8,}$"
-    );
-
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
-    private final PasswordEncoder passwordEncoder;
     private final UsuarioEventProducer usuarioEventProducer;
 
     public UsuarioResponseDTO cadastrarUsuario(UsuarioRequestDTO dto) {

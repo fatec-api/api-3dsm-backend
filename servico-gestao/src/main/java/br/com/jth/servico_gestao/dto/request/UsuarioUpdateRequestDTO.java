@@ -1,9 +1,13 @@
 package br.com.jth.servico_gestao.dto.request;
 
-import br.com.jth.servico_gestao.enums.usuario.Cargo;
-import jakarta.validation.constraints.*;
-import lombok.Data;
 import java.math.BigDecimal;
+
+import br.com.jth.servico_gestao.enums.usuario.Cargo;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 @Data
 public class UsuarioUpdateRequestDTO {
@@ -24,6 +28,4 @@ public class UsuarioUpdateRequestDTO {
 
     private String nivelExperiencia;
 
-    private String senha;
-    private String confirmaSenha;
 }

@@ -1,9 +1,10 @@
 package br.com.jth.servico_gestao.mapper;
 
+import org.springframework.stereotype.Component;
+
 import br.com.jth.servico_gestao.dto.request.ClienteRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ClienteResponseDTO;
 import br.com.jth.servico_gestao.model.ClienteModel;
-import org.springframework.stereotype.Component;
 
 @Component
 public class ClienteMapper {
@@ -26,8 +27,8 @@ public class ClienteMapper {
                 model.getNomeResponsavel(),
                 model.getEmail(),
                 model.getCnpj(),
-                model.getTelefoneResponsavel(),
                 model.getTelefoneEmpresa(),
+                model.getTelefoneResponsavel(),
                 model.getDataCadastro(),
                 model.isAtivo()
         );

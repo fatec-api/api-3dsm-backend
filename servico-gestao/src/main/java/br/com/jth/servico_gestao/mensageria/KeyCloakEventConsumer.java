@@ -1,5 +1,16 @@
 package br.com.jth.servico_gestao.mensageria;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import br.com.jth.servico_gestao.config.RabbitMQConfig;
 import br.com.jth.servico_gestao.enums.usuario.Cargo;
 import br.com.jth.servico_gestao.mensageria.evento.KeycloakEventDTO;
@@ -7,16 +18,6 @@ import br.com.jth.servico_gestao.model.UsuarioModel;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -113,17 +114,15 @@ public class KeyCloakEventConsumer {
             Set<Cargo> cargosDoPayload = parseCargos(evento.getCargo());
             Set<Cargo> cargosAtuais = model.getCargos();
 
-            boolean todosJaExistem = cargosAtuais.containsAll(cargosDoPayload);
-
-            if (todosJaExistem) {
-                // Keycloak mandou os que foram removidos → subtrai
-                cargosAtuais.removeAll(cargosDoPayload);
-                log.info("[KEYCLOAK] Cargos removidos de {}: {}", id, cargosDoPayload);
-            } else {
-                // Keycloak mandou o set completo → substitui
-                model.setCargos(cargosDoPayload);
-                log.info("[KEYCLOAK] Cargos atualizados em {}: {}", id, cargosDoPayload);
-            }
+            for (Cargo cargoPayload : cargosDoPayload) {
+                    if (cargosAtuais.contains(cargoPayload)) {
+                        cargosAtuais.remove(cargoPayload);
+                        log.info("[KEYCLOAK] Cargo removido de {}: {}", id, cargoPayload);
+                    } else {
+                        cargosAtuais.add(cargoPayload);
+                        log.info("[KEYCLOAK] Cargo adicionado em {}: {}", id, cargoPayload);
+                    }
+                }
 
             usuarioRepository.save(model);
         }

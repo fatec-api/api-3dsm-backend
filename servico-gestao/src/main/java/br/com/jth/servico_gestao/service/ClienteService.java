@@ -40,6 +40,8 @@ public class ClienteService {
         model.setCnpj(cnpj);
         model.setTelefoneResponsavel(telefoneResponsavel);
         model.setTelefoneEmpresa(telefoneEmpresa);
+        model.setAtivo(dto.getAtivo() != null ? dto.getAtivo() : true);
+        
         return clienteMapper.toResponse(clienteRepository.save(model));
     }
 
@@ -89,13 +91,12 @@ public class ClienteService {
         model.setCnpj(cnpj);
         model.setTelefoneResponsavel(telefoneResponsavel);
         model.setTelefoneEmpresa(telefoneEmpresa);
-        return clienteMapper.toResponse(clienteRepository.save(model));
-    }
 
-    public void inativar(Long id) {
-        ClienteModel model = buscarModelPorId(id);
-        model.setAtivo(false);
-        clienteRepository.save(model);
+        if (dto.getAtivo() != null) {
+            model.setAtivo(dto.getAtivo());
+        }
+
+        return clienteMapper.toResponse(clienteRepository.save(model));
     }
 
     public void deletar(Long id) {
@@ -112,7 +113,8 @@ public class ClienteService {
     private void validarEmailUnico(String email, Long idIgnorar) {
         clienteRepository.findByEmail(email).ifPresent(existente -> {
             if (!existente.getId().equals(idIgnorar)) {
-                throw new IllegalArgumentException("E-mail já cadastrado: " + email);
+                throw new IllegalArgumentException(
+                        "E-mail já cadastrado: " + email);
             }
         });
     }
@@ -120,12 +122,13 @@ public class ClienteService {
     private void validarCnpjUnico(String cnpj, Long idIgnorar) {
         clienteRepository.findByCnpj(cnpj).ifPresent(existente -> {
             if (!existente.getId().equals(idIgnorar)) {
-                throw new IllegalArgumentException("CNPJ já cadastrado: " + cnpj);
+                throw new IllegalArgumentException(
+                        "CNPJ já cadastrado: " + cnpj);
             }
         });
     }
 
-    //formatação do telefone para evitar erros de cadastro
+    // formatação do telefone para evitar erros de cadastro
     String normalizarTelefone(String telefone) {
         if (telefone == null)
             return "";
@@ -152,7 +155,7 @@ public class ClienteService {
                     "CNPJ deve conter exatamente 14 dígitos numéricos");
         }
 
-        // aceita apenas CNPJ mascarado
+        // impede aceitação de CNPJ com todos os números iguais
         if (cnpj.chars().distinct().count() == 1) {
             throw new IllegalArgumentException("CNPJ inválido");
         }
@@ -164,7 +167,6 @@ public class ClienteService {
         int digito2 = calcularDigitoVerificador(cnpj, pesos2);
         boolean valido = digito1 == Character.getNumericValue(cnpj.charAt(12)) &&
                 digito2 == Character.getNumericValue(cnpj.charAt(13));
-
         if (!valido) {
             throw new IllegalArgumentException("CNPJ inválido");
         }

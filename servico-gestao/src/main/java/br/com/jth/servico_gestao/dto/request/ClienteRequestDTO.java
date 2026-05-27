@@ -20,8 +20,8 @@ public class ClienteRequestDTO {
 
     @NotBlank(message = "CNPJ é obrigatório")
     @Pattern(
-        regexp = "\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}",
-        message = "CNPJ deve estar obrigatoriamente no formato 00.000.000/0000-00"
+        regexp = "\\d{14}",
+        message = "CNPJ deve conter exatamente 14 números"
     )
     private String cnpj;
 
@@ -30,4 +30,6 @@ public class ClienteRequestDTO {
 
     @NotBlank(message = "Telefone do responsável é obrigatório")
     private String telefoneResponsavel;
+
+    private Boolean ativo;
 }

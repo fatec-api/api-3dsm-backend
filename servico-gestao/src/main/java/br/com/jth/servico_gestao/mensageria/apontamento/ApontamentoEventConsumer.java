@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 @RequiredArgsConstructor
 public class ApontamentoEventConsumer {
@@ -33,6 +35,16 @@ public class ApontamentoEventConsumer {
                 ? projeto.getHorasPendentesTotal() : 0.0;
 
         projeto.setHorasPendentesTotal(pendentes + horasLiquidas);
+
+        if (event.valorHoraAplicado() != null) {
+            Double custoParcial = event.valorHoraAplicado()
+                    .multiply(BigDecimal.valueOf(horasLiquidas))
+                    .doubleValue();
+            Double custoAtual = projeto.getCustoRealTotal() != null
+                    ? projeto.getCustoRealTotal() : 0.0;
+            projeto.setCustoRealTotal(custoAtual + custoParcial);
+        }
+
         projetoRepository.save(projeto);
     }
 

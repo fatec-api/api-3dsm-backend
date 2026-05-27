@@ -77,7 +77,7 @@ public class ProjetoModel {
     private Double horasPendentesTotal = 0.0;
 
     @Column
-    private Double custoRealTotal = 10000.00;
+    private Double custoRealTotal = 0.0;
 
     @Column
     @Enumerated(EnumType.STRING)

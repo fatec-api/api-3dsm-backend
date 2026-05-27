@@ -27,7 +27,8 @@ public class ApontamentoEventProducer {
                 apontamento.getHoraInicio(),
                 apontamento.getHoraFim(),
                 apontamento.getObservacao(),
-                apontamento.getHorasLiquidas()
+                apontamento.getHorasLiquidas(),
+                apontamento.getValorHoraAplicado()
         );
 
         rabbitTemplate.convertAndSend(

@@ -1,5 +1,6 @@
 package br.com.jth.apontamento.dto.response;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -11,5 +12,6 @@ public record ApontamentoCriadoEvent(
         LocalDateTime horaInicio,
         LocalDateTime horaFim,
         String observacao,
-        Double horasLiquidas
+        Double horasLiquidas,
+        BigDecimal valorHoraAplicado
 ) {}

@@ -1,16 +1,20 @@
 package br.com.jth.servico_gestao.dto.request;
 
-import lombok.Data;
-import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 @Data
 public class UsuarioRequestDTO {
 
-    @NotBlank(message = "Preencha todos os campos obrigatórios (nome, e-mail, senha, confirme senha ou valor/hora).")
+    @NotBlank(message = "Preencha todos os campos obrigatórios (nome, e-mail, ou valor/hora).")
     private String nomeUsuario;
 
-    @NotBlank(message = "Preencha todos os campos obrigatórios (nome, e-mail, senha, confirme senha ou valor/hora).")
+    @NotBlank(message = "Preencha todos os campos obrigatórios (nome, e-mail, ou valor/hora).")
     @Email(message = "E-mail informado é inválido.")
     private String email;
 

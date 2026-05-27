@@ -4,6 +4,7 @@ import br.com.jth.servico_gestao.controller.ProjetoUsuarioController;
 import br.com.jth.servico_gestao.dto.request.ProjetoRequestDTO;
 import br.com.jth.servico_gestao.dto.request.ProjetoUpdateRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ProjetoResponseDTO;
+import br.com.jth.servico_gestao.enums.projeto.StatusOrcamento;
 import br.com.jth.servico_gestao.enums.usuario.Cargo;
 import br.com.jth.servico_gestao.mapper.ProjetoMapper;
 import br.com.jth.servico_gestao.mensageria.ProjetoEventProducer;
@@ -23,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.security.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -200,6 +202,7 @@ public class ProjetoService {
         } else {
             projeto.setProgressoProjeto(0.0);
         }
+        calcularOrcamento(projeto);
     }
 
     public List<ProjetoResponseDTO> listarProjetosPorGestor(UUID gestorId) {
@@ -231,5 +234,29 @@ public class ProjetoService {
                 .map(vinculo -> vinculo.getProjeto())
                 .map(projetoMapper :: toResponse)
                 .toList();
+    }
+
+    private void calcularOrcamento(ProjetoModel projeto) {
+        projeto.setStatusOrcamento(
+                calcularStatusOrcamento(projeto.getValorOrcamento(), projeto.getCustoRealTotal())
+        );
+    }
+
+    private StatusOrcamento calcularStatusOrcamento(BigDecimal valorOrcamento, Double custoRealTotal) {
+        if (valorOrcamento == null || custoRealTotal == null || valorOrcamento.compareTo(BigDecimal.ZERO) == 0) {
+            return null;
+        }
+
+        BigDecimal custo = BigDecimal.valueOf(custoRealTotal);
+        BigDecimal percentual = custo.divide(valorOrcamento, 4, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
+
+        if (percentual.compareTo(BigDecimal.valueOf(75)) < 0) {
+            return StatusOrcamento.DENTRO_DO_ORCAMENTO;
+        } else if (percentual.compareTo(BigDecimal.valueOf(100)) <= 0) {
+            return StatusOrcamento.ATENCAO;
+        } else {
+            return StatusOrcamento.EXCEDIDO;
+        }
     }
 }

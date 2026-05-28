@@ -37,4 +37,6 @@ public interface ApontamentoRepository extends JpaRepository<ApontamentoModel, L
 
 
     List<ApontamentoModel> findByItemIdInAndStatus(List<Long> itemIds, ApontamentoStatus status);
+
+    List<ApontamentoModel> findByItemIdIn(List<Long> itemIds);
 }

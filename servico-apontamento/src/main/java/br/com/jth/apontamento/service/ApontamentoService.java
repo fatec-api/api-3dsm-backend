@@ -223,11 +223,10 @@ public class ApontamentoService {
             return 0.0;
         }
 
-        List<ApontamentoModel> apontamentosAprovados = repository.findByItemIdInAndStatus(
-                itensIds,
-                ApontamentoStatus.APROVADO);
+        List<ApontamentoModel> apontamentos =
+          repository.findByItemIdIn(itensIds);
 
-        return apontamentosAprovados.stream()
+        return apontamentos.stream()
                 .map(apontamento -> apontamento.getValorHoraAplicado()
                         .multiply(
                                 java.math.BigDecimal.valueOf(

@@ -22,18 +22,26 @@ public class ClienteService {
 
     public ClienteResponseDTO cadastrar(ClienteRequestDTO dto) {
         String nomeEmpresa = dto.getNomeEmpresa().trim();
+        String nomeResponsavel = dto.getNomeResponsavel().trim();
         String email = normalizarEmail(dto.getEmail());
         String cnpj = normalizarCnpj(dto.getCnpj());
+        String telefoneResponsavel = normalizarTelefone(dto.getTelefoneResponsavel());
+        String telefoneEmpresa = normalizarTelefone(dto.getTelefoneEmpresa());
 
         validarCnpjMatematico(cnpj);
         validarEmailUnico(email, null);
         validarCnpjUnico(cnpj, null);
 
         ClienteModel model = clienteMapper.toModel(dto);
+
         model.setNomeEmpresa(nomeEmpresa);
+        model.setNomeResponsavel(nomeResponsavel);
         model.setEmail(email);
         model.setCnpj(cnpj);
-
+        model.setTelefoneResponsavel(telefoneResponsavel);
+        model.setTelefoneEmpresa(telefoneEmpresa);
+        model.setAtivo(dto.getAtivo() != null ? dto.getAtivo() : true);
+        
         return clienteMapper.toResponse(clienteRepository.save(model));
     }
 
@@ -66,26 +74,29 @@ public class ClienteService {
 
     public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto) {
         ClienteModel model = buscarModelPorId(id);
-
         String nomeEmpresa = dto.getNomeEmpresa().trim();
+        String nomeResponsavel = dto.getNomeResponsavel().trim();
         String email = normalizarEmail(dto.getEmail());
         String cnpj = normalizarCnpj(dto.getCnpj());
+        String telefoneResponsavel = normalizarTelefone(dto.getTelefoneResponsavel());
+        String telefoneEmpresa = normalizarTelefone(dto.getTelefoneEmpresa());
 
         validarCnpjMatematico(cnpj);
         validarEmailUnico(email, id);
         validarCnpjUnico(cnpj, id);
 
         model.setNomeEmpresa(nomeEmpresa);
+        model.setNomeResponsavel(nomeResponsavel);
         model.setEmail(email);
         model.setCnpj(cnpj);
+        model.setTelefoneResponsavel(telefoneResponsavel);
+        model.setTelefoneEmpresa(telefoneEmpresa);
+
+        if (dto.getAtivo() != null) {
+            model.setAtivo(dto.getAtivo());
+        }
 
         return clienteMapper.toResponse(clienteRepository.save(model));
-    }
-
-    public void inativar(Long id) {
-        ClienteModel model = buscarModelPorId(id);
-        model.setAtivo(false);
-        clienteRepository.save(model);
     }
 
     public void deletar(Long id) {
@@ -102,7 +113,8 @@ public class ClienteService {
     private void validarEmailUnico(String email, Long idIgnorar) {
         clienteRepository.findByEmail(email).ifPresent(existente -> {
             if (!existente.getId().equals(idIgnorar)) {
-                throw new IllegalArgumentException("E-mail já cadastrado: " + email);
+                throw new IllegalArgumentException(
+                        "E-mail já cadastrado: " + email);
             }
         });
     }
@@ -110,9 +122,17 @@ public class ClienteService {
     private void validarCnpjUnico(String cnpj, Long idIgnorar) {
         clienteRepository.findByCnpj(cnpj).ifPresent(existente -> {
             if (!existente.getId().equals(idIgnorar)) {
-                throw new IllegalArgumentException("CNPJ já cadastrado: " + cnpj);
+                throw new IllegalArgumentException(
+                        "CNPJ já cadastrado: " + cnpj);
             }
         });
+    }
+
+    // formatação do telefone para evitar erros de cadastro
+    String normalizarTelefone(String telefone) {
+        if (telefone == null)
+            return "";
+        return telefone.replaceAll("[^0-9]", "").trim();
     }
 
     // formatação do cnpj para evitar erros de cadastro
@@ -135,7 +155,7 @@ public class ClienteService {
                     "CNPJ deve conter exatamente 14 dígitos numéricos");
         }
 
-        // aceita apenas CNPJ mascarado
+        // impede aceitação de CNPJ com todos os números iguais
         if (cnpj.chars().distinct().count() == 1) {
             throw new IllegalArgumentException("CNPJ inválido");
         }
@@ -145,10 +165,8 @@ public class ClienteService {
 
         int digito1 = calcularDigitoVerificador(cnpj, pesos1);
         int digito2 = calcularDigitoVerificador(cnpj, pesos2);
-
         boolean valido = digito1 == Character.getNumericValue(cnpj.charAt(12)) &&
                 digito2 == Character.getNumericValue(cnpj.charAt(13));
-
         if (!valido) {
             throw new IllegalArgumentException("CNPJ inválido");
         }

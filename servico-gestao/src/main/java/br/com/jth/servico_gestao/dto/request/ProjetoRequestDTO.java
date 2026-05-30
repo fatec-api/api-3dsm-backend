@@ -10,6 +10,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -41,6 +42,6 @@ public class ProjetoRequestDTO {
     private UUID gestorId;
 
     private Long clienteId;
-
-    private UUID profissionalAlocadoId;
+    
+    private List<UUID> profissionalAlocadoIds;
 }

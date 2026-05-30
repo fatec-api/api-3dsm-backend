@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.jth.servico_gestao.dto.request.ProjetoRequestDTO;
@@ -25,7 +26,6 @@ import br.com.jth.servico_gestao.repository.ClienteRepository;
 import br.com.jth.servico_gestao.repository.ProjetoRepository;
 import br.com.jth.servico_gestao.repository.ProjetoUsuarioRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,6 +39,7 @@ public class ProjetoService {
     private final ProjetoEventProducer projetoEventProducer;
     private final ProjetoUsuarioRepository projetoUsuarioRepository;
 
+    @Transactional
     public ProjetoResponseDTO criarProjeto(ProjetoRequestDTO dto) {
 
         if (dto.getDataFim().isBefore(dto.getDataInicio())) {
@@ -55,18 +56,6 @@ public class ProjetoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Gestor não encontrado."));
 
-        UsuarioModel profissional = null;
-        if (dto.getProfissionalAlocadoId() != null) {
-            profissional = usuarioRepository.findById(dto.getProfissionalAlocadoId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Profissional não encontrado."));
-
-            if (!profissional.isAtivo()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "O profissional alocado não está ativo.");
-            }
-        }
-
         ClienteModel cliente = null;
         if (dto.getClienteId() != null) {
             cliente = clienteRepository.findById(dto.getClienteId())
@@ -76,10 +65,29 @@ public class ProjetoService {
 
         ProjetoModel model = projetoMapper.toEntity(dto);
         model.setGestor(gestor);
-        model.setProfissionalAlocado(profissional);
         model.setCliente(cliente);
-
         ProjetoModel salvo = projetoRepository.save(model);
+
+        if (dto.getProfissionalAlocadoIds() != null && !dto.getProfissionalAlocadoIds().isEmpty()) {
+            for (UUID uid : dto.getProfissionalAlocadoIds()) {
+                UsuarioModel profissional = usuarioRepository.findById(uid)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Usuário não encontrado: " + uid));
+
+                if (!profissional.isAtivo()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "O profissional alocado não está ativo: " + profissional.getNomeUsuario());
+                }
+
+                ProjetoUsuarioModel vinculo = new ProjetoUsuarioModel();
+                vinculo.setProjeto(salvo); 
+                vinculo.setUsuario(profissional);
+                vinculo.setDataVinculo(LocalDate.now());
+                
+                projetoUsuarioRepository.save(vinculo);
+            }
+        }
+
         projetoEventProducer.publicarProjetoCriado(salvo);
 
         return projetoMapper.toResponse(salvo);

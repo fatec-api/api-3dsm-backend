@@ -1,11 +1,20 @@
 package br.com.jth.servico_gestao.service;
 
-import br.com.jth.servico_gestao.controller.ProjetoUsuarioController;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import br.com.jth.servico_gestao.dto.request.ProjetoRequestDTO;
 import br.com.jth.servico_gestao.dto.request.ProjetoUpdateRequestDTO;
 import br.com.jth.servico_gestao.dto.response.ProjetoResponseDTO;
 import br.com.jth.servico_gestao.enums.projeto.StatusOrcamento;
-import br.com.jth.servico_gestao.enums.usuario.Cargo;
 import br.com.jth.servico_gestao.mapper.ProjetoMapper;
 import br.com.jth.servico_gestao.mensageria.ProjetoEventProducer;
 import br.com.jth.servico_gestao.model.ClienteModel;
@@ -16,19 +25,8 @@ import br.com.jth.servico_gestao.repository.ClienteRepository;
 import br.com.jth.servico_gestao.repository.ProjetoRepository;
 import br.com.jth.servico_gestao.repository.ProjetoUsuarioRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
-import java.security.Timestamp;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -205,6 +203,7 @@ public class ProjetoService {
         calcularOrcamento(projeto);
     }
 
+    @Transactional(readOnly = true)
     public List<ProjetoResponseDTO> listarProjetosPorGestor(UUID gestorId) {
 
         if (!usuarioRepository.existsById(gestorId)) {

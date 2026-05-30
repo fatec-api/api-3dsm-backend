@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jth.servico_gestao.dto.ProjetoUsuarioDTO;
+import br.com.jth.servico_gestao.dto.response.ProjetoUsuarioResponse;
 import br.com.jth.servico_gestao.service.ProjetoUsuarioService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,8 @@ public class ProjetoUsuarioController {
     }
 
     @GetMapping("/associacoes")
-    public ResponseEntity<List<ProjetoUsuarioDTO>> listarAssociacoes() {
-        List<ProjetoUsuarioDTO> associacoes = projetoUsuarioService.listarAssociacoes();
+    public ResponseEntity<List<ProjetoUsuarioResponse>> listarAssociacoes() {
+        List<ProjetoUsuarioResponse> associacoes = projetoUsuarioService.listarAssociacoes();
         return ResponseEntity.ok(associacoes);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.jth.servico_gestao.dto.ProjetoUsuarioDTO;
+import br.com.jth.servico_gestao.dto.response.ProjetoUsuarioResponse;
 import br.com.jth.servico_gestao.model.ProjetoModel;
 import br.com.jth.servico_gestao.model.ProjetoUsuarioModel;
 import br.com.jth.servico_gestao.model.UsuarioModel;
@@ -53,11 +54,20 @@ public class ProjetoUsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProjetoUsuarioDTO> listarAssociacoes() {
+    public List<ProjetoUsuarioResponse> listarAssociacoes() {
         return projetoUsuarioRepository.findAll().stream()
                 .map(associacao -> {
-                    ProjetoUsuarioDTO dto = new ProjetoUsuarioDTO();
-                    dto.setProjetoId(associacao.getProjeto().getId());
+                    ProjetoUsuarioResponse dto = new ProjetoUsuarioResponse();
+                    ProjetoModel projeto = associacao.getProjeto();
+                    dto.setProjetoId(projeto.getId());
+                    dto.setProjetoNome(projeto.getNomeProjeto());
+                    if (projeto.getGestor() != null) {
+                        dto.setGestorId(projeto.getGestor().getId());
+                        dto.setGestorNome(projeto.getGestor().getNomeUsuario());
+                    }
+                    dto.setUsuarioId(
+                        List.of(associacao.getUsuario().getId())
+                    );
                     dto.setUsuarioId(List.of(associacao.getUsuario().getId()));
                     return dto;
                 })

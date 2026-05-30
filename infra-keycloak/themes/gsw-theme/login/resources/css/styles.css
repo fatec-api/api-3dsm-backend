@@ -76,7 +76,7 @@ html, body {
 }
 
 .input-group input:focus {
-    border-color: #3b82f6;
+    border-color: #c2c2c2;
     box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
 }
 
@@ -102,7 +102,7 @@ html, body {
     height: 48px;
     border: none;
     border-radius: 10px;
-    background: #2563eb;
+    background: #1E3859;
     color: white;
     font-weight: 600;
     cursor: pointer;
@@ -110,7 +110,7 @@ html, body {
 }
 
 .btn-login:hover {
-    background: #1d4ed8;
+    background: #274772;
 }
 
 .error-box {
@@ -123,7 +123,7 @@ html, body {
 
 .login-right {
     flex: 1;
-    background: linear-gradient(135deg, #e2e8f0, #f8fafc);
+    background: linear-gradient(135deg, #071A40, #0f172a);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -22,6 +22,7 @@ public class ItemResponseDTO {
     private NivelAtividade nivelAtividade;
     private Long projetoId;
     private String projetoNome;
+    private UUID gestorId;
     private List<String> usuarioNomes;
     private List<UUID> usuarioIds;
 }

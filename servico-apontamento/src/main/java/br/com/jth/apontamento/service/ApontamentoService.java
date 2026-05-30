@@ -14,13 +14,16 @@ import org.springframework.web.servlet.HandlerMapping;
 import br.com.jth.apontamento.dto.request.ApontamentoRequestDTO;
 import br.com.jth.apontamento.dto.request.ApontamentoUpdateRequestDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoAvaliacaoDTO;
+import br.com.jth.apontamento.dto.response.ApontamentoGestorResponseDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoResponseDTO;
 import br.com.jth.apontamento.dto.response.ItemResponseDTO;
+import br.com.jth.apontamento.enums.NivelAtividade;
 import br.com.jth.apontamento.enums.ApontamentoStatus;
 import br.com.jth.apontamento.exception.NegocioException;
 import br.com.jth.apontamento.exception.RecursoNaoEncontradoException;
 import br.com.jth.apontamento.mapper.ApontamentoMapper;
 import br.com.jth.apontamento.mensageria.ApontamentoEventProducer;
+import br.com.jth.apontamento.mensageria.item.ItemQueryProducer;
 import br.com.jth.apontamento.mensageria.projeto.ProjetoQueryProducer;
 import br.com.jth.apontamento.mensageria.usuario.UsuarioQueryProducer;
 import br.com.jth.apontamento.model.ApontamentoModel;
@@ -36,6 +39,7 @@ public class ApontamentoService {
     private final HandlerMapping resourceHandlerMapping;
     private final ProjetoQueryProducer projetoQueryProducer;
     private final UsuarioQueryProducer usuarioQueryProducer;
+    private final ItemQueryProducer itemQueryProducer;
 
     public List<ApontamentoResponseDTO> listarApontamentos() {
         return mapper.toResponseList(repository.findAll());
@@ -72,12 +76,22 @@ public class ApontamentoService {
         BigDecimal valorHoraAtual = usuarioQueryProducer.buscarValorHoraAtual(apontamento.getUsuarioId());
 
         if (valorHoraAtual == null || valorHoraAtual.compareTo(BigDecimal.ZERO) <= 0) {
-        throw new NegocioException("Não foi possível recuperar o valor da sua hora. Por favor, verifique seu cadastro de usuário.");
+            throw new NegocioException("Não foi possível recuperar o valor da sua hora. Por favor, verifique seu cadastro de usuário.");
         }
 
         apontamento.setValorHoraAplicado(valorHoraAtual);
 
-        System.out.println("ITEM ID: " + apontamento.getItemId());
+        ItemResponseDTO itemDTO = itemQueryProducer.buscarItemPorId(apontamento.getItemId());
+        if (itemDTO != null) {
+            apontamento.setItemDescricao(itemDTO.getDescricao());
+            apontamento.setProjetoId(itemDTO.getProjetoId());
+            apontamento.setProjetoNome(itemDTO.getProjetoNome());
+            apontamento.setNivelAtividade(itemDTO.getNivelAtividade());
+            apontamento.setGestorId(itemDTO.getGestorId());
+            if (itemDTO.getUsuarioNomes() != null && !itemDTO.getUsuarioNomes().isEmpty()) {
+                apontamento.setUsuarioNome(itemDTO.getUsuarioNomes().get(0));
+            }
+        }
 
         ApontamentoModel salvo = repository.save(apontamento);
 
@@ -164,6 +178,30 @@ public class ApontamentoService {
         apontamentoEventProducer.publicarApontamentoAuditoria(salvo);
 
         return mapper.toResponse(salvo);
+    }
+
+    public List<ApontamentoGestorResponseDTO> buscarPendentesParaGestor(UUID gestorId) {
+        return repository.findByGestorIdAndStatus(gestorId, ApontamentoStatus.PENDENTE)
+                .stream()
+                .map(a -> new ApontamentoGestorResponseDTO(
+                        a.getId(),
+                        a.getUsuarioId(),
+                        a.getUsuarioNome(),
+                        a.getItemId(),
+                        a.getItemDescricao(),
+                        a.getNivelAtividade(),
+                        a.getProjetoId(),
+                        a.getProjetoNome(),
+                        a.getDataApontamento(),
+                        a.getHoraInicio(),
+                        a.getHoraFim(),
+                        a.getHorasLiquidas(),
+                        a.getObservacao(),
+                        a.getStatus(),
+                        a.getJustificativaReprovacao(),
+                        a.getValorHoraAplicado()
+                ))
+                .toList();
     }
 
     private Double calcularHorasLiquidas(LocalDateTime horaInicio, LocalDateTime horaFim) {

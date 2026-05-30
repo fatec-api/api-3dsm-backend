@@ -1,9 +1,9 @@
 package br.com.jth.apontamento.controller;
 
-import br.com.jth.apontamento.dto.request.ApontamentoAprovarRequestDTO;
 import br.com.jth.apontamento.dto.request.ApontamentoRequestDTO;
 import br.com.jth.apontamento.dto.request.ApontamentoUpdateRequestDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoAvaliacaoDTO;
+import br.com.jth.apontamento.dto.response.ApontamentoGestorResponseDTO;
 import br.com.jth.apontamento.dto.response.ApontamentoResponseDTO;
 import br.com.jth.apontamento.service.ApontamentoService;
 import jakarta.validation.Valid;
@@ -39,6 +39,11 @@ public class ApontamentoController {
     @GetMapping("/pendente/projeto/{projetoId}")
     public ResponseEntity<List<ApontamentoResponseDTO>> findPendentesPorProjetoId(@PathVariable Long projetoId) {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarApontamentoPendentePorProjetoId(projetoId));
+    }
+
+    @GetMapping("/pendentes/gestor/{gestorId}")
+    public ResponseEntity<List<ApontamentoGestorResponseDTO>> findPendentesParaGestor(@PathVariable UUID gestorId) {
+        return ResponseEntity.ok(service.buscarPendentesParaGestor(gestorId));
     }
     
     @PostMapping

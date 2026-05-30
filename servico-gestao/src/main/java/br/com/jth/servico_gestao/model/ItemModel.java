@@ -33,7 +33,7 @@ public class ItemModel {
     @Column(nullable = true)
     private NivelAtividade nivelAtividade;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "item_usuario",
             joinColumns = @JoinColumn(name = "item_id"),

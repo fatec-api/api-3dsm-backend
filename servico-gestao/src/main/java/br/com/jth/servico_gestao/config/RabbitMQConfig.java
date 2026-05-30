@@ -40,6 +40,9 @@ public class RabbitMQConfig {
     public static final String USUARIO_VALOR_QUERY_KEY       = "usuario.valor.query.request";
     public static final String QUEUE_USUARIO_VALOR_QUERY     = "usuario.valor.query.queue";
 
+    public static final String ITEM_POR_ID_QUERY_KEY         = "item.query.request";
+    public static final String QUEUE_ITEM_POR_ID_QUERY       = "item.query.queue";
+
     public static final String KEYCLOAK_USUARIO_CRIADO_QUEUE     = "keycloak.usuario.criado.queue";
     public static final String KEYCLOAK_USUARIO_ATUALIZADO_QUEUE = "keycloak.usuario.atualizado.queue";
     public static final String KEYCLOAK_USUARIO_DELETADO_QUEUE   = "keycloak.usuario.deletado.queue";
@@ -68,6 +71,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue usuarioValorQueue() {
         return QueueBuilder.durable(QUEUE_USUARIO_VALOR_QUERY).build();
+    }
+
+    @Bean
+    public Queue itemPorIdQueryQueue() {
+        return QueueBuilder.durable(QUEUE_ITEM_POR_ID_QUERY).build();
     }
 
     @Bean
@@ -151,6 +159,11 @@ public class RabbitMQConfig {
     @Bean
     public Binding usuarioValorQueryBinding(Queue usuarioValorQueue, TopicExchange gestaoExchange) {
         return BindingBuilder.bind(usuarioValorQueue).to(gestaoExchange).with(USUARIO_VALOR_QUERY_KEY);
+    }
+
+    @Bean
+    public Binding itemPorIdQueryBinding(Queue itemPorIdQueryQueue, TopicExchange gestaoExchange) {
+        return BindingBuilder.bind(itemPorIdQueryQueue).to(gestaoExchange).with(ITEM_POR_ID_QUERY_KEY);
     }
 
     @Bean

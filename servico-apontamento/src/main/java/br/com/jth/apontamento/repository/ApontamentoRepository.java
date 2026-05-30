@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ApontamentoRepository extends JpaRepository<ApontamentoModel, Long> {
-    List<ApontamentoModel> findByUsuarioIdAndDataApontamento(Long usuarioId, LocalDateTime data);
-
     List<ApontamentoModel> findByUsuarioId(UUID usuarioId);
 
     @Query("""
@@ -39,4 +37,6 @@ public interface ApontamentoRepository extends JpaRepository<ApontamentoModel, L
     List<ApontamentoModel> findByItemIdInAndStatus(List<Long> itemIds, ApontamentoStatus status);
 
     List<ApontamentoModel> findByItemIdIn(List<Long> itemIds);
+
+    List<ApontamentoModel> findByGestorIdAndStatus(UUID gestorId, ApontamentoStatus status);
 }

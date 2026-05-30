@@ -1,7 +1,6 @@
 package br.com.jth.apontamento.config;
 
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -28,6 +27,8 @@ public class RabbitMQConfig {
     public static final String PROJETO_QUERY_KEY = "projeto.query.request";
 
     public static final String USUARIO_VALOR_QUERY_KEY = "usuario.valor.query.request";
+
+    public static final String ITEM_POR_ID_QUERY_KEY = "item.query.request";
 
     @Bean
     public TopicExchange gestaoExchange() {

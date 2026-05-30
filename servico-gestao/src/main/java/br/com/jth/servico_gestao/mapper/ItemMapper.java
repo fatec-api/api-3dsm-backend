@@ -22,6 +22,7 @@ public interface ItemMapper {
 
     @Mapping(source = "projetoModel.id", target = "projetoId")
     @Mapping(source = "projetoModel.nomeProjeto", target = "projetoNome")
+    @Mapping(source = "projetoModel.gestor.id", target = "gestorId")
     @Mapping(target = "usuarioNomes", expression = "java(mapUsuarioNomes(itemModel))")
     @Mapping(target = "usuarioIds", expression = "java(mapUsuarioIds(itemModel))")
     ItemResponseDTO toResponse(ItemModel itemModel);

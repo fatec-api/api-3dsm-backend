@@ -1,13 +1,14 @@
 package br.com.jth.apontamento.model;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import br.com.jth.apontamento.enums.ApontamentoStatus;
+import br.com.jth.apontamento.enums.NivelAtividade;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -68,5 +69,24 @@ public class ApontamentoModel {
 
     @Column(length = 500)
     private String justificativaReprovacao;
+
+    @Column
+    private String itemDescricao;
+
+    @Column
+    private Long projetoId;
+
+    @Column
+    private String projetoNome;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private NivelAtividade nivelAtividade;
+
+    @Column
+    private String usuarioNome;
+
+    @Column
+    private UUID gestorId;
 
 }

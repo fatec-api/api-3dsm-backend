@@ -14,6 +14,9 @@ public record ApontamentoRequestDTO(
         @NotNull(message = "O usuário é obrigatório")
         UUID usuarioId,
 
+        @NotNull(message = "O nome do usuário é obrigatório")
+        String usuarioNome,
+
         @NotNull(message = "A data do apontamento é obrigatória")
         @PastOrPresent(message = "Você não pode apontar horas para o futuro")
         LocalDateTime dataApontamento,

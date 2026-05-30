@@ -88,9 +88,6 @@ public class ApontamentoService {
             apontamento.setProjetoNome(itemDTO.getProjetoNome());
             apontamento.setNivelAtividade(itemDTO.getNivelAtividade());
             apontamento.setGestorId(itemDTO.getGestorId());
-            if (itemDTO.getUsuarioNomes() != null && !itemDTO.getUsuarioNomes().isEmpty()) {
-                apontamento.setUsuarioNome(itemDTO.getUsuarioNomes().get(0));
-            }
         }
 
         ApontamentoModel salvo = repository.save(apontamento);

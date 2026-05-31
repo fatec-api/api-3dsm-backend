@@ -67,42 +67,30 @@
         "clientRole": false,
         "containerId": "5c04fec9-7709-4003-b9d3-b9f11aa3c969",
         "attributes": {}
-      },
-      {
-      "id" : "f0f21fc2-8b3b-4cc1-9ae0-a7f7a4fe96b0",
-      "name" : "PROFISSIONAL",
-      "description" : "Usuário que aponta horas para os itens que são atividades de um projeto, também consegue visualizar os seus apontamentos e editar caso o GESTOR não tenha REPROVADO ou APROVADO.",
-      "composite" : false,
-      "clientRole" : false,
-      "containerId" : "5c04fec9-7709-4003-b9d3-b9f11aa3c969",
-      "attributes" : { }
-      }, 
-      {
-      "id" : "52c79dc4-b1bc-4596-8a8b-7aa5ca43d6ab",
-      "name" : "USER",
-      "description" : "Role atribuído a usuários comuns da plataforma (sem privilégios especiais)",
-      "composite" : false,
-      "clientRole" : false,
-      "containerId" : "5c04fec9-7709-4003-b9d3-b9f11aa3c969",
-      "attributes" : { }
-      }, 
-      {
-      "id" : "ea0164cd-9b6a-4209-803b-4a02494c2929",
-      "name" : "ADMIN",
-      "description" : "Papel atribuído a usuário Admin aquele que gerência acima do nível de GESTOR.",
-      "composite" : false,
-      "clientRole" : false,
-      "containerId" : "5c04fec9-7709-4003-b9d3-b9f11aa3c969",
-      "attributes" : { }
-      }, 
-      {
-      "id" : "53c40dc2-b91e-49d1-be3a-64bc9abb5f5c",
-      "name" : "GESTOR",
-      "description" : "Usuário gestor do sistema consegue Gerenciar Projetos, Itens de atividades, Apontamentos dos Profissionais e acompanhar as horas alocadas nos Projetos e Atividades.",
-      "composite" : false,
-      "clientRole" : false,
-      "containerId" : "5c04fec9-7709-4003-b9d3-b9f11aa3c969",
-      "attributes" : { }
+      }, {
+        "id" : "f0f21fc2-8b3b-4cc1-9ae0-a7f7a4fe96b0",
+        "name" : "PROFISSIONAL",
+        "description" : "Usuário que aponta horas para os itens que são atividades de um projeto, também consegue visualizar os seus apontamentos e editar caso o GESTOR não tenha REPROVADO ou APROVADO.",
+        "composite" : false,
+        "clientRole" : false,
+        "containerId" : "5c04fec9-7709-4003-b9d3-b9f11aa3c969",
+        "attributes" : { }
+      }, {
+        "id" : "1caef704-aa20-466b-97b8-4c2f9800f6e9",
+        "name" : "FINANCEIRO",
+        "description" : "Usuário financeiro do sistema consegue acompanhar os Projetos, monitorar horas alocadas em Projetos e Atividades, além de apoiar o controle financeiro e faturamento relacionado às horas trabalhadas.",
+        "composite" : false,
+        "clientRole" : false,
+        "containerId" : "5c04fec9-7709-4003-b9d3-b9f11aa3c969",
+        "attributes" : { }
+      }, {
+        "id" : "53c40dc2-b91e-49d1-be3a-64bc9abb5f5c",
+        "name" : "GESTOR",
+        "description" : "Usuário gestor do sistema consegue Gerenciar Projetos, Itens de atividades, Apontamentos dos Profissionais e acompanhar as horas alocadas nos Projetos e Atividades.",
+        "composite" : false,
+        "clientRole" : false,
+        "containerId" : "5c04fec9-7709-4003-b9d3-b9f11aa3c969",
+        "attributes" : { }
       },
       {
         "id": "51ec78cf-9e92-4071-b71f-311ab8be614d",
@@ -444,7 +432,28 @@
       ]
     }
   },
-  "groups": [],
+  "groups" : [ {
+    "id" : "d641cba0-f87f-435b-9883-eef759a38115",
+    "name" : "manager",
+    "path" : "/manager",
+    "subGroups" : [ ],
+    "attributes" : { },
+    "realmRoles" : [ "uma_authorization", "offline_access" ],
+    "clientRoles" : {
+      "realm-management" : [ "query-groups", "query-users", "manage-users", "view-users" ],
+      "account" : [ "manage-account", "view-profile", "delete-account", "view-groups" ]
+    }
+  }, {
+    "id" : "e109ff5b-3588-483e-91da-633b14b1afe4",
+    "name" : "user",
+    "path" : "/user",
+    "subGroups" : [ ],
+    "attributes" : { },
+    "realmRoles" : [ "default-roles-java-the-hutt", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "manage-account", "view-profile" ]
+    }
+  } ],
   "defaultRole": {
     "id": "2b61db53-f7ad-4a0f-aaf3-79842978aa70",
     "name": "default-roles-java-the-hutt",
@@ -453,10 +462,9 @@
     "clientRole": false,
     "containerId": "5c04fec9-7709-4003-b9d3-b9f11aa3c969"
   },
-  "requiredCredentials": [
-    "password"
-  ],
-  "otpPolicyType": "totp",
+  "requiredCredentials" : [ "password" ],
+  "passwordPolicy" : "length(8) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1)",
+  "otpPolicyType" : "totp",
   "otpPolicyAlgorithm": "HmacSHA1",
   "otpPolicyInitialCounter": 0,
   "otpPolicyDigits": 6,
@@ -497,332 +505,6 @@
   "webAuthnPolicyPasswordlessExtraOrigins": [],
   "users": [
     {
-      "id" : "484a60c6-18dd-494e-abea-adeb7df8e7fb",
-      "username" : "ada",
-      "firstName" : "Ada",
-      "lastName" : "Lovelace",
-      "email" : "ada@gsw.com",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777819544686,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "82ba23cd-94a5-457a-afac-e4d03e072c98",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777819555482,
-        "secretData" : "{\"value\":\"mf2XRo4JEwyYrP4cdC+njitSwZlGTKwlfpulCD+nYzw=\",\"salt\":\"Qwfr4vT3Y/h4GE/7ko7EEg==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "ADMIN", "GESTOR" ],
-      "clientRoles" : {
-        "realm-management" : [ "realm-admin" ]
-      },
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "c9a55cdf-3740-4337-97f8-e1a84fe2c4a4",
-      "username" : "ana",
-      "firstName" : "Ana",
-      "lastName" : "Elize Graciano",
-      "email" : "ana.graciano01@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820175015,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "d4c6faeb-d176-4d0b-8a91-9de70e5a6438",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820185436,
-        "secretData" : "{\"value\":\"PiNBRPkhKR3tgxEwtvscZoLP0+/+Uf3OEn5cdns/ozQ=\",\"salt\":\"+h5PheY+so/uxgW61YWrPQ==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "0dfd4337-58cb-4d6b-ac13-f378b0699620",
-      "username" : "gabriel",
-      "firstName" : "Gabriel ",
-      "lastName" : "Kodato Faria",
-      "email" : "gabriel.faria15@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820394471,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "d8339801-be61-4ffb-a811-f571847388cc",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820403872,
-        "secretData" : "{\"value\":\"sg3o8ZOVd4hIEIqvpIWqpzGrgJa62IB4qSV5swxv2EA=\",\"salt\":\"rYypUcvUPMnBsFaRO+j4GA==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "ac17fe34-5fee-4012-9e15-6503db2f06f2",
-      "username" : "gerson",
-      "firstName" : "Gerson",
-      "lastName" : "da Penha Neto",
-      "email" : "gerson.penha@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820018102,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "d74ffa2f-d576-4c04-a2be-17c9299bfa59",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820030890,
-        "secretData" : "{\"value\":\"DKgzjakQnu8djTb/56sKS8sUsCLRX9taeIYSL6j/FqE=\",\"salt\":\"+rlmqE2B+IPBr8kzfWdQzQ==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "GESTOR" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "891ab031-b45f-4d76-ad49-07cfee5fdff0",
-      "username" : "grace",
-      "firstName" : "Grace",
-      "lastName" : "Hopper",
-      "email" : "grace@gsw.com",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777819683495,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "68ba44b1-7ad1-4f6b-b0ff-2d6ce957fca3",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777819735130,
-        "secretData" : "{\"value\":\"AC8lrARFRYcXJ481qU1YN8FCIUzyhFF5iie24NqdcfE=\",\"salt\":\"0q6VpHqPQwrGRhfqy4JpXw==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ "UPDATE_PASSWORD" ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "GESTOR" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "a8590c02-2ebd-4674-9711-dd5e8de7fcf7",
-      "username" : "gustavo",
-      "firstName" : "Gustavo",
-      "lastName" : "Ribeiro da Rosa",
-      "email" : "gustavo.rosa5@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820449946,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "13d90bbb-ecab-41aa-9856-1366b1f965d0",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820463981,
-        "secretData" : "{\"value\":\"XyaRtPetAP3Sa+F5+Nc/kfiJg4uwRJkzHVyrboP2iaE=\",\"salt\":\"q+JVlow+3DMdCRRm7Lt+kQ==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "d5f4a801-79a4-4af6-97a8-62fc09b96610",
-      "username" : "joaosantos",
-      "firstName" : "Joao",
-      "lastName" : "Victor dos Reis Santos",
-      "email" : "joao.santos464@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820926825,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "25be9c49-4320-45ba-8788-e68a561529de",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820936137,
-        "secretData" : "{\"value\":\"js3DV45W7kfbx/Djz/yO7LVHx2iZrlQU5CKf8wpe+oc=\",\"salt\":\"81R/Y3Xp7g2R2utdLuHpUQ==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "1a367993-fc15-41cb-858e-6ea4e12474af",
-      "username" : "joaosiqueira",
-      "firstName" : "Joao",
-      "lastName" : "Vitor Silva Correa Siqueira",
-      "email" : "joao.siqueira12@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820319059,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "c71d19d2-bb5e-468d-b25e-52567dd97523",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820336615,
-        "secretData" : "{\"value\":\"Z8RzQTyVsQFJDtPfu8msjP3EZ3K0Njdn+0Yk9GoZTIQ=\",\"salt\":\"KMpSPo9KaHWB1tufJjtL4A==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "171073fc-9f64-4c24-adac-19fd450ba421",
-      "username" : "kaique",
-      "firstName" : "Kaique",
-      "lastName" : "Henrique Silva Pinto",
-      "email" : "kaique.silva65@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820585521,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "55c69229-9fc3-4bc7-9e2c-813ab3d14612",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820598192,
-        "secretData" : "{\"value\":\"y5pej4KLxY+T0S0GF1AJIUkk6HTnstijfNqfED5/M0c=\",\"salt\":\"DlNSB+Q81YsuMtWtyUd8yA==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "45f1db6d-586f-4b04-b863-d405d55a9e79",
-      "username" : "laiz",
-      "firstName" : "Laís",
-      "lastName" : "Zanardi Inocêncio",
-      "email" : "lais.inocencio@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820637699,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "1abbbd05-b87a-4d3c-a35e-d5948ef250fe",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820648547,
-        "secretData" : "{\"value\":\"CUN7Urr834MZsdFb90fYWdX8L81XS/TV82fJ5dR76cg=\",\"salt\":\"obyxB9OZRtzxe0WLVLeSww==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "21083d0d-f7ea-4841-b14d-3d2e2675d1e9",
-      "username" : "linus",
-      "firstName" : "Linus",
-      "lastName" : "Torvalds",
-      "email" : "linus@gsw.com",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777819771335,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "f1da1614-9cd1-4ced-b63a-d777d1c92934",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777819819295,
-        "secretData" : "{\"value\":\"ogp8s2CFESmLwMuv/uClkmh7qvLP8g0o7K0Zg/5Ycvo=\",\"salt\":\"/FoQumT/qSqswwWJ6m6Qrw==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "GESTOR" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "ca938588-6593-436a-9803-f7093de8cbad",
-      "username" : "lucas",
-      "firstName" : "Lucas",
-      "lastName" : "Inácio de Carvalho",
-      "email" : "lucas.carvalho93@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820710600,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "af48da0c-b4f2-478a-89c8-6797c73dc83a",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820724003,
-        "secretData" : "{\"value\":\"NsNK7nnWalAORsNmumHkw8FvHC1OBPrAqZElSaXa5kU=\",\"salt\":\"Qwzdm34iB/k/7zAW7DbiKQ==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "79841dea-6470-4a1c-8580-2014e097b556",
-      "username" : "maria",
-      "firstName" : "Maria",
-      "lastName" : "Fernanda de Oliveira Laboissiere",
-      "email" : "maria.laboissiere@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820768963,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "33750e61-637d-4570-bb23-3ba68ed9362b",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820778059,
-        "secretData" : "{\"value\":\"bZ/qo5NdtZHZFDysUOEwp+TuC0nnFHDSSUSg6sg21Ok=\",\"salt\":\"UeXv/Z8Y1RcDDfbiDE+LkQ==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    }, {
-      "id" : "5f7e3e05-aeb5-4f7a-a22d-d75b31cc7de1",
-      "username" : "rebeca",
-      "firstName" : "Rebeca",
-      "lastName" : "Lima Nunes",
-      "email" : "rebeca.nunes3@fatec.sp.gov.br",
-      "emailVerified" : true,
-      "createdTimestamp" : 1777820819857,
-      "enabled" : true,
-      "totp" : false,
-      "credentials" : [ {
-        "id" : "00a3a7e2-b066-4a9f-bfb1-cee300975d55",
-        "type" : "password",
-        "userLabel" : "My password",
-        "createdDate" : 1777820829202,
-        "secretData" : "{\"value\":\"ctZUHVJEBT0uSF8CR74RzhFxUm+YMYu6BTHIOTCLi+k=\",\"salt\":\"ofBJ6cGWNPbHlSihRNXWUA==\",\"additionalParameters\":{}}",
-        "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-      } ],
-      "disableableCredentialTypes" : [ ],
-      "requiredActions" : [ ],
-      "realmRoles" : [ "default-roles-java-the-hutt", "PROFISSIONAL" ],
-      "notBefore" : 0,
-      "groups" : [ ]
-    },
-    {
       "id": "fef5ef18-0509-400d-a7e0-54b0326a7da8",
       "username": "service-account-jth-backend",
       "emailVerified": false,
@@ -833,8 +515,7 @@
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
-        "default-roles-java-the-hutt",
-        "USER"
+        "default-roles-java-the-hutt"
       ],
       "notBefore": 0,
       "groups": []
@@ -2009,13 +1690,19 @@
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
   "smtpServer": {},
-  "eventsEnabled": false,
+  "eventsEnabled": true,
   "eventsListeners": [
-    "jboss-logging"
+    "jboss-logging",
+    "keycloak-to-rabbitmq"
   ],
-  "enabledEventTypes": [],
-  "adminEventsEnabled": false,
-  "adminEventsDetailsEnabled": false,
+  "enabledEventTypes": [
+    "REGISTER",
+    "UPDATE_PROFILE",
+    "UPDATE_EMAIL",
+    "DELETE_ACCOUNT"
+  ],
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": true,
   "identityProviders": [],
   "identityProviderMappers": [],
   "components": {
@@ -2126,6 +1813,14 @@
         "config": {}
       }
     ],
+     "org.keycloak.userprofile.UserProfileProvider" : [ {
+      "id" : "979fb75a-d27e-4dad-b08f-0f27fa57b7fb",
+      "providerId" : "declarative-user-profile",
+      "subComponents" : { },
+      "config" : {
+        "kc.user.profile.config" : [ "{\"attributes\":[{\"name\":\"username\",\"displayName\":\"${username}\",\"validations\":{\"length\":{\"min\":3,\"max\":255},\"username-prohibited-characters\":{},\"up-username-not-idn-homograph\":{}},\"annotations\":{},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"firstName\",\"displayName\":\"${firstName}\",\"validations\":{\"person-name-prohibited-characters\":{\"error-message\":\"\"},\"length\":{\"min\":\"1\",\"max\":\"255\"}},\"annotations\":{},\"permissions\":{\"view\":[\"admin\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"lastName\",\"displayName\":\"${lastName}\",\"validations\":{\"length\":{\"min\":\"1\",\"max\":\"255\"},\"person-name-prohibited-characters\":{\"error-message\":\"\"}},\"annotations\":{},\"permissions\":{\"view\":[\"admin\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"email\",\"displayName\":\"${email}\",\"validations\":{\"email\":{},\"length\":{\"max\":255}},\"annotations\":{},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"nomeCompleto\",\"displayName\":\"nome completo\",\"validations\":{\"person-name-prohibited-characters\":{\"error-message\":\"\"}},\"annotations\":{},\"required\":{\"roles\":[\"admin\",\"user\"]},\"permissions\":{\"view\":[\"admin\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"nivelExperiencia\",\"displayName\":\"nível experiencia\",\"validations\":{},\"annotations\":{},\"permissions\":{\"view\":[\"admin\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"valorHora\",\"displayName\":\"valor hora\",\"validations\":{\"double\":{\"min\":\"0.01\",\"max\":\"10000\"}},\"annotations\":{},\"permissions\":{\"view\":[],\"edit\":[\"admin\"]},\"multivalued\":false}],\"groups\":[{\"name\":\"user-metadata\",\"displayHeader\":\"User metadata\",\"displayDescription\":\"Attributes, which refer to user metadata\"}]}" ]
+      }
+    } ],
     "org.keycloak.keys.KeyProvider": [
       {
         "id": "079d1ac0-a820-42f1-b60e-ee18db8d341a",

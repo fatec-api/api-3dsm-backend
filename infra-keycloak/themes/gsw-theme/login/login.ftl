@@ -68,8 +68,10 @@
     </div>
 
     <div class="login-right">
+     <div class="logo-arc">
         <img src="${url.resourcesPath}/img/gsw-logo-branco.png"
              alt="GSW Logo" />
+     </div>
     </div>
 
 </div>

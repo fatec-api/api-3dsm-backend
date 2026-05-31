@@ -148,15 +148,29 @@ body,
 
 .login-right {
     flex: 1;
-    background: linear-gradient(135deg, #071A40, #0f172a);
+    background: #f3f6fb;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.logo-arc {
+    width: 60%;
+    max-width: 420px;
+    aspect-ratio: 4 / 7;
+    background: linear-gradient(135deg, #071A40, #3a5875);
+    border-top-left-radius: 999px;
+    border-top-right-radius: 999px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: translateX(-24px);
 }
 
-.login-right img {
-    width: 60%;
-    max-width: 320px;
+.logo-arc img {
+    width: 66%;
+    max-width: 260px;
 }
 
 @media (max-width: 900px) {

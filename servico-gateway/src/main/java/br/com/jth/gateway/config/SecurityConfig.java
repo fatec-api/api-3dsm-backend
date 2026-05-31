@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .pathMatchers("/gestao/clientes/**").hasAnyRole("GESTOR")
 
                         // --- REGRA GERAL ---
-                        .pathMatchers("/gestao/**").hasAnyRole("GESTOR","PROFISSIONAL")
+                        .pathMatchers("/gestao/**").hasAnyRole("GESTOR","PROFISSIONAL","FINANCEIRO")
                         .pathMatchers("/apontamento/**").hasAnyRole("GESTOR","PROFISSIONAL")
                         .pathMatchers("/auditoria/**").hasAnyRole("GESTOR")
                         .anyExchange().authenticated()

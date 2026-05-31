@@ -27,7 +27,11 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:25.0
     container_name: keycloak_hutt
-    command: start-dev --import-realm
+    command:
+    - start-dev
+    - --import-realm
+    - --spi-theme-cache-themes=false
+    - --spi-theme-cache-templates=false
     depends_on:
       mysql:
         condition: service_healthy
@@ -41,6 +45,7 @@ services:
       KC_HEALTH_ENABLED: "true"
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASS}
+      KEYCLOAK_SPI_EVENTS_LISTENER_DEFAULT: jboss-logging
       KC_DB: mysql
       KC_DB_URL: jdbc:mysql://mysql:3306/keycloak
       KC_DB_USERNAME: appuser
@@ -54,6 +59,7 @@ services:
     volumes:
       - ./infra-keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
       - ./infra-keycloak/providers:/opt/keycloak/providers
+      - ./infra-keycloak/themes:/opt/keycloak/themes 
     networks:
       - backend-hutt
 

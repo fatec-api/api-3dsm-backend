@@ -2,10 +2,10 @@
 
 <@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','password'); section>
 
-<#if section = "header">
+<#if section?? && section = "header">
     <div class="kc-header-hidden"></div>
 
-<#elseif section = "form">
+<#elseif section?? && section = "form">
 
 <div class="login-page">
 
@@ -33,6 +33,7 @@
                     <input type="text"
                            id="username"
                            name="username"
+                           autocomplete="username"
                            placeholder="email@gsw.com"
                            autofocus />
                 </div>
@@ -44,6 +45,7 @@
                         <input type="password"
                                id="password"
                                name="password"
+                               autocomplete="current-password"
                                placeholder="********" />
 
                         <button type="button"

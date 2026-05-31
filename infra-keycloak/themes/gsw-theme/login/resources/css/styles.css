@@ -7,15 +7,40 @@ html, body {
     background: #f3f6fb; 
 }
 
+html,
+body,
+.login-pf-page,
+.login-pf {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh !important;
+    background: #f3f6fb !important;
+}
+
 .login-pf,
+.login-pf-page,
+#kc-container,
+#kc-content,
+#kc-content-wrapper,
 .card-pf,
 .pf-c-login__container {
     background: transparent !important;
     box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#kc-header {
+    display: none !important;
 }
 
 .kc-header-hidden {
     display: none;
+}
+
+.login-pf-header {
+    display: none !important;
 }
 
 .login-page {

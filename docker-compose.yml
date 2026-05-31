@@ -58,7 +58,7 @@ services:
       - "8081:8080"
     volumes:
       - ./infra-keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
-      #- ./infra-keycloak/providers:/opt/keycloak/providers
+      - ./infra-keycloak/providers:/opt/keycloak/providers
       - ./infra-keycloak/themes:/opt/keycloak/themes 
     networks:
       - backend-hutt

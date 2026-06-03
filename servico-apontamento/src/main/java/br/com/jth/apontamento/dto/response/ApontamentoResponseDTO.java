@@ -22,6 +22,10 @@ public record ApontamentoResponseDTO(
 
         String itemDescricao,
 
+        Long projetoId,
+
+        String projetoNome,
+
         UUID usuarioId,
 
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

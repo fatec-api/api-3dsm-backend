@@ -36,15 +36,6 @@ public class ApontamentoEventConsumer {
 
         projeto.setHorasPendentesTotal(pendentes + horasLiquidas);
 
-        if (event.valorHoraAplicado() != null) {
-            Double custoParcial = event.valorHoraAplicado()
-                    .multiply(BigDecimal.valueOf(horasLiquidas))
-                    .doubleValue();
-            Double custoAtual = projeto.getCustoRealTotal() != null
-                    ? projeto.getCustoRealTotal() : 0.0;
-            projeto.setCustoRealTotal(custoAtual + custoParcial);
-        }
-
         projetoRepository.save(projeto);
     }
 
@@ -69,6 +60,35 @@ public class ApontamentoEventConsumer {
             Double realizadas = projeto.getHorasRealizadasTotal() != null
                     ? projeto.getHorasRealizadasTotal() : 0.0;
             projeto.setHorasRealizadasTotal(realizadas + horasLiquidas);
+
+            if (event.valorHoraAplicado() != null) {
+                Double custoParcial = event.valorHoraAplicado()
+                        .multiply(BigDecimal.valueOf(horasLiquidas))
+                        .doubleValue();
+                Double custoAtual = projeto.getCustoRealTotal() != null
+                        ? projeto.getCustoRealTotal() : 0.0;
+                projeto.setCustoRealTotal(custoAtual + custoParcial);
+            }
+
+            if (event.nivelAtividade() != null) {
+                switch (event.nivelAtividade()) {
+                    case "Analise" -> {
+                        Double atual = projeto.getHorasRealizadasAnalise() != null
+                                ? projeto.getHorasRealizadasAnalise() : 0.0;
+                        projeto.setHorasRealizadasAnalise(atual + horasLiquidas);
+                    }
+                    case "Desenvolvimento" -> {
+                        Double atual = projeto.getHorasRealizadasDesenvolvimento() != null
+                                ? projeto.getHorasRealizadasDesenvolvimento() : 0.0;
+                        projeto.setHorasRealizadasDesenvolvimento(atual + horasLiquidas);
+                    }
+                    case "Teste" -> {
+                        Double atual = projeto.getHorasRealizadasTeste() != null
+                                ? projeto.getHorasRealizadasTeste() : 0.0;
+                        projeto.setHorasRealizadasTeste(atual + horasLiquidas);
+                    }
+                }
+            }
         }
 
         projetoRepository.save(projeto);

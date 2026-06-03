@@ -43,7 +43,9 @@ public class ApontamentoEventProducer {
                 apontamento.getId(),
                 apontamento.getItemId(),
                 apontamento.getHorasLiquidas(),
-                apontamento.getStatus()
+                apontamento.getStatus(),
+                apontamento.getValorHoraAplicado(),
+                apontamento.getNivelAtividade() != null ? apontamento.getNivelAtividade().name() : null
         );
 
         rabbitTemplate.convertAndSend(

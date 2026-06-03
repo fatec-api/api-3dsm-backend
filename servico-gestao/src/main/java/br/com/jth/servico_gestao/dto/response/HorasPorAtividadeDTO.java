@@ -9,6 +9,6 @@ import lombok.Data;
 public class HorasPorAtividadeDTO {
     private NivelAtividade nivelAtividade;
     private Integer horasPrevistas;
-    private Integer horasRealizadas;    // sempre 0 por enquanto, até implementar apontamentos
-    private Double percentual;          // (realizadas / previstas) * 100
+    private Double horasRealizadas;
+    private Double percentual;
 }

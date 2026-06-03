@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").permitAll()
                         
-                        .requestMatchers("/gestao/projetos/**").hasRole("GESTOR")
+                        .requestMatchers("/gestao/projetos/**").hasAnyRole("GESTOR", "FINANCEIRO")
                         
                         .anyRequest().authenticated()
                 )

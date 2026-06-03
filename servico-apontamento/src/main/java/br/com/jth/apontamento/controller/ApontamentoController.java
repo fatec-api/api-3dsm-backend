@@ -36,6 +36,11 @@ public class ApontamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarApontamentoPorId(id));
     }
 
+    @GetMapping("/lote")
+    public ResponseEntity<List<ApontamentoResponseDTO>> findByIds(@RequestParam List<Long> ids) {
+        return ResponseEntity.ok(service.buscarApontamentosPorIds(ids));
+    }
+
     @GetMapping("/pendente/projeto/{projetoId}")
     public ResponseEntity<List<ApontamentoResponseDTO>> findPendentesPorProjetoId(@PathVariable Long projetoId) {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarApontamentoPendentePorProjetoId(projetoId));

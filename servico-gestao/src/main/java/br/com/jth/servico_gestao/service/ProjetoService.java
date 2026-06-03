@@ -47,7 +47,7 @@ public class ProjetoService {
                     "A data de término não pode ser anterior à data de início.");
         }
 
-        if (dto.getValorOrcamento().compareTo(new BigDecimal("100000")) > 0) {
+        if (dto.getValorOrcamento().compareTo(new BigDecimal("10000000")) > 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Valor de orçamento muito alto.");
         }
@@ -235,11 +235,11 @@ public class ProjetoService {
                     "Usuário não encontrado.");
         }
 
-        List<ProjetoUsuarioModel> projetos = projetoUsuarioRepository.findByUsuarioIdAndDataDesvinculoIsNull(usuarioId);
+        List<ProjetoModel> projetos = projetoRepository.findByUsuarioIdWithItens(usuarioId);
 
         return projetos.stream()
-                .map(vinculo -> vinculo.getProjeto())
-                .map(projetoMapper :: toResponse)
+                .peek(this::calcularHoras)
+                .map(projetoMapper::toResponse)
                 .toList();
     }
 

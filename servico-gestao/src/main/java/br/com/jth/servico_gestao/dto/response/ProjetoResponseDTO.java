@@ -29,6 +29,9 @@ public class ProjetoResponseDTO {
     private Double horasRealizadasTotal;
     private Double horasPendentesTotal;
     private Double custoRealTotal;
+    private Double horasRealizadasAnalise;
+    private Double horasRealizadasDesenvolvimento;
+    private Double horasRealizadasTeste;
     private StatusOrcamento statusOrcamento;
     private Double progressoProjeto;
     private String nomeGestor;

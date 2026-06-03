@@ -77,6 +77,15 @@ public class ProjetoModel {
     private Double horasPendentesTotal = 0.0;
 
     @Column
+    private Double horasRealizadasAnalise = 0.0;
+
+    @Column
+    private Double horasRealizadasDesenvolvimento = 0.0;
+
+    @Column
+    private Double horasRealizadasTeste = 0.0;
+
+    @Column
     private Double custoRealTotal = 0.0;
 
     @Column

@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -109,22 +110,25 @@ public class ItemService {
     }
 
     public List<HorasPorAtividadeDTO> buscarHorasPorAtividade(Long projetoId) {
-        if (!projetoRepository.existsById(projetoId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Projeto não encontrado com id: " + projetoId);
-        }
+        ProjetoModel projeto = projetoRepository.findById(projetoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Projeto não encontrado com id: " + projetoId));
+
+        Map<String, Double> realizadasPorNivel = Map.of(
+                "Analise",        projeto.getHorasRealizadasAnalise()        != null ? projeto.getHorasRealizadasAnalise()        : 0.0,
+                "Desenvolvimento", projeto.getHorasRealizadasDesenvolvimento() != null ? projeto.getHorasRealizadasDesenvolvimento() : 0.0,
+                "Teste",          projeto.getHorasRealizadasTeste()           != null ? projeto.getHorasRealizadasTeste()           : 0.0
+        );
 
         return itemRepository.somarHorasPorNivelAtividade(projetoId)
                 .stream()
                 .map(row -> {
                     NivelAtividade nivel = (NivelAtividade) row[0];
                     Integer previstas = ((Number) row[1]).intValue();
-                    Integer realizadas = 2; // placeholder até apontamentos
-                    Double percentual = previstas > 0
-                            ? (realizadas.doubleValue() / previstas.doubleValue()) * 100
-                            : 0.0;
+                    Double realizadas = realizadasPorNivel.getOrDefault(nivel.name(), 0.0);
+                    Double percentual = previstas > 0 ? (realizadas / previstas.doubleValue()) * 100 : 0.0;
                     return new HorasPorAtividadeDTO(nivel, previstas, realizadas, percentual);
                 })
-                .toList();
+                .collect(Collectors.toList());
     }
 }

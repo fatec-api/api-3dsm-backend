@@ -12,4 +12,11 @@ import br.com.jth.servico_gestao.model.ProjetoModel;
 public interface ProjetoRepository extends JpaRepository<ProjetoModel, Long> {
     @Query("SELECT p FROM ProjetoModel p LEFT JOIN FETCH p.itens WHERE p.gestor.id = :gestorId")
     List<ProjetoModel> findByGestorId(@Param("gestorId") UUID gestorId);
+
+    List<ProjetoModel> findByProfissionalAlocadoId(UUID profissionalAlocadoId);
+
+    @Query("SELECT p FROM ProjetoModel p LEFT JOIN FETCH p.itens WHERE p.id IN " +
+           "(SELECT pu.projeto.id FROM ProjetoUsuarioModel pu " +
+           "WHERE pu.usuario.id = :usuarioId AND pu.dataDesvinculo IS NULL)")
+    List<ProjetoModel> findByUsuarioIdWithItens(@Param("usuarioId") UUID usuarioId);
 }

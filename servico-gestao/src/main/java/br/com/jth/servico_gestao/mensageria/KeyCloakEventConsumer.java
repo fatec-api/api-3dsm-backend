@@ -14,7 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.jth.servico_gestao.config.RabbitMQConfig;
 import br.com.jth.servico_gestao.enums.usuario.Cargo;
 import br.com.jth.servico_gestao.mensageria.evento.KeycloakEventDTO;
+import br.com.jth.servico_gestao.model.ItemModel;
+import br.com.jth.servico_gestao.model.ProjetoModel;
+import br.com.jth.servico_gestao.model.ProjetoUsuarioModel;
 import br.com.jth.servico_gestao.model.UsuarioModel;
+import br.com.jth.servico_gestao.repository.ItemRepository;
+import br.com.jth.servico_gestao.repository.ProjetoRepository;
+import br.com.jth.servico_gestao.repository.ProjetoUsuarioRepository;
 import br.com.jth.servico_gestao.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +31,9 @@ import lombok.extern.slf4j.Slf4j;
 public class KeyCloakEventConsumer {
 
     private final UsuarioRepository usuarioRepository;
+    private final ProjetoUsuarioRepository projetoUsuarioRepository;
+    private final ItemRepository itemRepository;
+    private final ProjetoRepository projetoRepository;
 
     @Transactional
     @RabbitListener(queues = RabbitMQConfig.KEYCLOAK_USUARIO_CRIADO_QUEUE)
@@ -156,6 +165,38 @@ public class KeyCloakEventConsumer {
             return;
         }
 
+        // Reatribui gestor e profissionalAlocado para o usuário default
+        UUID defaultId = UUID.fromString("94567772-30ea-457f-8ecd-683fe442e768");
+        UsuarioModel usuarioDefault = usuarioRepository.findById(defaultId).orElse(null);
+
+        List<ProjetoModel> projetosComoGestor = projetoRepository.findByGestorId(id);
+        for (ProjetoModel projeto : projetosComoGestor) {
+            projeto.setGestor(usuarioDefault);
+        }
+        projetoRepository.saveAll(projetosComoGestor);
+        log.info("[KEYCLOAK] Gestor de {} projeto(s) reatribuído para usuário default ({}).", projetosComoGestor.size(), defaultId);
+
+        List<ProjetoModel> projetosComoProfissional = projetoRepository.findByProfissionalAlocadoId(id);
+        for (ProjetoModel projeto : projetosComoProfissional) {
+            projeto.setProfissionalAlocado(usuarioDefault);
+        }
+        projetoRepository.saveAll(projetosComoProfissional);
+        log.info("[KEYCLOAK] Profissional alocado de {} projeto(s) reatribuído para usuário default ({}).", projetosComoProfissional.size(), defaultId);
+
+        // Remove vínculos em projeto_usuario
+        List<ProjetoUsuarioModel> vinculos = projetoUsuarioRepository.findByUsuarioIdAndDataDesvinculoIsNull(id);
+        projetoUsuarioRepository.deleteAll(vinculos);
+        log.info("[KEYCLOAK] {} vínculo(s) de projeto removidos para usuário {}.", vinculos.size(), id);
+
+        // Remove usuário da lista de responsáveis em item_usuario
+        List<ItemModel> itens = itemRepository.findByUsuariosId(id);
+        for (ItemModel item : itens) {
+            item.getUsuarios().removeIf(u -> u.getId().equals(id));
+        }
+        itemRepository.saveAll(itens);
+        log.info("[KEYCLOAK] Usuário {} removido de {} item(ns).", id, itens.size());
+
+        // Deleta o usuário (usuario_cargos é removido em cascata pelo @ElementCollection)
         usuarioRepository.deleteById(id);
         log.info("[KEYCLOAK] Usuário {} deletado do banco.", id);
     }

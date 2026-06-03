@@ -51,6 +51,10 @@ public class ApontamentoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Apontamento não encontrado - id: " + id));
     }
 
+    public List<ApontamentoResponseDTO> buscarApontamentosPorIds(List<Long> ids) {
+        return mapper.toResponseList(repository.findAllById(ids));
+    }
+
     public List<ApontamentoResponseDTO> buscarApontamentoPorUsuarioId(UUID usuarioId) {
         List<ApontamentoModel> apontamentos = repository.findByUsuarioId(usuarioId);
         return apontamentos.stream()
@@ -205,7 +209,6 @@ public class ApontamentoService {
         if (horaInicio == null || horaFim == null)
             return 0.0;
         long minutos = java.time.Duration.between(horaInicio, horaFim).toMinutes();
-        System.out.println("HORAS LÍQUIDAS: " + minutos / 60.0);
         return minutos / 60.0;
 
     }
